@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: difaac_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - difaac_data:/data
+    env_file:
+      - ./backend/.env
+    environment:
+      - DIFAAC_DEBUG=false
+
+volumes:
+  difaac_data:

@@ -1,0 +1,8 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Difaac backend easy run scripts",
+  "scripts": {
+    "dev": ".\\.venv\\Scripts\\uvicorn.exe app.main:app --reload --ssl-keyfile ..\\localhost+2-key.pem --ssl-certfile ..\\localhost+2.pem"
+  }
+}

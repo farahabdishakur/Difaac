@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+dist/
+.vite/
+
+# Environment variables
+.env
+.env*.local
+
+# Local TLS certificates (mkcert)
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json
+
+# Python build artifacts
+*.egg-info/
+
+# Local server logs
+*.log

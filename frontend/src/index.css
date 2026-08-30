@@ -1,0 +1,228 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Taken from the logo artwork's own ground.
+   *
+   * logo.png is a JPEG and therefore carries no transparency, so its
+   * background is painted onto the page wherever the mark appears. Any
+   * difference between the two shows as a faint rectangle around the logo in
+   * the header. Anchoring the page on the same value makes the mark sit on the
+   * page with no visible edge. The layers below step up from this base. */
+  --color-ink: #010005;
+  --color-ink-2: #070a13;
+  --color-ink-3: #0e1422;
+  --color-line: #182237;
+  --color-line-soft: #101728;
+  --color-text: #fefefe;
+  --color-body: #94a3b8;
+  --color-muted-2: #64748b;
+  /* Sampled from the Difaac logo artwork rather than chosen by eye: the mark's
+   * green sits at hue 156, and the previous value sat at 160, which read as
+   * slightly cyan next to the logo it was meant to match. The tones below are
+   * derived from that same hue so the whole scale stays in one family. */
+  --color-brand: #00c979;
+  --color-brand-ink: #05291b;
+  --color-brand-bright: #16f39b;
+  --color-brand-glow: rgba(0, 201, 121, 0.25);
+  --color-brand-ultra: #45f7b0;
+  /* Secondary accent.
+   *
+   * A single warm tone against the cool brand green. Because it is the only
+   * warm colour on the page it reads as emphasis wherever it appears, without
+   * competing with the green for the role of "the brand colour". Reserved for
+   * moments that should interrupt a scan — an eyebrow above a section, a
+   * highlighted figure, an active indicator — and never used for a primary
+   * button, which stays green. */
+  --color-amber: #f0a839;
+  --color-amber-soft: rgba(240, 168, 57, 0.12);
+  --color-amber-line: rgba(240, 168, 57, 0.34);
+
+  --color-accent-blue: #3b82f6;
+  --color-accent-cyan: #06b6d4;
+  --color-accent-violet: #8b5cf6;
+  /* Product-identity accents.
+   *
+   * Each of the six products is assigned one of six hues (brand green plus
+   * these five) so its hero reads as its own page, the way group-ib.com tints
+   * every product page differently, while every other page stays the shared
+   * dark/green system. Chosen to sit evenly around the wheel and stay clear of
+   * amber's territory, which is reserved for the eyebrow accent above. */
+  --color-accent-fuchsia: #d946ef;
+  --color-accent-rose: #fb7185;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+  --background: #010005;
+  --foreground: #fefefe;
+  --card: #070a13;
+  --card-foreground: #fefefe;
+  --popover: #070a13;
+  --popover-foreground: #fefefe;
+  --primary: #00c979;
+  --primary-foreground: #05291b;
+  --secondary: #0e1422;
+  --secondary-foreground: #fefefe;
+  --muted: #070a13;
+  --muted-foreground: #94a3b8;
+  --accent: #182237;
+  --accent-foreground: #fefefe;
+  --destructive: #ef4444;
+  --border: #182237;
+  --input: #182237;
+  --ring: #00c979;
+  --radius: 4px;
+  --sidebar: #070a13;
+  --sidebar-foreground: #fefefe;
+  --sidebar-primary: #00c979;
+  --sidebar-primary-foreground: #05291b;
+  --sidebar-accent: #070a13;
+  --sidebar-accent-foreground: #fefefe;
+  --sidebar-border: #182237;
+  --sidebar-ring: #00c979;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-ink text-text font-sans antialiased;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #010005;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-text;
+  }
+}
+
+@layer utilities {
+  .link-underline {
+    position: relative;
+    text-decoration: none;
+  }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: var(--color-brand);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 200ms ease;
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #fefefe 0%, var(--color-brand-bright) 50%, var(--color-brand) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, var(--color-brand-bright) 0%, var(--color-brand) 60%, var(--color-accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .flat-card {
+    background: #070a13;
+    border: 1px solid #182237;
+    border-radius: 4px;
+    transition: all 0.25s ease;
+  }
+
+  .flat-card-hover:hover {
+    border-color: rgba(0, 201, 121, 0.6);
+    box-shadow: 0 4px 20px -4px rgba(0, 201, 121, 0.2);
+  }
+
+  /* Hero ground.
+   *
+   * Three layers: a soft brand wash from the top-left, a cooler counterpoint
+   * from the right so the warmth does not sit evenly across the width, and a
+   * fine grid that gives the surface texture at close range while staying
+   * invisible from a normal viewing distance. Radial gradients rather than a
+   * flat colour stop the large empty areas of a hero reading as dead space. */
+  .hero-ground {
+    background-color: var(--color-ink);
+    /* Two soft washes and nothing else. A ruled grid was here; at this scale it
+     * read as a lattice of boxes sitting on top of the page rather than as
+     * texture, so it has been removed. The gradients alone give the hero depth
+     * without putting anything on screen the eye has to look past. */
+    background-image:
+      radial-gradient(120% 90% at 8% 0%, rgba(0, 201, 121, 0.13) 0%, transparent 58%),
+      radial-gradient(90% 80% at 100% 12%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+  }
+
+  .glass-header {
+    background: rgba(1, 0, 5, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(24, 34, 55, 0.6);
+  }
+}
+
+
