@@ -1,7 +1,6 @@
 import { HeroSection } from '@/components/home/hero-section'
+import { PlatformOverview } from '@/components/home/platform-overview'
 import { ProductsOverview } from '@/components/home/products-overview'
-import { ProductShowcase } from '@/components/home/product-showcase'
-import { IntelHighlight } from '@/components/home/intel-highlight'
 import { StatsBand } from '@/components/home/stats-band'
 import { TestimonialsSection } from '@/components/home/testimonials-section'
 import { ResourcesPreview } from '@/components/home/resources-preview'
@@ -11,9 +10,8 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <PlatformOverview />
       <ProductsOverview />
-      <ProductShowcase />
-      <IntelHighlight />
       <StatsBand />
       <TestimonialsSection />
       <ResourcesPreview />
