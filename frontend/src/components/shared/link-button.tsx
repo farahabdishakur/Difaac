@@ -12,20 +12,20 @@ type LinkButtonProps = Omit<ComponentProps<typeof Link>, 'to'> & {
 
 const variantClasses: Record<string, string> = {
   primary:
-    'bg-brand text-brand-ink font-semibold border border-brand hover:bg-brand-bright hover:border-brand-bright shadow-lg hover:shadow-xl transition-all duration-200',
+    'bg-gradient-to-br from-brand to-brand text-brand-ink font-semibold border border-brand/80 shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 hover:border-brand hover:from-brand-bright hover:to-brand-bright transition-all duration-300',
   cyber:
-    'bg-brand text-brand-ink font-bold border border-brand hover:bg-brand-bright shadow-lg hover:shadow-xl transition-all duration-200',
+    'bg-gradient-to-br from-brand to-brand text-brand-ink font-bold border border-brand/80 shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 hover:from-brand-bright hover:to-brand-bright transition-all duration-300',
   secondary:
-    'border border-line/60 bg-white/[0.04] backdrop-blur-sm text-text hover:border-brand/50 hover:text-text hover:bg-white/[0.08] transition-all duration-200',
+    'border border-brand/30 bg-gradient-to-br from-white/[0.08] to-white/[0.04] backdrop-blur-md text-text hover:border-brand/50 hover:from-brand/10 hover:to-white/[0.06] hover:shadow-lg hover:shadow-brand/10 transition-all duration-300',
   outline:
-    'border border-brand/40 bg-white/[0.02] backdrop-blur-sm text-text hover:bg-brand/5 hover:border-brand/70 hover:text-brand transition-all duration-200',
+    'border border-brand/40 bg-gradient-to-br from-brand/5 to-white/[0.02] backdrop-blur-md text-text hover:from-brand/10 hover:to-brand/5 hover:border-brand/60 hover:shadow-lg hover:shadow-brand/10 hover:text-brand transition-all duration-300',
   ghost:
-    'border border-transparent bg-transparent text-body hover:text-brand hover:bg-white/5 transition-all duration-200',
+    'border border-transparent bg-transparent text-body hover:text-brand hover:bg-white/10 hover:border-brand/20 transition-all duration-300',
 }
 
 const sizeClasses: Record<string, string> = {
   default: 'h-10 px-5 text-sm',
-  lg: 'h-12 px-7 text-base font-semibold',
+  lg: 'h-13 px-8 text-base font-semibold',
   sm: 'h-9 px-4 text-sm',
   xs: 'h-7 px-2.5 text-xs',
 }
