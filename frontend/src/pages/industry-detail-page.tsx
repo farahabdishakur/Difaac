@@ -316,7 +316,7 @@ export default function IndustryDetailPage() {
             {details.stats.map((item, idx) => (
               <div
                 key={idx}
-                className="flex flex-col items-center gap-2 rounded-lg border border-line-soft bg-ink p-6 text-center"
+                className="flex flex-col items-center gap-2 rounded-lg border border-line-soft bg-ink/60 p-6 text-center backdrop-blur-sm"
               >
                 <span className="font-display text-2xl font-bold text-brand lg:text-3xl">
                   {item.stat}

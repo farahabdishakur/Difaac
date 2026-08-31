@@ -1,7 +1,10 @@
 import { useParams } from 'react-router-dom'
+import { Check, ArrowRight } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { SolutionHeroEnhanced } from '@/components/home/solution-hero-enhanced'
 import { SolutionHighlights } from '@/components/home/solution-highlights'
+import { GlassIcon } from '@/components/product/product-sections'
+import { solutionGroupAccent } from '@/lib/tone'
 import { getSolutionBySlug } from '@/lib/data/solutions'
 import NotFoundPage from '@/pages/not-found-page'
 
@@ -230,6 +233,8 @@ export default function SolutionDetailPage() {
     return <NotFoundPage />
   }
 
+  const tone = solutionGroupAccent[solution.group]
+
   return (
     <>
       <SolutionHeroEnhanced
@@ -240,7 +245,7 @@ export default function SolutionDetailPage() {
         group={solution.group}
       />
 
-      <SolutionHighlights highlights={solution.highlights || details.benefits.slice(0, 4)} />
+      <SolutionHighlights highlights={solution.highlights || details.benefits.slice(0, 4)} group={solution.group} />
 
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -257,11 +262,9 @@ export default function SolutionDetailPage() {
             {details.benefits.map((benefit, idx) => (
               <div
                 key={idx}
-                className="flex gap-4 rounded-lg border border-line-soft bg-gradient-to-br from-brand-ink/20 to-transparent p-6"
+                className="flex items-center gap-4 rounded-lg border border-line-soft bg-ink-2/50 p-6 backdrop-blur-sm"
               >
-                <div className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-brand/20 text-xs font-bold text-brand">
-                  ✓
-                </div>
+                <GlassIcon icon={Check} tone={tone} size="sm" />
                 <p className="text-sm leading-relaxed text-body">{benefit}</p>
               </div>
             ))}
@@ -281,11 +284,9 @@ export default function SolutionDetailPage() {
             {details.useCases.map((useCase, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-4 rounded-lg border border-line-soft bg-ink-2 p-6 transition-all duration-200 hover:border-brand/40"
+                className="flex items-center gap-4 rounded-lg border border-line-soft bg-ink-2/50 p-6 backdrop-blur-sm transition-all duration-200 hover:border-brand/40"
               >
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-ink">
-                  <span className="text-lg text-brand">→</span>
-                </div>
+                <GlassIcon icon={ArrowRight} tone={tone} size="sm" />
                 <p className="text-sm leading-relaxed text-body">{useCase}</p>
               </div>
             ))}

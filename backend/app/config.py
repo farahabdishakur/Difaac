@@ -109,6 +109,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("DIFAAC_ACCESS_TOKEN_EXPIRE_MIN
 # period before a user must sign in again, not a fixed session length.
 REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("DIFAAC_REFRESH_TOKEN_EXPIRE_DAYS", "30"))
 
+# Password reset links are short-lived: the whole point is that a link
+# intercepted after the legitimate window has closed is useless.
+PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = int(
+    os.getenv("DIFAAC_PASSWORD_RESET_TOKEN_EXPIRE_MINUTES", "30")
+)
+
+# Where the frontend is served, for building links that go in outbound
+# messages (currently just the password reset link). Falls back to the Vite
+# dev server so local development works without extra configuration.
+FRONTEND_URL: str = os.getenv("DIFAAC_FRONTEND_URL", "https://localhost:5173")
+
 # ---------------------------------------------------------------------------
 # Account lockout
 # ---------------------------------------------------------------------------

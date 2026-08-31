@@ -11,6 +11,9 @@ import ThreatIntelligencePage from '@/pages/workspace/threat-intelligence-page'
 import DigitalRiskPage from '@/pages/workspace/digital-risk-page'
 import FraudPage from '@/pages/workspace/fraud-page'
 import IncidentsPage from '@/pages/workspace/incidents-page'
+import SettingsPage from '@/pages/workspace/settings-page'
+import ForgotPasswordPage from '@/pages/forgot-password-page'
+import ResetPasswordPage from '@/pages/reset-password-page'
 import HomePage from '@/pages/home-page'
 import ProductsPage from '@/pages/products-page'
 import ProductPage from '@/pages/product-page'
@@ -70,6 +73,7 @@ export default function App() {
             <Route path="digital-risk" element={<DigitalRiskPage />} />
             <Route path="fraud" element={<FraudPage />} />
             <Route path="incidents" element={<IncidentsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Routes>
       </ErrorBoundary>
@@ -115,6 +119,8 @@ export default function App() {
           {/* Sales & Auth */}
           <Route path="/talk-to-sales" element={<ContactPage isSales={true} />} />
           <Route path="/sign-in" element={<AuthPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           {/* Resources & Blog */}
           <Route path="/resources" element={<ResourcesPage />} />

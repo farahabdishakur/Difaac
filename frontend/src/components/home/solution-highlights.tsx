@@ -1,10 +1,16 @@
 import { CheckCircle2 } from 'lucide-react'
+import { GlassIcon } from '@/components/product/product-sections'
+import { solutionGroupAccent } from '@/lib/tone'
+import type { Solution } from '@/lib/data/solutions'
 
 interface SolutionHighlightsProps {
   highlights: string[]
+  group: Solution['group']
 }
 
-export function SolutionHighlights({ highlights }: SolutionHighlightsProps) {
+export function SolutionHighlights({ highlights, group }: SolutionHighlightsProps) {
+  const tone = solutionGroupAccent[group]
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -21,11 +27,9 @@ export function SolutionHighlights({ highlights }: SolutionHighlightsProps) {
           {highlights.map((highlight, idx) => (
             <div
               key={idx}
-              className="flex gap-4 rounded-lg border border-line-soft bg-ink-2 p-6 transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
+              className="flex gap-4 rounded-lg border border-line-soft bg-ink-2/60 p-6 backdrop-blur-sm transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
             >
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-ink">
-                <CheckCircle2 className="size-5 text-brand" />
-              </div>
+              <GlassIcon icon={CheckCircle2} tone={tone} size="sm" />
               <div>
                 <p className="text-sm leading-relaxed text-body">{highlight}</p>
               </div>

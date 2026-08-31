@@ -172,9 +172,61 @@ class PasswordChangeRequest(BaseModel):
     new_password: str = Field(min_length=MIN_PASSWORD_LENGTH, max_length=MAX_PASSWORD_LENGTH)
 
 
+class ForgotPasswordRequest(BaseModel):
+    """Payload to request a password reset link."""
+    email: str
+
+    _normalise_email = field_validator("email")(_normalise_email_value)
+
+
+class ResetPasswordRequest(BaseModel):
+    """Payload to complete a password reset with the token from the link."""
+    token: str
+    new_password: str = Field(min_length=MIN_PASSWORD_LENGTH, max_length=MAX_PASSWORD_LENGTH)
+
+
 class MessageResponse(BaseModel):
     """Simple acknowledgement for actions with nothing to return."""
     detail: str
+
+
+# -- Demo requests -----------------------------------------------------------
+
+class DemoRequestCreate(BaseModel):
+    """A demo request submitted from a product page.
+
+    Every field is bounded. This endpoint is reachable without
+    authentication, so an unbounded string here is a way for any caller to
+    write arbitrarily large rows into the database.
+    """
+    product_slug: str = Field(min_length=1, max_length=100)
+    name: str = Field(min_length=1, max_length=120)
+    company: str = Field(min_length=1, max_length=160)
+    email: str = Field(min_length=3, max_length=254)
+    role: str = Field(min_length=1, max_length=120)
+    context: str | None = Field(default=None, max_length=1000)
+
+    _normalise_email = field_validator("email")(_normalise_email_value)
+
+    @field_validator("email")
+    @classmethod
+    def _check_email_shape(cls, value: str) -> str:
+        if not _EMAIL_RE.fullmatch(value):
+            raise ValueError("Enter a valid email address")
+        return value
+
+
+class DemoRequestResponse(BaseModel):
+    """One demo request, as shown in the SOC workspace."""
+    id: int
+    product_slug: str
+    name: str
+    company: str
+    email: str
+    role: str
+    context: str | None = None
+    status: str
+    created_at: str
 
 
 class SessionResponse(BaseModel):

@@ -2,13 +2,31 @@ import { ArrowRight } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { cn } from '@/lib/utils'
 
+/**
+ * Frames a product mockup panel in the same glass treatment as the hero
+ * image: a soft brand-coloured glow behind a translucent border, so the
+ * panel reads as a real surface floating in the page rather than a plain
+ * bordered box.
+ *
+ * The glow is brand green on every panel. The per-product accent hues used
+ * on the product pages themselves are deliberately not brought onto the
+ * home page: three different colours stacked down one scroll would read as
+ * decoration rather than as identity, and the home page's job is to say
+ * "Difaac", not to preview six palettes.
+ */
 function PanelFrame({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-[4px] border border-line bg-ink-2">
-      <div className="bg-ink px-4 py-2.5">
-        <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-2">{title}</span>
+    <div className="relative">
+      <div
+        className="pointer-events-none absolute -inset-4 rounded-[1.5rem] bg-brand/20 opacity-40 blur-2xl"
+        aria-hidden="true"
+      />
+      <div className="relative overflow-hidden rounded-[4px] border border-line/80 bg-ink-2/80 backdrop-blur-sm">
+        <div className="bg-ink/60 px-4 py-2.5">
+          <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-2">{title}</span>
+        </div>
+        <div className="p-4">{children}</div>
       </div>
-      <div className="p-4">{children}</div>
     </div>
   )
 }

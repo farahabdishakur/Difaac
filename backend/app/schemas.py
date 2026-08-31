@@ -176,6 +176,25 @@ CREATE INDEX IF NOT EXISTS idx_refresh_token_hash ON refresh_tokens(token_hash);
 CREATE INDEX IF NOT EXISTS idx_refresh_user       ON refresh_tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_refresh_family     ON refresh_tokens(family_id);
 
+-- Password reset tokens.
+--
+-- Same shape as refresh_tokens (opaque token, stored only as a hash) but a
+-- separate table rather than a shared one: a reset token authorises exactly
+-- one action (set a new password) and expires in minutes, not days, so
+-- mixing the two would mean every query needs to filter by purpose.
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash  TEXT    NOT NULL UNIQUE,
+    expires_at  TEXT    NOT NULL,
+    used_at     TEXT,
+    created_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ip_address  TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_reset_token_hash ON password_reset_tokens(token_hash);
+CREATE INDEX IF NOT EXISTS idx_reset_user       ON password_reset_tokens(user_id);
+
 -- Authentication audit trail.
 --
 -- Email is recorded as text rather than a foreign key so that failed attempts
@@ -196,4 +215,31 @@ CREATE INDEX IF NOT EXISTS idx_auth_events_email   ON auth_events(email);
 CREATE INDEX IF NOT EXISTS idx_auth_events_created ON auth_events(created_at);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- Demo requests submitted from the product pages.
+--
+-- Written by an unauthenticated visitor and read only by a signed-in
+-- analyst, so every column here is untrusted input. Lengths are bounded by
+-- the Pydantic model rather than by the schema, because SQLite does not
+-- enforce VARCHAR limits — the bound has to live where it is actually
+-- checked.
+--
+-- `status` lets the team work the queue without a second table; it moves
+-- new -> contacted -> closed and is the only column the platform itself
+-- writes after insert.
+CREATE TABLE IF NOT EXISTS demo_requests (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_slug  TEXT    NOT NULL,
+    name          TEXT    NOT NULL,
+    company       TEXT    NOT NULL,
+    email         TEXT    NOT NULL,
+    role          TEXT    NOT NULL,
+    context       TEXT,
+    status        TEXT    NOT NULL DEFAULT 'new',
+    ip_address    TEXT,
+    created_at    TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_demo_requests_created ON demo_requests(created_at);
+CREATE INDEX IF NOT EXISTS idx_demo_requests_status  ON demo_requests(status);
 """

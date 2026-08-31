@@ -1,4 +1,6 @@
 import { CheckCircle2, ArrowRight } from 'lucide-react'
+import { GlassIcon } from '@/components/product/product-sections'
+import { INDUSTRY_ACCENT } from '@/lib/tone'
 
 interface Solution {
   product: string
@@ -27,12 +29,10 @@ export function IndustrySolutions({ solutions, industryName }: IndustrySolutions
           {solutions.map((solution, idx) => (
             <div
               key={idx}
-              className="group flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2 p-8 transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
+              className="group flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2/60 p-8 backdrop-blur-sm transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
             >
               <div className="flex items-start gap-4">
-                <div className="flex size-10 items-center justify-center rounded-lg bg-brand-ink">
-                  <CheckCircle2 className="size-6 text-brand" />
-                </div>
+                <GlassIcon icon={CheckCircle2} tone={INDUSTRY_ACCENT} />
                 <div className="flex-1">
                   <h3 className="font-display text-lg font-bold text-text">{solution.product}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-body">{solution.benefit}</p>

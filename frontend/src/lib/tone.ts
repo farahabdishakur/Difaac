@@ -109,3 +109,23 @@ export const toneGlow: Record<Tone, string> = {
   fuchsia: 'bg-accent-fuchsia/20',
   rose: 'bg-accent-rose/20',
 }
+
+/** Bare text-colour class per tone, for an icon that sits on its own glass surface. */
+export const toneText: Record<Tone, string> = {
+  brand: 'text-brand',
+  cyan: 'text-accent-cyan',
+  violet: 'text-accent-violet',
+  blue: 'text-accent-blue',
+  fuchsia: 'text-accent-fuchsia',
+  rose: 'text-accent-rose',
+}
+
+/** Border-glow classes per tone for a glass surface, stronger than `toneRing`. */
+export const toneBorderGlow: Record<Tone, string> = {
+  brand: 'border-brand/30 shadow-[0_0_24px_-4px_var(--color-brand)]',
+  cyan: 'border-accent-cyan/30 shadow-[0_0_24px_-4px_var(--color-accent-cyan)]',
+  violet: 'border-accent-violet/30 shadow-[0_0_24px_-4px_var(--color-accent-violet)]',
+  blue: 'border-accent-blue/30 shadow-[0_0_24px_-4px_var(--color-accent-blue)]',
+  fuchsia: 'border-accent-fuchsia/30 shadow-[0_0_24px_-4px_var(--color-accent-fuchsia)]',
+  rose: 'border-accent-rose/30 shadow-[0_0_24px_-4px_var(--color-accent-rose)]',
+}

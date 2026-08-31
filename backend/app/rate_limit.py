@@ -28,8 +28,19 @@ _WINDOW_SECONDS = 60.0
 # client key -> timestamps of requests inside the current window
 _hits: dict[str, deque[float]] = defaultdict(deque)
 
-# Paths where credentials are submitted and guessing is the threat.
-_AUTH_PATHS = ("/auth/login", "/auth/register")
+# Paths that need the tighter budget.
+#
+# The auth endpoints are here because guessing is the threat. `/demo-requests`
+# is here for a different reason: it is the one endpoint an unauthenticated
+# caller can use to *write* a row, so the same low ceiling is what stops the
+# table being flooded. A human filling in a form never approaches it.
+_AUTH_PATHS = (
+    "/auth/login",
+    "/auth/register",
+    "/auth/forgot-password",
+    "/auth/reset-password",
+    "/demo-requests",
+)
 
 # Never let the bookkeeping itself become the memory leak.
 _MAX_TRACKED_CLIENTS = 10_000

@@ -27,19 +27,20 @@ export default function ServicePage() {
   }
 
   const service = slug ? getServiceBySlug(slug) : undefined
+  const group = service?.group ?? 'assessment'
 
   return (
     <>
       <ServiceHero
         hero={content.hero}
         breadcrumbName={service?.name ?? content.hero.badge}
-        group={service?.group ?? 'assessment'}
+        group={group}
       />
-      <ServiceFacts facts={content.facts} />
+      <ServiceFacts facts={content.facts} group={group} />
       <ServiceOverview overview={content.overview} />
       <ServicePhases phases={content.phases} />
-      <ServiceDeliverables deliverables={content.deliverables} />
-      <ServiceAudience audience={content.audience} />
+      <ServiceDeliverables deliverables={content.deliverables} group={group} />
+      <ServiceAudience audience={content.audience} group={group} />
       <ServiceFAQ faqs={content.faqs} />
 
       <section className="py-20 lg:py-28">

@@ -1,5 +1,6 @@
 import { ArrowRight, Globe2, Radar, ShieldAlert, Zap } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
+import { GlassIcon } from '@/components/product/product-sections'
 
 const features = [
   {
@@ -49,8 +50,8 @@ export function IntelHighlight() {
 
           <div className="grid grid-cols-1 gap-px bg-line-soft sm:grid-cols-2 rounded-[4px] overflow-hidden border border-line-soft">
             {features.map((feature) => (
-              <div key={feature.title} className="flex flex-col gap-3 bg-ink-2 p-6 lg:p-7">
-                <feature.icon className="size-5 text-brand" aria-hidden="true" strokeWidth={1.5} />
+              <div key={feature.title} className="flex flex-col gap-3 bg-ink-2/70 p-6 backdrop-blur-sm lg:p-7">
+                <GlassIcon icon={feature.icon} tone="brand" size="sm" />
                 <h3 className="text-base font-semibold text-text">{feature.title}</h3>
                 <p className="text-sm leading-relaxed text-body">{feature.description}</p>
               </div>

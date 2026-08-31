@@ -18,6 +18,7 @@ from app.rate_limit import rate_limit_middleware
 from app.routes import (
     auth,
     blog,
+    demo_requests,
     health,
     industries,
     products,
@@ -191,6 +192,10 @@ app.include_router(resources.router)
 app.include_router(blog.router)
 app.include_router(testimonials.router)
 app.include_router(site_content.router)
+# Public write endpoint: a prospective customer has no account yet. Bounded
+# by the Pydantic model and rate limited alongside the auth endpoints.
+app.include_router(demo_requests.public_router)
 # Authenticated SOC data. Registered last so it is easy to see that everything
 # above it is public content and everything in it is not.
 app.include_router(workspace.router)
+app.include_router(demo_requests.private_router)

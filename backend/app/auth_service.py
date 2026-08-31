@@ -12,7 +12,12 @@ import sqlite3
 from datetime import datetime, timedelta, timezone
 
 from app.auth_utils import generate_refresh_token, hash_refresh_token, new_family_id
-from app.config import LOCKOUT_MINUTES, MAX_FAILED_LOGINS, REFRESH_TOKEN_EXPIRE_DAYS
+from app.config import (
+    LOCKOUT_MINUTES,
+    MAX_FAILED_LOGINS,
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES,
+    REFRESH_TOKEN_EXPIRE_DAYS,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -251,6 +256,24 @@ def revoke_token(conn: sqlite3.Connection, token: str) -> bool:
     return cursor.rowcount > 0
 
 
+def revoke_session_by_id(conn: sqlite3.Connection, user_id: int, session_id: int) -> bool:
+    """Revoke one session by its row id, scoped to its owner.
+
+    The `user_id` filter is what stops one account from revoking another's
+    session by guessing ids — this is called with the id of the
+    authenticated caller, never a caller-supplied user id.
+    """
+    cursor = conn.execute(
+        """
+        UPDATE refresh_tokens
+           SET revoked_at = ?
+         WHERE id = ? AND user_id = ? AND revoked_at IS NULL
+        """,
+        (_to_text(_now()), session_id, user_id),
+    )
+    return cursor.rowcount > 0
+
+
 def list_sessions(conn: sqlite3.Connection, user_id: int, current_token: str | None) -> list[dict]:
     """Active sessions for a user, newest first."""
     current_hash = hash_refresh_token(current_token) if current_token else None
@@ -282,6 +305,58 @@ def purge_expired_tokens(conn: sqlite3.Connection) -> int:
     cutoff = _to_text(_now() - timedelta(days=1))
     cursor = conn.execute("DELETE FROM refresh_tokens WHERE expires_at < ?", (cutoff,))
     return cursor.rowcount
+
+
+# ---------------------------------------------------------------------------
+# Password reset tokens
+# ---------------------------------------------------------------------------
+# Same opaque-token-hashed-at-rest mechanics as refresh tokens (reusing
+# `generate_refresh_token`/`hash_refresh_token`, which are generic — nothing
+# about them is specific to refresh tokens), but a short expiry and a
+# separate table: a reset token authorises exactly one action and does not
+# belong mixed in with session tokens.
+
+def issue_reset_token(
+    conn: sqlite3.Connection, user_id: int, *, ip_address: str | None = None
+) -> tuple[str, datetime]:
+    """Create a password reset token and store only its hash."""
+    token = generate_refresh_token()
+    expires_at = _now() + timedelta(minutes=PASSWORD_RESET_TOKEN_EXPIRE_MINUTES)
+
+    conn.execute(
+        """
+        INSERT INTO password_reset_tokens (user_id, token_hash, expires_at, ip_address)
+        VALUES (?, ?, ?, ?)
+        """,
+        (user_id, hash_refresh_token(token), _to_text(expires_at), ip_address),
+    )
+    return token, expires_at
+
+
+def consume_reset_token(conn: sqlite3.Connection, token: str) -> int | None:
+    """Validate a reset token and mark it used. Returns the user id, or None.
+
+    A used or expired token is rejected the same way an unknown one is — the
+    caller cannot tell which case it was, which is what keeps a leaked or
+    guessed token from being usable twice.
+    """
+    row = conn.execute(
+        "SELECT id, user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash = ?",
+        (hash_refresh_token(token),),
+    ).fetchone()
+
+    if row is None or row["used_at"] is not None:
+        return None
+
+    expires_at = _from_text(row["expires_at"])
+    if expires_at is None or expires_at <= _now():
+        return None
+
+    conn.execute(
+        "UPDATE password_reset_tokens SET used_at = ? WHERE id = ?",
+        (_to_text(_now()), row["id"]),
+    )
+    return row["user_id"]
 
 
 def _get(row: sqlite3.Row, key: str):

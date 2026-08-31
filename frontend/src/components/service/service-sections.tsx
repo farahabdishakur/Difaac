@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
+import { GlassIcon } from '@/components/product/product-sections'
 import { serviceGroupAccent, toneBadge, toneGlow } from '@/lib/tone'
 import type { ServicePageContent } from '@/lib/data/service-pages'
 import type { Service } from '@/lib/data/services'
@@ -102,7 +103,9 @@ export function ServiceHero({
   )
 }
 
-export function ServiceFacts({ facts }: { facts: ServicePageContent['facts'] }) {
+export function ServiceFacts({ facts, group }: { facts: ServicePageContent['facts']; group: Service['group'] }) {
+  const tone = serviceGroupAccent[group]
+
   return (
     <div className="bg-ink-2">
       <div className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-line-soft px-4 sm:grid-cols-2 sm:divide-x-0 sm:px-6 lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:px-8">
@@ -110,9 +113,7 @@ export function ServiceFacts({ facts }: { facts: ServicePageContent['facts'] }) 
           const Icon = getIcon(fact.icon)
           return (
             <div key={fact.label} className="flex items-start gap-3 py-6 lg:px-8 lg:first:pl-0 lg:last:pr-0">
-              <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-ink">
-                <Icon className="size-4 text-brand" aria-hidden="true" />
-              </div>
+              <GlassIcon icon={Icon} tone={tone} size="sm" />
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs uppercase tracking-wider text-muted-2">{fact.label}</span>
                 <span className="font-display text-base font-semibold text-text">{fact.value}</span>
@@ -206,9 +207,13 @@ export function ServicePhases({ phases }: { phases: ServicePageContent['phases']
 
 export function ServiceDeliverables({
   deliverables,
+  group,
 }: {
   deliverables: ServicePageContent['deliverables']
+  group: Service['group']
 }) {
+  const tone = serviceGroupAccent[group]
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -226,11 +231,9 @@ export function ServiceDeliverables({
             return (
               <div
                 key={item.title}
-                className="flex flex-col gap-4 rounded-lg border border-line-soft bg-gradient-to-br from-brand-ink/25 to-transparent p-6 transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
+                className="flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2/50 p-6 backdrop-blur-sm transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
               >
-                <div className="flex size-10 items-center justify-center rounded-lg bg-brand/15">
-                  <Icon className="size-5 text-brand" aria-hidden="true" />
-                </div>
+                <GlassIcon icon={Icon} tone={tone} size="sm" />
                 <div>
                   <h3 className="font-display text-sm font-semibold text-text">{item.title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-body">{item.description}</p>
@@ -244,7 +247,9 @@ export function ServiceDeliverables({
   )
 }
 
-export function ServiceAudience({ audience }: { audience: ServicePageContent['audience'] }) {
+export function ServiceAudience({ audience, group }: { audience: ServicePageContent['audience']; group: Service['group'] }) {
+  const tone = serviceGroupAccent[group]
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -260,11 +265,9 @@ export function ServiceAudience({ audience }: { audience: ServicePageContent['au
             return (
               <div
                 key={item.title}
-                className="flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2 p-8 transition-all duration-200 hover:border-brand/40"
+                className="flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2/60 p-8 backdrop-blur-sm transition-all duration-200 hover:border-brand/40"
               >
-                <div className="flex size-12 items-center justify-center rounded-lg bg-brand-ink">
-                  <Icon className="size-6 text-brand" aria-hidden="true" />
-                </div>
+                <GlassIcon icon={Icon} tone={tone} />
                 <h3 className="font-display text-lg font-semibold text-text">{item.title}</h3>
                 <p className="text-sm leading-relaxed text-body">{item.description}</p>
               </div>

@@ -161,6 +161,46 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
   return (data as TokenPayload).user
 }
 
+/** Request a password reset link. Always resolves — the server never says whether the email exists. */
+export async function requestPasswordReset(email: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Could not process this request right now.')
+  }
+}
+
+/** Complete a password reset with the token from the emailed link. */
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, new_password: newPassword }),
+  })
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'This reset link is invalid or has expired.')
+  }
+}
+
+/** Change the password of the signed-in account. Ends the session — the server revokes every token. */
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  const response = await authFetch('/auth/change-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+  })
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Could not change the password.')
+  }
+  setSession(null)
+}
+
 export async function signOut(): Promise<void> {
   try {
     await fetch(`${API_BASE_URL}/auth/logout`, {

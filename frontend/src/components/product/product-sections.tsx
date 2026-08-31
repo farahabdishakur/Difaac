@@ -7,13 +7,59 @@
  */
 
 import { useState } from 'react'
-import { ArrowRight, Check, X, ChevronDown } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { ArrowRight, Check, X, ChevronDown, Sparkles } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
 import { ProductHeroArt, hasHeroArt } from '@/components/product/product-hero-art'
-import { productAccent, toneRing, toneChip, toneWash, toneBadge, toneGlow } from '@/lib/tone'
+import { ProductEmblem, HeroBackdrop } from '@/components/product/product-emblem'
+import {
+  productAccent,
+  toneRing,
+  toneChip,
+  toneWash,
+  toneBadge,
+  toneGlow,
+  toneText,
+  toneBorderGlow,
+} from '@/lib/tone'
 import type { Tone } from '@/lib/tone'
 import type { ProductPageContent } from '@/lib/data/product-pages'
+
+/**
+ * A glass-surfaced icon badge: a blurred tone-coloured glow behind a
+ * translucent, backdrop-blurred panel. This is the visual language a page
+ * like group-ib.com/products/fraud-protection reaches for — an icon that
+ * reads as an object catching light, not a flat coloured square — built
+ * from CSS rather than a rendered asset, so it costs nothing to reuse
+ * everywhere a section wants a focal icon.
+ */
+export function GlassIcon({
+  icon: Icon,
+  tone = 'brand',
+  size = 'md',
+}: {
+  icon: LucideIcon
+  tone?: Tone
+  size?: 'sm' | 'md' | 'lg'
+}) {
+  const boxSize = { sm: 'size-11', md: 'size-13', lg: 'size-16' }[size]
+  const iconSize = { sm: 'size-5', md: 'size-6', lg: 'size-7' }[size]
+
+  return (
+    <span className={`relative inline-flex ${boxSize} shrink-0 items-center justify-center`}>
+      <span
+        className={`absolute inset-0 rounded-2xl ${toneGlow[tone]} opacity-50 blur-lg`}
+        aria-hidden="true"
+      />
+      <span
+        className={`relative flex size-full items-center justify-center rounded-2xl border bg-white/[0.03] backdrop-blur-md ${toneBorderGlow[tone]}`}
+      >
+        <Icon className={`${iconSize} ${toneText[tone]}`} aria-hidden="true" strokeWidth={1.5} />
+      </span>
+    </span>
+  )
+}
 
 /**
  * Section label.
@@ -51,18 +97,7 @@ export function ProductHero({
 
   return (
     <section className="-mt-14 pt-[calc(3.5rem+5rem)] lg:-mt-16 lg:pt-[calc(4rem+7rem)] relative overflow-hidden pb-24 lg:pb-32">
-      {/* Tone glow: two soft blurred washes so the hero picks up the product's
-          accent without a hard-edged colour block. Kept behind everything and
-          hidden from assistive tech since it carries no information of its
-          own. */}
-      <div
-        className={`pointer-events-none absolute -top-24 right-[-10%] size-[32rem] rounded-full blur-3xl opacity-25 ${toneGlow[tone]}`}
-        aria-hidden="true"
-      />
-      <div
-        className={`pointer-events-none absolute -bottom-32 -left-32 size-96 rounded-full blur-3xl opacity-15 ${toneGlow[tone]}`}
-        aria-hidden="true"
-      />
+      <HeroBackdrop tone={tone} />
 
       <div
         className={`relative mx-auto px-4 sm:px-6 lg:px-8 ${withArt ? 'max-w-7xl' : 'max-w-5xl'}`}
@@ -75,6 +110,16 @@ export function ProductHero({
           }
         >
         <div className={withArt ? 'text-left' : 'text-center'}>
+          {/* The emblem leads the centred hero, the way group-ib.com puts a
+              rendered product mark above the headline. In the two-column
+              layout the hero artwork already fills that role, so showing
+              both would be two competing focal points. */}
+          {!withArt ? (
+            <div className="mb-8 flex justify-center">
+              <ProductEmblem icon={Icon} tone={tone} />
+            </div>
+          ) : null}
+
           <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm ${toneBadge[tone]}`}>
             <Icon className="size-4" aria-hidden="true" />
             <span className="text-sm font-medium">{hero.badge}</span>
@@ -122,6 +167,61 @@ export function ProductHero({
   )
 }
 
+/**
+ * Announcement strip directly under the hero.
+ *
+ * group-ib.com runs one of these on every product page (theirs currently
+ * carries an AWS Marketplace listing). It is a single line, so it reads as
+ * a note attached to the hero rather than a section of its own.
+ */
+export function ProductNotice({ tone, children }: { tone: Tone; children: React.ReactNode }) {
+  return (
+    <div className="relative -mt-12 px-4 pb-4 sm:px-6 lg:px-8">
+      <div
+        className={`mx-auto flex max-w-5xl items-center justify-center gap-3 rounded-lg border px-5 py-3.5 text-center backdrop-blur-md ${toneBadge[tone]}`}
+      >
+        <Sparkles className="size-4 shrink-0" aria-hidden="true" />
+        <p className="text-sm">{children}</p>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Mid-page call to action.
+ *
+ * group-ib.com breaks its long product pages with these rather than saving
+ * every ask for the footer — a reader convinced by the capability section
+ * should not have to scroll past four more sections to act on it.
+ */
+export function ProductMidCTA({
+  title,
+  action,
+  tone,
+}: {
+  title: string
+  action: string
+  tone: Tone
+}) {
+  return (
+    <section className="relative overflow-hidden py-16 lg:py-20">
+      <div
+        className={`pointer-events-none absolute left-1/2 top-1/2 size-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-3xl ${toneGlow[tone]}`}
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-7 px-4 text-center sm:px-6 lg:px-8">
+        <h2 className="text-balance font-display text-[clamp(24px,3.2vw,36px)] font-semibold leading-tight tracking-tight text-text">
+          {title}
+        </h2>
+        <LinkButton href="/talk-to-sales" size="lg">
+          {action}
+          <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
+        </LinkButton>
+      </div>
+    </section>
+  )
+}
+
 export function ProductBand({ band }: { band: ProductPageContent['band'] }) {
   return (
     <section className="bg-gradient-to-b from-ink to-ink-2 py-20 lg:py-28">
@@ -140,10 +240,10 @@ export function ProductBand({ band }: { band: ProductPageContent['band'] }) {
             return (
               <div
                 key={card.label}
-                className={`rounded-lg border bg-ink-2 px-6 py-8 transition-all duration-300 hover:shadow-2xl ${toneRing[card.tone]}`}
+                className={`rounded-lg border bg-ink-2/60 px-6 py-8 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${toneRing[card.tone]}`}
               >
-                <div className={`mb-4 inline-flex items-center justify-center rounded-lg p-3 ${toneChip[card.tone]}`}>
-                  <Icon className="size-6" aria-hidden="true" />
+                <div className="mb-4">
+                  <GlassIcon icon={Icon} tone={card.tone} size="sm" />
                 </div>
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-2">{card.label}</p>
                 <p className="mt-3 font-display text-xl font-bold text-text">{card.value}</p>
@@ -235,13 +335,11 @@ export function ProductFeatureGrid({ featureGrid }: { featureGrid: ProductPageCo
             return (
               <div
                 key={item.title}
-                className={`relative overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-xl ${toneRing[item.tone]}`}
+                className={`relative overflow-hidden rounded-xl border bg-ink-2/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl ${toneRing[item.tone]}`}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${toneWash[item.tone]}`} aria-hidden="true" />
-                <div className="relative flex h-full flex-col gap-3 p-8">
-                  <div className={`inline-flex w-fit items-center justify-center rounded-lg p-3 ${toneChip[item.tone]}`}>
-                    <Icon className="size-6" aria-hidden="true" />
-                  </div>
+                <div className="relative flex h-full flex-col gap-4 p-8">
+                  <GlassIcon icon={Icon} tone={item.tone} />
                   <h3 className="font-display text-lg font-bold text-text">{item.title}</h3>
                   <p className="text-sm leading-relaxed text-body">{item.description}</p>
                 </div>
@@ -254,9 +352,10 @@ export function ProductFeatureGrid({ featureGrid }: { featureGrid: ProductPageCo
   )
 }
 
-export function ProductTabs({ tabs }: { tabs: ProductPageContent['tabs'] }) {
+export function ProductTabs({ tabs, slug }: { tabs: ProductPageContent['tabs']; slug: string }) {
   const [activeId, setActiveId] = useState(tabs.items[0]?.id)
   const active = tabs.items.find((item) => item.id === activeId) ?? tabs.items[0]
+  const tone = productAccent[slug] ?? 'brand'
 
   if (!active) return null
 
@@ -287,14 +386,14 @@ export function ProductTabs({ tabs }: { tabs: ProductPageContent['tabs'] }) {
                   aria-selected={isActive}
                   aria-controls={`panel-${item.id}`}
                   onClick={() => setActiveId(item.id)}
-                  className={`group flex items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all duration-200 ${
+                  className={`group flex items-start gap-3 rounded-lg border px-4 py-3 text-left backdrop-blur-sm transition-all duration-200 ${
                     isActive
-                      ? 'border-brand/60 bg-brand-ink'
+                      ? `${toneBadge[tone]} border`
                       : 'border-line-soft hover:border-brand/30 hover:bg-ink-2/40'
                   }`}
                 >
                   <Icon
-                    className={`mt-0.5 size-5 shrink-0 ${isActive ? 'text-brand' : 'text-muted-2 group-hover:text-brand/60'}`}
+                    className={`mt-0.5 size-5 shrink-0 ${isActive ? toneText[tone] : 'text-muted-2 group-hover:text-brand/60'}`}
                     aria-hidden="true"
                   />
                   <span className={`text-sm font-medium ${isActive ? 'text-text' : 'text-muted-2 group-hover:text-body'}`}>
@@ -309,12 +408,10 @@ export function ProductTabs({ tabs }: { tabs: ProductPageContent['tabs'] }) {
             role="tabpanel"
             id={`panel-${active.id}`}
             aria-labelledby={`tab-${active.id}`}
-            className="rounded-lg border border-line-soft bg-ink-2 p-8 lg:p-10"
+            className="rounded-lg border border-line-soft bg-ink-2/60 p-8 backdrop-blur-sm lg:p-10"
           >
             <div className="mb-6 flex items-start gap-4">
-              <div className="rounded-lg bg-brand-ink p-3">
-                <ActiveIcon className="size-6 text-brand" aria-hidden="true" />
-              </div>
+              <GlassIcon icon={ActiveIcon} tone={tone} />
               <div className="flex-1">
                 <h3 className="font-display text-2xl font-semibold text-text">{active.title}</h3>
                 <p className="mt-2 text-sm text-body">{active.description}</p>
@@ -409,7 +506,9 @@ export function ProductComparison({ comparison }: { comparison: ProductPageConte
   )
 }
 
-export function ProductPillars({ pillars }: { pillars: ProductPageContent['pillars'] }) {
+export function ProductPillars({ pillars, slug }: { pillars: ProductPageContent['pillars']; slug: string }) {
+  const tone = productAccent[slug] ?? 'brand'
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -434,15 +533,13 @@ export function ProductPillars({ pillars }: { pillars: ProductPageContent['pilla
             return (
               <div
                 key={item.title}
-                className="grid grid-cols-1 gap-6 bg-ink-2 p-7 transition-colors duration-200 hover:bg-ink-3 lg:grid-cols-[auto_1fr_1fr] lg:items-start lg:gap-10 lg:p-9"
+                className="grid grid-cols-1 gap-6 bg-ink-2/60 p-7 backdrop-blur-sm transition-colors duration-200 hover:bg-ink-3/70 lg:grid-cols-[auto_1fr_1fr] lg:items-start lg:gap-10 lg:p-9"
               >
                 <div className="flex items-center gap-4 lg:w-14 lg:flex-col lg:items-start lg:gap-3">
-                  <span className="font-display text-sm font-semibold tabular-nums text-brand/50">
+                  <span className={`font-display text-sm font-semibold tabular-nums ${toneText[tone]} opacity-50`}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <div className="flex size-11 items-center justify-center rounded-lg bg-brand-ink">
-                    <Icon className="size-5 text-brand" aria-hidden="true" />
-                  </div>
+                  <GlassIcon icon={Icon} tone={tone} size="sm" />
                 </div>
 
                 <div className="flex flex-col gap-2.5">

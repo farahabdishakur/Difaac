@@ -83,9 +83,9 @@ export default function AuthPage() {
                   <label htmlFor="password" className="text-xs font-semibold text-text uppercase tracking-wider">
                     Password
                   </label>
-                  <a href="#forgot" className="text-xs text-brand hover:underline">
+                  <Link to="/forgot-password" className="text-xs text-brand hover:underline">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 size-4 text-muted-2" />

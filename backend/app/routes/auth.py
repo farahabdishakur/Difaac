@@ -36,13 +36,16 @@ from app.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     COOKIE_SAMESITE,
     COOKIE_SECURE,
+    FRONTEND_URL,
     REFRESH_COOKIE_NAME,
     REFRESH_TOKEN_EXPIRE_DAYS,
 )
 from app.database import get_connection
 from app.models import (
+    ForgotPasswordRequest,
     MessageResponse,
     PasswordChangeRequest,
+    ResetPasswordRequest,
     SessionResponse,
     TokenResponse,
     UserLoginRequest,
@@ -436,6 +439,27 @@ async def list_sessions(request: Request, current_user: dict = Depends(get_curre
         )
 
 
+@router.delete("/sessions/{session_id}", response_model=MessageResponse)
+async def revoke_session(
+    session_id: int, request: Request, current_user: dict = Depends(get_current_user)
+):
+    """Sign out one specific session, e.g. a device the user no longer uses."""
+    with get_connection() as conn:
+        revoked = auth_service.revoke_session_by_id(conn, current_user["id"], session_id)
+        if not revoked:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Session not found"
+            )
+        auth_service.record_event(
+            conn, "session_revoked", email=current_user["email"], user_id=current_user["id"],
+            detail=f"session_id={session_id}", ip_address=_client_ip(request),
+            user_agent=_user_agent(request),
+        )
+        conn.commit()
+
+    return {"detail": "Session revoked"}
+
+
 # ---------------------------------------------------------------------------
 # Password change
 # ---------------------------------------------------------------------------
@@ -493,3 +517,104 @@ async def change_password(
     _clear_refresh_cookie(response)
     logger.info("Password changed for %s; all sessions revoked", current_user["email"])
     return {"detail": "Password updated. Please sign in again."}
+
+
+# ---------------------------------------------------------------------------
+# Password reset
+# ---------------------------------------------------------------------------
+
+_RESET_LINK_SENT = "If that email is registered, a reset link has been sent."
+
+
+@router.post("/forgot-password", response_model=MessageResponse)
+async def forgot_password(payload: ForgotPasswordRequest, request: Request):
+    """Request a password reset link.
+
+    Always returns the same message whether or not the account exists — same
+    reasoning as login's shared failure message: this is a publicly
+    reachable endpoint, and it must not answer "who has an account".
+
+    No email service is wired up yet, so the link is logged rather than
+    sent — the same dev-safe placeholder the seeder uses for the initial
+    account password. Sending it for real is a matter of replacing the
+    `logger.warning` call below with a call to whatever provider is
+    configured; nothing else here changes.
+    """
+    ip = _client_ip(request)
+    agent = _user_agent(request)
+
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT id, email FROM users WHERE email = ?", (payload.email,)
+        ).fetchone()
+
+        if row is None:
+            auth_service.record_event(
+                conn, "password_reset_requested", email=payload.email,
+                detail="unknown_account", ip_address=ip, user_agent=agent,
+            )
+            conn.commit()
+            return {"detail": _RESET_LINK_SENT}
+
+        token, _ = auth_service.issue_reset_token(conn, row["id"], ip_address=ip)
+        auth_service.record_event(
+            conn, "password_reset_requested", email=row["email"], user_id=row["id"],
+            ip_address=ip, user_agent=agent,
+        )
+        conn.commit()
+        reset_email = row["email"]
+
+    reset_link = f"{FRONTEND_URL}/reset-password?token={token}"
+    logger.warning(
+        "Password reset requested for %s. No email service is configured, so here is the "
+        "link (valid for a limited time, dev-only visibility): %s",
+        reset_email, reset_link,
+    )
+    return {"detail": _RESET_LINK_SENT}
+
+
+@router.post("/reset-password", response_model=MessageResponse)
+async def reset_password(payload: ResetPasswordRequest, request: Request, response: Response):
+    """Complete a password reset using the token from the emailed link.
+
+    Revokes every existing session, for the same reason `change_password`
+    does: a reset means the old password may have been compromised, so
+    whoever was signed in under it needs to be signed out too.
+    """
+    ip = _client_ip(request)
+    agent = _user_agent(request)
+
+    with get_connection() as conn:
+        user_id = auth_service.consume_reset_token(conn, payload.token)
+        if user_id is None:
+            auth_service.record_event(
+                conn, "password_reset_failed", detail="invalid_or_expired_token",
+                ip_address=ip, user_agent=agent,
+            )
+            conn.commit()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This reset link is invalid or has expired. Request a new one.",
+            )
+
+        conn.execute(
+            """
+            UPDATE users
+               SET hashed_password = ?, password_changed_at = CURRENT_TIMESTAMP,
+                   failed_login_attempts = 0, locked_until = NULL
+             WHERE id = ?
+            """,
+            (hash_password(payload.new_password), user_id),
+        )
+        auth_service.revoke_all_for_user(conn, user_id)
+
+        row = conn.execute("SELECT email FROM users WHERE id = ?", (user_id,)).fetchone()
+        auth_service.record_event(
+            conn, "password_reset_completed", email=row["email"] if row else None,
+            user_id=user_id, ip_address=ip, user_agent=agent,
+        )
+        conn.commit()
+
+    _clear_refresh_cookie(response)
+    logger.info("Password reset completed for user id %s; all sessions revoked", user_id)
+    return {"detail": "Password has been reset. Please sign in with your new password."}
