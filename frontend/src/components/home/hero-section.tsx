@@ -41,14 +41,18 @@ export function HeroSection() {
 
           {/* Right: Product image with glassmorphism */}
           <div className="relative w-full">
-            {/* Subtle brand glow behind image */}
+            {/* Brand green glow behind image */}
             <div
-              className="pointer-events-none absolute -inset-4 rounded-2xl bg-brand/5 opacity-50 blur-2xl"
+              className="pointer-events-none absolute -inset-6 rounded-2xl bg-brand/25 opacity-60 blur-3xl"
+              aria-hidden="true"
+            />
+            <div
+              className="pointer-events-none absolute -bottom-8 -right-8 size-56 rounded-full bg-brand/15 opacity-50 blur-3xl"
               aria-hidden="true"
             />
 
             {/* Glass-morphism frame */}
-            <div className="relative rounded-2xl border border-brand/15 bg-white/[0.02] p-1 shadow-lg shadow-brand/5 backdrop-blur-md overflow-hidden">
+            <div className="relative rounded-2xl border border-brand/30 bg-white/[0.02] p-1 shadow-xl shadow-brand/20 backdrop-blur-md overflow-hidden">
               <img
                 src="/hero-image.png"
                 alt="Difaac Threat Intelligence Platform Dashboard"
