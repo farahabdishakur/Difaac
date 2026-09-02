@@ -19,6 +19,8 @@ export type MenuFeature = {
   title: string
   description: string
   icon: string
+  /** Real emblem render to use instead of the flat icon tile, when one exists. */
+  image?: string
   links: { label: string; href: string }[]
 }
 
@@ -46,6 +48,7 @@ export const productsMenu: MenuPanel = {
     description:
       'Every product draws on the same adversary intelligence, so a signal detected in one area strengthens detection across the rest.',
     icon: 'ShieldCheck',
+    image: '/emblems/emblem_unified-risk-platform.png',
     links: [
       { label: 'Explore the platform', href: '/products' },
       { label: 'Subscription plans', href: '/subscriptions' },
@@ -92,7 +95,7 @@ export const solutionsMenu: MenuPanel = {
     links: [{ label: 'View all solutions', href: '/solutions' }],
   },
   eyebrow: 'By use case',
-  columns: 2,
+  columns: 3,
   items: solutions
     .filter((s) => s.group === 'use-case')
     .map((s) => ({
@@ -139,7 +142,7 @@ export const servicesMenu: MenuPanel = {
     links: [{ label: 'View all services', href: '/services' }],
   },
   eyebrow: 'Assessment',
-  columns: 2,
+  columns: 3,
   items: serviceGroup('assessment'),
   groups: [
     { title: 'Response', items: serviceGroup('response') },

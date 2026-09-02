@@ -24,10 +24,10 @@ const variantClasses: Record<string, string> = {
 }
 
 const sizeClasses: Record<string, string> = {
-  default: 'h-10 px-5 text-sm',
-  lg: 'h-13 px-8 text-base font-semibold',
-  sm: 'h-9 px-4 text-sm',
-  xs: 'h-7 px-2.5 text-xs',
+  default: 'h-9 px-4 text-sm',
+  lg: 'h-10 px-5 text-sm font-semibold',
+  sm: 'h-8 px-3.5 text-xs',
+  xs: 'h-6 px-2.5 text-xs',
 }
 
 export function LinkButton({
@@ -43,7 +43,7 @@ export function LinkButton({
       render={<Link to={href} {...props} />}
       nativeButton={false}
       className={cn(
-        'rounded-lg font-medium tracking-normal transition-all duration-200 inline-flex items-center gap-2',
+        'rounded-[50px] font-medium tracking-normal transition-all duration-200 inline-flex items-center gap-2',
         variantClasses[variant],
         sizeClasses[size],
         className,

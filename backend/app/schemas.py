@@ -70,16 +70,6 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     sort_order INTEGER NOT NULL
 );
 
--- Customer testimonials
-CREATE TABLE IF NOT EXISTS testimonials (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    quote      TEXT NOT NULL,
-    name       TEXT NOT NULL,
-    title      TEXT NOT NULL,
-    company    TEXT NOT NULL,
-    sort_order INTEGER NOT NULL
-);
-
 -- Miscellaneous site-wide content stored as JSON blobs
 CREATE TABLE IF NOT EXISTS site_content (
     key        TEXT PRIMARY KEY,
@@ -98,7 +88,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- ==========================================
--- Group-IB Style Cybersecurity Platform Tables
+-- SOC workspace tables
 -- ==========================================
 
 -- Threat Intelligence: Indicators of Compromise (IOCs)
@@ -120,6 +110,31 @@ CREATE TABLE IF NOT EXISTS ti_actors (
     description TEXT NOT NULL
 );
 
+-- Threat Intelligence: the analyst-facing alert feed.
+--
+-- Separate from `ti_iocs` because the two answer different questions. An IOC
+-- is a machine-matchable artefact (a hash, a domain) that belongs in a
+-- detection rule; an alert is the human-readable event an analyst triages
+-- and closes. One alert can reference many IOCs, and most alerts — a dark
+-- web mention, a leaked credential set — carry no IOC at all.
+--
+-- `is_tailored` marks an alert raised because it matches this customer's own
+-- assets, brand, or sector, as opposed to general intelligence. It is the
+-- first thing an analyst filters on, so it is stored rather than derived.
+CREATE TABLE IF NOT EXISTS ti_alerts (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    title        TEXT    NOT NULL,
+    category     TEXT    NOT NULL,
+    severity     TEXT    NOT NULL,
+    source       TEXT    NOT NULL,
+    actor        TEXT,
+    is_tailored  INTEGER NOT NULL DEFAULT 0,
+    detected_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_ti_alerts_detected ON ti_alerts(detected_at);
+CREATE INDEX IF NOT EXISTS idx_ti_alerts_severity ON ti_alerts(severity);
+
 -- Digital Risk Protection (DRP): Phishing Domains
 CREATE TABLE IF NOT EXISTS drp_phishing (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -128,14 +143,28 @@ CREATE TABLE IF NOT EXISTS drp_phishing (
     discovered_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Fraud Intelligence: Fraud Cases/Transactions
+-- Fraud Protection: scored sessions and transactions.
+--
+-- `signal` records which detector fired (device spoofing, bot automation,
+-- credential stuffing …). Storing it per case rather than recomputing means
+-- the dashboard's breakdown is a GROUP BY over what actually happened, not a
+-- second guess at the scoring engine's reasoning.
+--
+-- `channel` and `country` exist for the same reason: fraud patterns differ
+-- sharply between web and mobile and between regions, and an analyst's first
+-- question about a spike is always where it came from.
 CREATE TABLE IF NOT EXISTS fraud_cases (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     session_id     TEXT NOT NULL,
     risk_score     INTEGER NOT NULL,
     status         TEXT NOT NULL,
+    signal         TEXT,
+    channel        TEXT,
+    country        TEXT,
     detected_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_fraud_cases_detected ON fraud_cases(detected_at);
 
 -- Incident Response: Cases
 CREATE TABLE IF NOT EXISTS incidents (

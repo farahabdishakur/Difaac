@@ -303,6 +303,7 @@ export default function IndustryDetailPage() {
   return (
     <>
       <IndustryHeroEnhanced
+        slug={industry.slug}
         name={industry.name}
         tagline={industry.tagline}
         description={industry.description}

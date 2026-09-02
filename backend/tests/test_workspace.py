@@ -25,13 +25,24 @@ from app.main import app  # noqa: E402
 
 PASSWORD = "correct-horse-battery-staple"
 
+# Every authenticated workspace endpoint. Adding a route to the workspace
+# router without adding it here means nothing checks that it is actually
+# protected, which is the one property this whole module exists to prove.
 WORKSPACE_ENDPOINTS = [
     "/api/ti/iocs",
     "/api/ti/actors",
+    "/api/ti/alerts",
+    "/api/ti/summary",
     "/api/drp/phishing",
     "/api/fraud/cases",
+    "/api/fraud/summary",
     "/api/incidents",
 ]
+
+# The subset that returns an array of rows. The two summary endpoints return a
+# single aggregate object instead, so they are excluded from the shape check
+# rather than being forced into a list they have no reason to be.
+WORKSPACE_COLLECTIONS = [p for p in WORKSPACE_ENDPOINTS if not p.endswith("/summary")]
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -81,7 +92,11 @@ class TestWorkspaceRequiresAuthentication:
     def test_authenticated_access_succeeds(self, client, auth_headers, path):
         response = client.get(path, headers=auth_headers)
         assert response.status_code == 200
-        assert isinstance(response.json(), list)
+
+    @pytest.mark.parametrize("path", WORKSPACE_COLLECTIONS)
+    def test_collections_return_a_list(self, client, auth_headers, path):
+        """The row endpoints return an array; the summaries deliberately do not."""
+        assert isinstance(client.get(path, headers=auth_headers).json(), list)
 
 
 class TestQueryBounds:

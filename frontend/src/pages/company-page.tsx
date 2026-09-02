@@ -3,7 +3,8 @@ import { ArrowRight, Building2, Mail, Handshake } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
-import { capabilities, commitments, mission, principles } from '@/lib/data/company'
+import { HeroBackdrop } from '@/components/product/product-emblem'
+import { capabilities, commitments, mission, principles, founding, founders } from '@/lib/data/company'
 
 const destinations = [
   {
@@ -29,8 +30,9 @@ const destinations = [
 export default function CompanyPage() {
   return (
     <>
-      <section className="hero-ground -mt-14 pt-[calc(3.5rem+4rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
+        <HeroBackdrop tone="brand" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-xs text-muted-2">
               <li>
@@ -59,6 +61,44 @@ export default function CompanyPage() {
               <LinkButton href="/company/careers" variant="secondary" size="lg">
                 See open roles
               </LinkButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our story */}
+      <section className="border-b border-line-soft bg-ink-2 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-16">
+            <div className="flex flex-col gap-4">
+              <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
+                Our story · Founded {founding.founded}
+              </span>
+              <h2 className="font-display text-[clamp(26px,3.2vw,36px)] font-semibold leading-tight tracking-tight text-text">
+                Three students, one final-year project
+              </h2>
+              <p className="text-pretty leading-relaxed text-body">{founding.story}</p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-muted-2">Founders</h3>
+              {founders.map((founder) => (
+                <div
+                  key={founder.name}
+                  className="flex items-center gap-4 rounded-lg border border-line-soft bg-ink-2/60 p-5 backdrop-blur-sm"
+                >
+                  <span
+                    className="flex size-11 shrink-0 items-center justify-center rounded-[2px] border border-brand/40 bg-brand/10 font-mono text-sm font-bold text-brand"
+                    aria-hidden="true"
+                  >
+                    {founder.name[0]}
+                  </span>
+                  <div>
+                    <span className="block text-sm font-semibold text-text">{founder.name}</span>
+                    <span className="block text-xs text-muted-2">{founder.role}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

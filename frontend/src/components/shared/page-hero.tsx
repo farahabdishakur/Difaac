@@ -2,6 +2,8 @@ import { ArrowRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { Breadcrumb } from '@/components/layout/breadcrumb'
+import { HeroBackdrop } from '@/components/product/product-emblem'
+import type { Tone } from '@/lib/tone'
 
 type PageHeroProps = {
   eyebrow: string
@@ -12,6 +14,8 @@ type PageHeroProps = {
   secondaryCta?: { label: string; href: string }
   icon?: LucideIcon
   backgroundImage?: string
+  /** Opt-in glass wash behind the hero, in this tone. Omit for the plain background most pages use. */
+  tone?: Tone
 }
 
 export function PageHero({
@@ -23,9 +27,11 @@ export function PageHero({
   secondaryCta,
   icon: Icon,
   backgroundImage,
+  tone,
 }: PageHeroProps) {
   return (
     <section className="relative overflow-hidden bg-ink py-16 sm:py-20 lg:py-24">
+      {tone ? <HeroBackdrop tone={tone} /> : null}
       {backgroundImage ? (
         <div
           className="absolute inset-0 bg-cover bg-center opacity-15"
@@ -48,7 +54,7 @@ export function PageHero({
             {eyebrow}
           </span>
 
-          <h1 className="text-balance font-display text-[clamp(32px,4.5vw,56px)] font-semibold leading-[1.08] tracking-tight text-text">
+          <h1 className="text-balance font-display text-[clamp(28px,3.6vw,44px)] font-semibold leading-[1.15] tracking-tight text-text">
             {title}
           </h1>
 

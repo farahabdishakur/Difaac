@@ -26,7 +26,6 @@ from app.routes import (
     services,
     site_content,
     solutions,
-    testimonials,
     workspace,
 )
 
@@ -39,25 +38,6 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 logger = logging.getLogger("difaac.api")
-
-# ---------------------------------------------------------------------------
-# Error Tracking
-# ---------------------------------------------------------------------------
-# sentry_sdk has been a dependency since the project's start but was never
-# initialised, so it did nothing. Wiring it here — gated on a DSN actually
-# being configured — is what turns it from dead weight into working crash
-# reporting. `traces_sample_rate` is 0 in DEBUG: performance tracing is a
-# production concern, not something local development needs to pay for.
-if SENTRY_DSN:
-    import sentry_sdk
-
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        environment="development" if DEBUG else "production",
-        traces_sample_rate=0.0 if DEBUG else 0.1,
-        send_default_pii=False,
-    )
-    logger.info("Sentry error tracking enabled.")
 
 # ---------------------------------------------------------------------------
 # Error Tracking
@@ -190,7 +170,6 @@ app.include_router(solutions.router)
 app.include_router(services.router)
 app.include_router(resources.router)
 app.include_router(blog.router)
-app.include_router(testimonials.router)
 app.include_router(site_content.router)
 # Public write endpoint: a prospective customer has no account yet. Bounded
 # by the Pydantic model and rate limited alongside the auth endpoints.

@@ -1,23 +1,36 @@
 import { PageHero } from '@/components/shared/page-hero'
 import { CTABanner } from '@/components/shared/cta-banner'
-import { Button } from '@/components/ui/button'
-import { Shield, MapPin, Briefcase, ChevronRight } from 'lucide-react'
+import { Sparkles, Code2, GraduationCap } from 'lucide-react'
 
-const openRoles = [
-  { title: 'Senior Threat Intelligence Analyst', location: 'New York, USA / Remote', department: 'Threat Research' },
-  { title: 'Principal Malware Reverse Engineer', location: 'Amsterdam, Netherlands', department: 'Threat Research' },
-  { title: 'SOC Lead Responder (24/7 Shift)', location: 'Singapore / Remote', department: 'Managed XDR' },
-  { title: 'Full Stack Engineer - Detection Platform', location: 'Remote (US/EU)', department: 'Engineering' },
-  { title: 'Enterprise Account Executive', location: 'London, UK', department: 'Sales' },
+const reasons = [
+  {
+    icon: Sparkles,
+    title: 'Build the platform, not maintain someone else’s',
+    description:
+      'Difaac is early. Whatever you touch — detection logic, the SOC workspace, the platform itself — you are shaping how it works, not fitting into a system that already exists.',
+  },
+  {
+    icon: Code2,
+    title: 'Direct ownership from day one',
+    description:
+      'A small team means no layer between an idea and shipping it. What you build is what customers use.',
+  },
+  {
+    icon: GraduationCap,
+    title: 'Started by students, open to the same drive',
+    description:
+      'Difaac began as a Borama University final-year project. We look for the same curiosity and follow-through that took it from an assignment to a working platform.',
+  },
 ]
 
 export default function CareersPage() {
   return (
     <>
       <PageHero
+        tone="brand"
         eyebrow="Careers at Difaac"
-        title="Join the Mission to Eradicate Cybercrime"
-        description="We combine cutting-edge threat intelligence technology with elite human proficiency. Work alongside world-class security researchers and engineers."
+        title="We're a small team building something ambitious"
+        description="Difaac was founded by three students in Somaliland and is still early. There are no open roles listed right now, but if you want to help build an intelligence-driven defence platform from the ground up, we want to hear from you."
         breadcrumb={[
           { label: 'Home', href: '/' },
           { label: 'Company', href: '/company' },
@@ -28,78 +41,39 @@ export default function CareersPage() {
       <section className="py-16 lg:py-24 bg-ink-2">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center max-w-2xl mx-auto">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Culture & Impact</span>
-            <h2 className="font-display text-3xl font-bold text-text mt-2">Why Build Your Career at Difaac?</h2>
+            <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Why Difaac</span>
+            <h2 className="font-display text-3xl font-bold text-text mt-2">What working here actually looks like</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flat-card p-6 flex flex-col gap-3">
-              <Shield className="size-8 text-brand" />
-              <h3 className="font-display text-lg font-bold text-text">Direct Adversary Exposure</h3>
-              <p className="text-sm text-body leading-relaxed">
-                Investigate closed cybercrime forums, dark web marketplaces, and state-sponsored APT campaigns in real-time.
-              </p>
-            </div>
-
-            <div className="flat-card p-6 flex flex-col gap-3">
-              <Briefcase className="size-8 text-brand" />
-              <h3 className="font-display text-lg font-bold text-text">Global Work Flexibility</h3>
-              <p className="text-sm text-body leading-relaxed">
-                Distributed threat operations centers in 8 global hubs with hybrid and remote options for senior roles.
-              </p>
-            </div>
-
-            <div className="flat-card p-6 flex flex-col gap-3">
-              <MapPin className="size-8 text-brand" />
-              <h3 className="font-display text-lg font-bold text-text">Continuous Advancement</h3>
-              <p className="text-sm text-body leading-relaxed">
-                Generous training budgets, conference sponsorships (DEF CON, Black Hat), and specialized certification funding.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Open Positions */}
-      <section className="py-16 lg:py-24 bg-ink border-t border-line">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-            <div>
-              <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Openings</span>
-              <h2 className="font-display text-2xl font-bold text-text mt-1">Current Opportunities</h2>
-            </div>
-            <span className="text-xs text-muted-2">{openRoles.length} active roles</span>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {openRoles.map((role, idx) => (
-              <div
-                key={idx}
-                className="flat-card flat-card-hover p-5 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all group"
-              >
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs font-medium text-brand">{role.department}</span>
-                  <h3 className="font-display text-lg font-bold text-text">{role.title}</h3>
-                  <div className="flex items-center gap-2 text-xs text-body">
-                    <MapPin className="size-3.5 text-muted-2" />
-                    <span>{role.location}</span>
-                  </div>
-                </div>
-                <Button size="sm" variant="outline" className="border-line group-hover:border-brand group-hover:text-brand">
-                  Apply Now
-                  <ChevronRight className="size-3.5 ml-1" />
-                </Button>
+            {reasons.map((reason) => (
+              <div key={reason.title} className="flat-card p-6 flex flex-col gap-3">
+                <reason.icon className="size-8 text-brand" strokeWidth={1.7} aria-hidden="true" />
+                <h3 className="font-display text-lg font-bold text-text">{reason.title}</h3>
+                <p className="text-sm text-body leading-relaxed">{reason.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      <section className="py-16 lg:py-24 bg-ink border-t border-line">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Open roles</span>
+          <h2 className="mt-2 font-display text-2xl font-bold text-text">Nothing posted right now</h2>
+          <p className="mt-4 text-sm leading-relaxed text-body">
+            We are not hiring for specific positions at the moment. That will change as Difaac
+            grows — until then, an introduction from someone who wants to build this with us is
+            worth more than a role we invented to fill this page.
+          </p>
+        </div>
+      </section>
+
       <section className="py-20 lg:py-28 bg-ink-2">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <CTABanner
-            title="Don't see your specific role?"
-            description="We are always hunting for exceptional threat researchers, malware analysts, and security engineers. Send us your CV."
+            title="Want to build this with us?"
+            description="Send us a note about what you would bring — we read every one."
           />
         </div>
       </section>

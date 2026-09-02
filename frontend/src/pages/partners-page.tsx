@@ -25,6 +25,7 @@ export default function PartnersPage() {
   return (
     <>
       <PageHero
+        tone="violet"
         eyebrow="Partner Ecosystem"
         title="Scale Security Value with Difaac Intelligence"
         description="Partner with Difaac to empower your security operations, increase recurring revenue, and protect client ecosystems against modern cybercrime."

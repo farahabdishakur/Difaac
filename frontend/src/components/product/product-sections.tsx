@@ -11,8 +11,8 @@ import type { LucideIcon } from 'lucide-react'
 import { ArrowRight, Check, X, ChevronDown, Sparkles } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
-import { ProductHeroArt, hasHeroArt } from '@/components/product/product-hero-art'
 import { ProductEmblem, HeroBackdrop } from '@/components/product/product-emblem'
+import { BrowserFrame } from '@/components/shared/browser-frame'
 import {
   productAccent,
   toneRing,
@@ -86,10 +86,6 @@ export function ProductHero({
   slug: string
 }) {
   const Icon = getIcon(hero.badgeIcon)
-  // Products with their own artwork get a two-column hero; the rest keep the
-  // centred layout, which stands on its own rather than looking like a slot
-  // waiting for an image.
-  const withArt = hasHeroArt(slug)
   // Each product gets its own accent so its hero reads as its own page, the
   // way group-ib.com tints every product page differently. See
   // `productAccent` for why each product got the hue it did.
@@ -97,46 +93,35 @@ export function ProductHero({
 
   return (
     <section className="-mt-14 pt-[calc(3.5rem+5rem)] lg:-mt-16 lg:pt-[calc(4rem+7rem)] relative overflow-hidden pb-24 lg:pb-32">
-      <HeroBackdrop tone={tone} />
+      {/* `spread` widens the accent until it carries the whole hero, so the
+          emblem below sits in a lit space rather than on a dark band. */}
+      <HeroBackdrop tone={tone} spread />
 
-      <div
-        className={`relative mx-auto px-4 sm:px-6 lg:px-8 ${withArt ? 'max-w-7xl' : 'max-w-5xl'}`}
-      >
-        <div
-          className={
-            withArt
-              ? 'grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16'
-              : ''
-          }
-        >
-        <div className={withArt ? 'text-left' : 'text-center'}>
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
           {/* The emblem leads the centred hero, the way group-ib.com puts a
-              rendered product mark above the headline. In the two-column
-              layout the hero artwork already fills that role, so showing
-              both would be two competing focal points. */}
-          {!withArt ? (
-            <div className="mb-8 flex justify-center">
-              <ProductEmblem icon={Icon} tone={tone} />
-            </div>
-          ) : null}
+              rendered product mark above the headline. */}
+          <div className="mb-8 flex justify-center">
+            <ProductEmblem icon={Icon} tone={tone} slug={slug} />
+          </div>
 
           <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm ${toneBadge[tone]}`}>
             <Icon className="size-4" aria-hidden="true" />
             <span className="text-sm font-medium">{hero.badge}</span>
           </div>
 
-          <h1 className="mt-8 font-display text-[clamp(40px,7vw,68px)] font-bold leading-[1.1] tracking-tight">
+          <h1 className="mt-8 font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight">
             <span className="text-text">{hero.headlineLead}</span>
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               {hero.headlineAccent}
             </span>
           </h1>
 
-          <p className={`mt-6 max-w-2xl text-lg leading-relaxed text-body ${withArt ? '' : 'mx-auto'}`}>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-body">
             {hero.description}
           </p>
 
-          <div className={`mt-10 flex flex-col gap-4 sm:flex-row ${withArt ? '' : 'justify-center'}`}>
+          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <LinkButton href="/talk-to-sales" size="lg">
               Let&apos;s Talk
               <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
@@ -146,21 +131,14 @@ export function ProductHero({
             </LinkButton>
           </div>
 
-          <div className={`mt-12 flex flex-wrap gap-6 border-t border-line-soft pt-8 sm:gap-10 ${withArt ? '' : 'justify-center'}`}>
+          <div className="mt-12 flex flex-wrap justify-center gap-6 border-t border-line-soft pt-8 sm:gap-10">
             {hero.stats.map((stat) => (
-              <div key={stat.label} className={withArt ? '' : 'text-center'}>
+              <div key={stat.label} className="text-center">
                 <div className="font-display text-2xl font-bold text-brand">{stat.value}</div>
                 <div className="text-xs uppercase tracking-wider text-muted-2">{stat.label}</div>
               </div>
             ))}
           </div>
-        </div>
-
-          {withArt ? (
-            <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-              <ProductHeroArt slug={slug} />
-            </div>
-          ) : null}
         </div>
       </div>
     </section>
@@ -210,7 +188,7 @@ export function ProductMidCTA({
         aria-hidden="true"
       />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-7 px-4 text-center sm:px-6 lg:px-8">
-        <h2 className="text-balance font-display text-[clamp(24px,3.2vw,36px)] font-semibold leading-tight tracking-tight text-text">
+        <h2 className="text-balance font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight tracking-tight text-text">
           {title}
         </h2>
         <LinkButton href="/talk-to-sales" size="lg">
@@ -222,13 +200,48 @@ export function ProductMidCTA({
   )
 }
 
+/**
+ * A real screenshot of the Difaac workspace for this product, not a mockup.
+ *
+ * group-ib.com backs every product claim with a screenshot of the actual
+ * console, so a reader can see the interface is real before they ever
+ * request a demo. Framed like a browser window — dots, an address bar — so
+ * it reads unmistakably as "here is the product running", not decorative art.
+ */
+export function ProductScreenshot({
+  tone,
+  image,
+  path,
+}: {
+  tone: Tone
+  image: string
+  path: string
+}) {
+  return (
+    <section className="py-16 lg:py-20">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div
+          className={`pointer-events-none absolute inset-x-8 -top-8 h-40 rounded-full opacity-20 blur-3xl ${toneGlow[tone]}`}
+          aria-hidden="true"
+        />
+        <div className="relative">
+          <BrowserFrame tone={tone} image={image} path={path} />
+        </div>
+        <p className="mt-4 text-center text-xs text-muted-2">
+          Live from the Difaac workspace — the same console your analysts use.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 export function ProductBand({ band }: { band: ProductPageContent['band'] }) {
   return (
     <section className="bg-gradient-to-b from-ink to-ink-2 py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Eyebrow>{band.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(32px,5vw,48px)] font-bold leading-tight text-text">
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             <span className="text-gradient-brand">{band.headline}</span>
           </h2>
           <p className="mt-4 text-lg text-body">{band.description}</p>
@@ -279,7 +292,7 @@ export function ProductOverview({ overview }: { overview: ProductPageContent['ov
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.35fr] lg:items-start lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h2 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="font-display text-[clamp(20px,2.2vw,28px)] font-semibold leading-tight tracking-tight text-text">
               {overview.title}
             </h2>
             <p className="text-sm leading-relaxed text-body">{overview.body}</p>
@@ -324,7 +337,7 @@ export function ProductFeatureGrid({ featureGrid }: { featureGrid: ProductPageCo
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Eyebrow>Six core capabilities</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(28px,4vw,42px)] font-bold leading-tight text-text">
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {featureGrid.heading}
           </h2>
         </div>
@@ -366,7 +379,7 @@ export function ProductTabs({ tabs, slug }: { tabs: ProductPageContent['tabs']; 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>Capabilities</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(28px,4vw,40px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {tabs.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{tabs.description}</p>
@@ -441,7 +454,7 @@ export function ProductComparison({ comparison }: { comparison: ProductPageConte
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>How Difaac compares</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(28px,4vw,42px)] font-bold leading-tight text-text">
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {comparison.heading}
           </h2>
           <p className="mt-4 text-body">{comparison.description}</p>
@@ -514,7 +527,7 @@ export function ProductPillars({ pillars, slug }: { pillars: ProductPageContent[
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>{pillars.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(28px,4vw,40px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {pillars.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{pillars.description}</p>
@@ -573,7 +586,7 @@ export function ProductBenefits({ benefits }: { benefits: ProductPageContent['be
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>{benefits.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(28px,4vw,40px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {benefits.heading}
           </h2>
         </div>
@@ -615,7 +628,7 @@ export function ProductFAQ({ faqs }: { faqs: ProductPageContent['faqs'] }) {
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-display text-[clamp(28px,4vw,40px)] font-semibold leading-tight text-text">
+          <h2 className="font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             Frequently asked questions
           </h2>
         </div>
@@ -660,7 +673,7 @@ export function ProductTrust({ trust }: { trust: ProductPageContent['trust'] }) 
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {trust.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{trust.description}</p>

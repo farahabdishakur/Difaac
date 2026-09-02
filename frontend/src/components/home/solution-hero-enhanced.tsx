@@ -33,7 +33,7 @@ export function SolutionHeroEnhanced({ name, tagline, description, icon, group }
             <span className="text-sm font-medium">{name}</span>
           </div>
 
-          <h1 className="mt-8 font-display text-[clamp(40px,7vw,68px)] font-bold leading-[1.1] tracking-tight text-text">
+          <h1 className="mt-8 font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight text-text">
             {tagline}
           </h1>
 

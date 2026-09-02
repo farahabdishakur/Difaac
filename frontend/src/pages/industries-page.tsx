@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { PageHero } from '@/components/shared/page-hero'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { getIcon } from '@/components/icons/icon-map'
+import { IndustryEmblem } from '@/components/industry/industry-emblem'
 import { useIndustries } from '@/lib/api'
 import NotFoundPage from '@/pages/not-found-page'
 
@@ -52,9 +53,7 @@ export default function IndustriesPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
                   <div className="relative z-10 flex flex-col gap-6">
-                    <span className="flex size-14 items-center justify-center bg-ink-2 text-brand border border-line-soft">
-                      <Icon className="size-7" aria-hidden="true" />
-                    </span>
+                    <IndustryEmblem slug={industry.slug} icon={Icon} size="card" />
                     <div className="flex flex-col gap-2">
                       <h3 className="font-display text-xl font-bold text-text">{industry.name}</h3>
                       <p className="text-body text-sm leading-relaxed">{industry.tagline}</p>

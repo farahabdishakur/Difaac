@@ -57,8 +57,12 @@ export const serviceGroupAccent: Record<Service['group'], Tone> = {
  * Industries are audience verticals, not distinct offerings, so the section
  * shares one accent rather than fragmenting six unrelated hues the way
  * products do.
+ *
+ * Brand green rather than a secondary hue because the six industry emblems
+ * are rendered in green: an accent that disagreed with its own artwork would
+ * put a blue glow behind a green object on every card that shows one.
  */
-export const INDUSTRY_ACCENT: Tone = 'blue'
+export const INDUSTRY_ACCENT: Tone = 'brand'
 
 /** Card/ring border classes per tone. */
 export const toneRing: Record<Tone, string> = {
@@ -108,6 +112,16 @@ export const toneGlow: Record<Tone, string> = {
   blue: 'bg-accent-blue/20',
   fuchsia: 'bg-accent-fuchsia/20',
   rose: 'bg-accent-rose/20',
+}
+
+/** Raw CSS custom property per tone, for contexts that can't use a Tailwind class — inline SVG `stroke`/`fill`, `style` props. */
+export const toneVar: Record<Tone, string> = {
+  brand: 'var(--color-brand)',
+  cyan: 'var(--color-accent-cyan)',
+  violet: 'var(--color-accent-violet)',
+  blue: 'var(--color-accent-blue)',
+  fuchsia: 'var(--color-accent-fuchsia)',
+  rose: 'var(--color-accent-rose)',
 }
 
 /** Bare text-colour class per tone, for an icon that sits on its own glass surface. */

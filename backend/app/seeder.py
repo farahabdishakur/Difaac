@@ -9,6 +9,7 @@ import logging
 import os
 import secrets
 import sqlite3
+from datetime import datetime, timedelta, timezone
 
 from app.seed_data.products import PRODUCTS
 from app.seed_data.industries import INDUSTRIES
@@ -16,8 +17,8 @@ from app.seed_data.solutions import SOLUTIONS
 from app.seed_data.services import SERVICES
 from app.seed_data.resources import RESOURCES
 from app.seed_data.blog_posts import BLOG_POSTS
-from app.seed_data.testimonials import TESTIMONIALS
 from app.seed_data.site_content import SITE_CONTENT
+from app.seed_data.workspace import TI_ALERTS, FRAUD_CASES
 from app.auth_utils import hash_password
 
 logger = logging.getLogger(__name__)
@@ -35,9 +36,79 @@ def seed_all(conn: sqlite3.Connection) -> None:
     _seed_services(conn)
     _seed_resources(conn)
     _seed_blog_posts(conn)
-    _seed_testimonials(conn)
     _seed_site_content(conn)
     _seed_users(conn)
+
+
+def seed_workspace_demo(conn: sqlite3.Connection) -> None:
+    """Fill empty SOC workspace tables with demonstration data.
+
+    Called on every start rather than only on a fresh database, because these
+    tables were introduced after the first seed ran and an existing install
+    would otherwise show an empty workspace forever.
+
+    Each table is checked independently and skipped when it already holds
+    rows, so this never duplicates data and never overwrites anything real
+    that has been collected since.
+    """
+    _seed_ti_alerts(conn)
+    _seed_fraud_cases(conn)
+
+
+def _is_empty(conn: sqlite3.Connection, table: str) -> bool:
+    return conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] == 0
+
+
+def _hours_ago(hours: int) -> str:
+    """An ISO timestamp `hours` in the past, in the format SQLite writes."""
+    moment = datetime.now(timezone.utc) - timedelta(hours=hours)
+    return moment.strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _seed_ti_alerts(conn: sqlite3.Connection) -> None:
+    if not _is_empty(conn, "ti_alerts"):
+        return
+    conn.executemany(
+        "INSERT INTO ti_alerts"
+        " (title, category, severity, source, actor, is_tailored, detected_at)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [
+            (title, category, severity, source, actor, tailored, _hours_ago(hours))
+            for title, category, severity, source, actor, tailored, hours in TI_ALERTS
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d threat intelligence alerts.", len(TI_ALERTS))
+
+
+def _seed_fraud_cases(conn: sqlite3.Connection) -> None:
+    """Replace the placeholder fraud rows with cases carrying full context.
+
+    Unlike the other seeds this one also runs when the table is non-empty but
+    every row predates the `signal` column, since those rows cannot populate
+    the dashboard's breakdown and are demo data themselves.
+    """
+    unclassified = conn.execute(
+        "SELECT COUNT(*) FROM fraud_cases WHERE signal IS NULL"
+    ).fetchone()[0]
+    total = conn.execute("SELECT COUNT(*) FROM fraud_cases").fetchone()[0]
+
+    if total and unclassified != total:
+        return
+    if total:
+        conn.execute("DELETE FROM fraud_cases")
+
+    conn.executemany(
+        "INSERT INTO fraud_cases"
+        " (session_id, risk_score, status, signal, channel, country, detected_at)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [
+            (session, score, status, signal, channel, country, _hours_ago(hours))
+            for session, score, status, signal, channel, country, hours in FRAUD_CASES
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d fraud cases.", len(FRAUD_CASES))
 
 
 # ---------------------------------------------------------------------------
@@ -160,21 +231,6 @@ def _seed_blog_posts(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d blog posts.", len(BLOG_POSTS))
 
 
-def _seed_testimonials(conn: sqlite3.Connection) -> None:
-    for i, t in enumerate(TESTIMONIALS):
-        conn.execute(
-            "INSERT INTO testimonials"
-            " (quote, name, title, company, sort_order)"
-            " VALUES (?, ?, ?, ?, ?)",
-            (
-                t["quote"],
-                t["name"],
-                t["title"],
-                t["company"],
-                i,
-            ),
-        )
-    logger.info("  Seeded %d testimonials.", len(TESTIMONIALS))
 
 
 def _seed_site_content(conn: sqlite3.Connection) -> None:

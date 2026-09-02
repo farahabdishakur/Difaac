@@ -10,9 +10,13 @@
  * Difaac has not had.
  *
  * What the page states instead is how the platform works and what it commits
- * to, which is true from day one. Entries marked `needsRealData` are the ones
- * only the business can supply; they are listed here rather than filled with
- * plausible-looking numbers.
+ * to, which is true from day one.
+ *
+ * Four things a security buyer will eventually ask for are deliberately absent
+ * because only the business can supply them, and inventing any of them would
+ * cost more than not having it yet: the legal entity registration, ISO 27001 /
+ * SOC 2 certification status, industry memberships (FIRST, Trusted Introducer,
+ * sector ISACs), and customer references. Add them here once they are real.
  */
 
 export type Principle = {
@@ -33,12 +37,38 @@ export type Commitment = {
   detail: string
 }
 
+export type Founder = {
+  name: string
+  role: string
+}
+
 /** What the company is for. */
 export const mission = {
   headline: 'Intelligence-driven defence, built for the teams that hold the line.',
   body:
     'Difaac exists because most organisations face adversaries they cannot see. We build the platform and the analyst practice that turn scattered signals into a picture a security team can act on — actor attribution, live detection, and response support, delivered as one system rather than six disconnected tools.',
 }
+
+/**
+ * The founding story.
+ *
+ * Difaac started as a final-year project at Borama University, built by
+ * three students who wanted to see whether a platform like Group-IB's could
+ * be built from Somaliland. It is genuinely that recent — the honesty
+ * principle at the top of this file applies here most of all: the page says
+ * exactly how young the company is rather than implying otherwise.
+ */
+export const founding = {
+  founded: 'April 2026',
+  story:
+    'Difaac began as the final-year project of three computer science students at Borama University — an attempt to find out whether the kind of intelligence-driven cyber defence platform Group-IB has built for global enterprises could be built for organisations in Somaliland and the wider region. It became the platform this site describes.',
+}
+
+export const founders: Founder[] = [
+  { name: 'Farah', role: 'Co-Founder' },
+  { name: 'Sharmaarke', role: 'Co-Founder' },
+  { name: 'Khaalid', role: 'Co-Founder' },
+]
 
 /**
  * How the company works.
@@ -154,18 +184,3 @@ export const commitments: Commitment[] = [
   },
 ]
 
-/**
- * Sections the business must fill with its own facts.
- *
- * Rendered as an explicit invitation to get in touch rather than as invented
- * detail. A named leadership team, office list, and certification register are
- * exactly the things a security buyer checks, and getting caught inventing one
- * costs more than not having it yet.
- */
-export const needsRealData = [
-  'Leadership team and named executives',
-  'Office locations and legal entities',
-  'ISO 27001 / SOC 2 certification status',
-  'Industry memberships (FIRST, Trusted Introducer, sector ISACs)',
-  'Customer references and case studies',
-]

@@ -12,6 +12,7 @@ import DigitalRiskPage from '@/pages/workspace/digital-risk-page'
 import FraudPage from '@/pages/workspace/fraud-page'
 import IncidentsPage from '@/pages/workspace/incidents-page'
 import SettingsPage from '@/pages/workspace/settings-page'
+import DemoRequestsPage from '@/pages/workspace/demo-requests-page'
 import ForgotPasswordPage from '@/pages/forgot-password-page'
 import ResetPasswordPage from '@/pages/reset-password-page'
 import HomePage from '@/pages/home-page'
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="digital-risk" element={<DigitalRiskPage />} />
             <Route path="fraud" element={<FraudPage />} />
             <Route path="incidents" element={<IncidentsPage />} />
+            <Route path="demo-requests" element={<DemoRequestsPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Routes>

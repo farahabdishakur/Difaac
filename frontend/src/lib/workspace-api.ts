@@ -40,12 +40,46 @@ export type PhishingDomain = {
   discovered_at: string
 }
 
+export type TiAlert = {
+  id: number
+  title: string
+  category: string
+  severity: string
+  source: string
+  actor: string | null
+  is_tailored: number
+  detected_at: string
+}
+
+export type TiSummary = {
+  exposure_score: number
+  severity_counts: Record<string, number>
+  category_counts: { category: string; count: number }[]
+  total_alerts: number
+  tailored_alerts: number
+  total_iocs: number
+  total_actors: number
+}
+
 export type FraudCase = {
   id: number
   session_id: string
   risk_score: number
   status: string
+  signal: string | null
+  channel: string | null
+  country: string | null
   detected_at: string
+}
+
+export type FraudSummary = {
+  total_cases: number
+  blocked: number
+  high_risk: number
+  average_risk: number
+  by_signal: { signal: string; count: number }[]
+  by_channel: { channel: string; count: number }[]
+  by_status: { status: string; count: number }[]
 }
 
 export type Incident = {
@@ -81,6 +115,25 @@ export function useIocs(limit = 100) {
 export function useThreatActors(limit = 100) {
   const { data, error, isLoading } = useSWR<ThreatActor[]>(`/api/ti/actors?limit=${limit}`, authFetcher, swrOptions)
   return { actors: data ?? [], error, isLoading }
+}
+
+export function useTiAlerts({ limit = 100, tailoredOnly = false } = {}) {
+  const { data, error, isLoading } = useSWR<TiAlert[]>(
+    `/api/ti/alerts?limit=${limit}&tailored_only=${tailoredOnly}`,
+    authFetcher,
+    swrOptions,
+  )
+  return { alerts: data ?? [], error, isLoading }
+}
+
+export function useTiSummary() {
+  const { data, error, isLoading } = useSWR<TiSummary>('/api/ti/summary', authFetcher, swrOptions)
+  return { summary: data, error, isLoading }
+}
+
+export function useFraudSummary() {
+  const { data, error, isLoading } = useSWR<FraudSummary>('/api/fraud/summary', authFetcher, swrOptions)
+  return { summary: data, error, isLoading }
 }
 
 export function usePhishingDomains(limit = 100) {

@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import {
   ProductHero,
   ProductNotice,
+  ProductScreenshot,
   ProductMidCTA,
   ProductBand,
   ProductMetrics,
@@ -18,6 +19,20 @@ import { ProductDemoForm } from '@/components/product/product-demo-form'
 import { getProductPage, productAccent } from '@/lib/data/product-pages'
 import { getProductBySlug } from '@/lib/data/products'
 import ProductDetailPage from '@/pages/product-detail-page'
+
+/**
+ * Products whose marketing page can show a real screenshot of the Difaac
+ * workspace, because that product has a built workspace section to
+ * screenshot. Attack Surface Management and Business Email Protection have
+ * no workspace section yet, so they keep the page without one rather than
+ * showing a screenshot of somewhere else's dashboard.
+ */
+const workspaceScreenshot: Record<string, { image: string; path: string }> = {
+  'threat-intelligence': { image: '/screenshots/workspace-threat-intelligence.png', path: '/workspace/threat-intelligence' },
+  'digital-risk-protection': { image: '/screenshots/workspace-digital-risk.png', path: '/workspace/digital-risk' },
+  'fraud-protection': { image: '/screenshots/workspace-fraud.png', path: '/workspace/fraud' },
+  'managed-xdr': { image: '/screenshots/workspace-incidents.png', path: '/workspace/incidents' },
+}
 
 /**
  * Marketing page for a product that has full page content authored in
@@ -41,6 +56,7 @@ export default function ProductPage() {
   const product = getProductBySlug(slug)
   const name = product?.name ?? content.hero.badge
   const tone = productAccent[slug] ?? 'brand'
+  const screenshot = workspaceScreenshot[slug]
 
   return (
     <>
@@ -49,6 +65,8 @@ export default function ProductPage() {
         {name} is delivered through the Difaac Unified Risk Platform — one deployment, shared
         intelligence across every product you run.
       </ProductNotice>
+
+      {screenshot ? <ProductScreenshot tone={tone} image={screenshot.image} path={screenshot.path} /> : null}
 
       <ProductBand band={content.band} />
       <ProductMetrics metrics={content.metrics} />
@@ -67,7 +85,7 @@ export default function ProductPage() {
       <ProductBenefits benefits={content.benefits} />
       <ProductTrust trust={content.trust} />
 
-      <ProductDemoForm productName={name} tone={tone} />
+      <ProductDemoForm productName={name} productSlug={slug} tone={tone} />
       <ProductFAQ faqs={content.faqs} />
     </>
   )

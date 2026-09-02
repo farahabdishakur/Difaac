@@ -1,10 +1,16 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { getIcon } from '@/components/icons/icon-map'
+import { ProductEmblem } from '@/components/product/product-emblem'
+import { productAccent } from '@/lib/tone'
 import type { Product } from '@/lib/data/products'
 
 export function ProductCard({ product }: { product: Product }) {
   const Icon = getIcon(product.icon)
+  // Each product's own accent, so the grid reads as six distinct products
+  // rather than one repeated card — the same tone used on that product's
+  // own page (see `productAccent`).
+  const tone = productAccent[product.slug] ?? 'brand'
 
   return (
     <Link
@@ -13,9 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <span className="flex size-10 items-center justify-center rounded-[3px] border border-brand/40 bg-brand/10 text-brand group-hover:bg-brand group-hover:text-brand-ink transition-colors">
-            <Icon className="size-5" aria-hidden="true" strokeWidth={1.8} />
-          </span>
+          <ProductEmblem icon={Icon} tone={tone} slug={product.slug} size="card" className="-m-1" />
 
           <span className="rounded-[2px] bg-[#070e17] border border-line px-2 py-0.5 text-[10px] font-mono text-muted-2 group-hover:text-brand group-hover:border-brand/40 transition-colors">
             ENTERPRISE

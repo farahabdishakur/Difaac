@@ -34,11 +34,21 @@ _hits: dict[str, deque[float]] = defaultdict(deque)
 # is here for a different reason: it is the one endpoint an unauthenticated
 # caller can use to *write* a row, so the same low ceiling is what stops the
 # table being flooded. A human filling in a form never approaches it.
+# Endpoints that verify a credential, or that an unauthenticated caller can
+# write through. These get the strict per-minute budget rather than the
+# general one.
+#
+# `change-password` belongs here for the same reason `login` does: it checks
+# the caller's *current* password, so a hijacked session could otherwise be
+# used to guess it at the general rate. Refresh is deliberately absent — its
+# token is 256 bits of entropy, not something a rate limit meaningfully
+# protects.
 _AUTH_PATHS = (
     "/auth/login",
     "/auth/register",
     "/auth/forgot-password",
     "/auth/reset-password",
+    "/auth/change-password",
     "/demo-requests",
 )
 

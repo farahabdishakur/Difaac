@@ -101,16 +101,6 @@ class BlogPostResponse(BaseModel):
     category: str
 
 
-# -- Testimonials -----------------------------------------------------------
-
-class TestimonialResponse(BaseModel):
-    """Customer testimonial quote."""
-    quote: str
-    name: str
-    title: str
-    company: str
-
-
 # -- Authentication ---------------------------------------------------------
 
 class UserLoginRequest(BaseModel):
@@ -199,7 +189,11 @@ class DemoRequestCreate(BaseModel):
     authentication, so an unbounded string here is a way for any caller to
     write arbitrarily large rows into the database.
     """
-    product_slug: str = Field(min_length=1, max_length=100)
+    # Usually one slug, but the general "Talk to Sales" form (as opposed to a
+    # single product page's demo form) lets a visitor flag several products
+    # at once and stores them here comma-joined — 300 chars comfortably
+    # covers all six current product slugs joined together with room to grow.
+    product_slug: str = Field(min_length=1, max_length=300)
     name: str = Field(min_length=1, max_length=120)
     company: str = Field(min_length=1, max_length=160)
     email: str = Field(min_length=3, max_length=254)

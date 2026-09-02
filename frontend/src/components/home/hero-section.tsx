@@ -13,13 +13,15 @@ export function HeroSection() {
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left: Headline & CTAs */}
           <div className="max-w-2xl">
-            <h1 className="text-balance font-display font-semibold leading-tight tracking-tight text-text text-[clamp(44px,6vw,64px)]">
-              Fight modern cybercrime
+            <h1 className="text-balance font-display font-semibold leading-[1.15] tracking-tight text-text text-[clamp(32px,4.4vw,52px)]">
+              Fight Somalian
+              <br />
+              cybercrime.
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
-              Difaac combines intelligence-driven technology with the judgement of experienced
-              analysts to protect your organisation from cyber threats, fraud, and brand abuse.
+              Difaac maps the threat actors targeting your organisation and turns intelligence into
+              action — stopping breaches, fraud, and brand abuse before they cost you.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
@@ -39,36 +41,19 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right: Product image with glassmorphism */}
+          {/* Right: hero artwork, transparent so it sits directly on the page ground */}
           <div className="relative w-full">
-            {/* Brand green glow behind image */}
             <div
-              className="pointer-events-none absolute -inset-6 rounded-2xl bg-brand/25 opacity-60 blur-3xl"
+              className="pointer-events-none absolute inset-0 scale-90 rounded-full bg-brand/20 opacity-60 blur-3xl"
               aria-hidden="true"
             />
-            <div
-              className="pointer-events-none absolute -bottom-8 -right-8 size-56 rounded-full bg-brand/15 opacity-50 blur-3xl"
-              aria-hidden="true"
+            <img
+              src="/hero-image.png"
+              alt="Difaac unified cyber defense platform"
+              className="relative w-full"
+              loading="eager"
+              fetchPriority="high"
             />
-
-            {/* Glass-morphism frame */}
-            <div className="relative rounded-2xl border border-brand/30 bg-white/[0.02] p-1 shadow-xl shadow-brand/20 backdrop-blur-md overflow-hidden">
-              <img
-                src="/hero-image.png"
-                alt="Difaac Threat Intelligence Platform Dashboard"
-                className="w-full rounded-xl block"
-                loading="eager"
-              />
-            </div>
-
-            {/* Floating status indicator */}
-            <div className="absolute -bottom-3 left-6 flex items-center gap-2 rounded-full border border-brand/40 bg-ink/90 px-4 py-2 shadow-xl backdrop-blur-md sm:left-8">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex h-full w-full animate-pulse rounded-full bg-brand opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-brand" />
-              </span>
-              <span className="text-xs font-semibold text-text">Live threat monitoring</span>
-            </div>
           </div>
         </div>
       </div>

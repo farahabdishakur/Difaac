@@ -12,7 +12,7 @@ from typing import Generator
 from app.config import DB_PATH
 from app.migrations import run_migrations
 from app.schemas import SCHEMA_SQL
-from app.seeder import seed_all
+from app.seeder import seed_all, seed_workspace_demo
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +71,10 @@ def init_db() -> None:
         else:
             logger.info("Database already contains %d products — skipping seed.", count)
             
+        # Workspace tables are seeded separately: they were added after the
+        # first release, so an existing database has products but no SOC data.
+        seed_workspace_demo(conn)
+
         # Ensure at least one user exists
         user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
         if user_count == 0:
@@ -79,4 +83,33 @@ def init_db() -> None:
             _seed_users(conn)
             conn.commit()
             logger.info("Default user seeded successfully.")
+
+        prune_spent_tokens(conn)
+
+
+def prune_spent_tokens(conn: sqlite3.Connection) -> None:
+    """Delete refresh and reset tokens that can no longer authorise anything.
+
+    A token that is revoked or past its expiry is dead to the auth code, but
+    without this it stays in the table forever: every sign-in writes a row and
+    nothing ever removes one. Left alone the table grows without bound and
+    keeps a record of every session a user ever held, which is retained data
+    nobody asked for and nothing reads.
+
+    Run at startup rather than on a schedule because this deployment has no
+    scheduler, and the cost is one indexed DELETE against rows that are
+    already unusable.
+    """
+    refresh = conn.execute(
+        "DELETE FROM refresh_tokens"
+        " WHERE revoked_at IS NOT NULL OR expires_at < datetime('now')"
+    ).rowcount
+    reset = conn.execute(
+        "DELETE FROM password_reset_tokens"
+        " WHERE used_at IS NOT NULL OR expires_at < datetime('now')"
+    ).rowcount
+    conn.commit()
+
+    if refresh or reset:
+        logger.info("Pruned %d spent refresh and %d spent reset tokens.", refresh, reset)
 

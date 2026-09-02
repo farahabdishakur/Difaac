@@ -1,9 +1,11 @@
 import { ArrowRight } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
+import { IndustryEmblem } from '@/components/industry/industry-emblem'
 import { INDUSTRY_ACCENT, toneBadge, toneGlow } from '@/lib/tone'
 
 interface IndustryHeroProps {
+  slug: string
   name: string
   tagline: string
   description: string
@@ -11,7 +13,7 @@ interface IndustryHeroProps {
   highlight: string
 }
 
-export function IndustryHeroEnhanced({ name, tagline, description, icon, highlight }: IndustryHeroProps) {
+export function IndustryHeroEnhanced({ slug, name, tagline, description, icon, highlight }: IndustryHeroProps) {
   const Icon = getIcon(icon)
   // Industries are audience verticals, not distinct offerings, so every
   // industry page shares one accent — see `INDUSTRY_ACCENT` in `@/lib/tone`.
@@ -27,12 +29,18 @@ export function IndustryHeroEnhanced({ name, tagline, description, icon, highlig
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
+          {/* The sector's emblem leads the hero, matching how a product page
+              opens with its own. */}
+          <div className="mb-8 flex justify-center">
+            <IndustryEmblem slug={slug} icon={Icon} size="hero" />
+          </div>
+
           <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm ${toneBadge[tone]}`}>
             <Icon className="size-4" />
             <span className="text-sm font-medium">{name}</span>
           </div>
 
-          <h1 className="mt-8 font-display text-[clamp(40px,7vw,68px)] font-bold leading-[1.1] tracking-tight">
+          <h1 className="mt-8 font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight">
             <span className="text-text">{highlight}</span>
           </h1>
 

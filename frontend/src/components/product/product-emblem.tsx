@@ -2,54 +2,85 @@
  * Product emblem and hero backdrop.
  *
  * group-ib.com gives every product page two pieces of art: a full-bleed
- * background photograph behind the hero, and a rendered 3D emblem centred
- * above the headline. Both are shipped as image files there.
+ * background behind the hero, and a rendered 3D emblem centred above the
+ * headline. Difaac does the same, with its own renders.
  *
- * Here they are drawn instead — inline SVG and CSS gradients. That is not a
- * shortcut: a drawn emblem inherits the product's accent token, so changing
- * a brand colour updates every product page at once; it stays sharp at any
- * density; and it adds no image request, which matters because the hero is
- * the first paint on the page. It also means the pages carry no external
- * asset URLs at all.
+ * Each product ships a real render — a glass hexagon holding the product's
+ * glyph, standing on a glowing ring — keyed from its black background to
+ * transparent so it drops onto the page ground with no visible edge. The
+ * drawn SVG below is the fallback for a product that has no render yet: a
+ * new product still gets a considered mark instead of a hole.
  */
 
 import type { LucideIcon } from 'lucide-react'
+import { GlassEmblem } from '@/components/shared/glass-emblem'
+import { toneText, toneVar } from '@/lib/tone'
 import type { Tone } from '@/lib/tone'
-import { toneText } from '@/lib/tone'
 
-/** Accent colour per tone as a raw CSS custom property, for SVG `stroke`/`fill`. */
-const toneVar: Record<Tone, string> = {
-  brand: 'var(--color-brand)',
-  cyan: 'var(--color-accent-cyan)',
-  violet: 'var(--color-accent-violet)',
-  blue: 'var(--color-accent-blue)',
-  fuchsia: 'var(--color-accent-fuchsia)',
-  rose: 'var(--color-accent-rose)',
+/** The rendered emblem for each product, by slug. */
+const PRODUCT_EMBLEM_IMAGE: Record<string, string> = {
+  'threat-intelligence': '/emblems/emblem_threat-intelligence.png',
+  'fraud-protection': '/emblems/emblem_fraud-protection.png',
+  'managed-xdr': '/emblems/emblem_managed-xdr.png',
+  'attack-surface-management': '/emblems/emblem_attack-surface-management.png',
+  'digital-risk-protection': '/emblems/emblem_digital-risk-protection.png',
+  'business-email-protection': '/emblems/emblem_business-email-protection.png',
 }
 
+const EMBLEM_SIZE = {
+  /** Mega-menu row: big enough that the render still reads as glass, not a smudge. */
+  menu: 'size-10',
+  /** Product card and selection rows. */
+  card: 'size-12',
+  /** Product hero. Sized up from the card treatment because the emblem shares
+      the accent of the wash behind it — at a smaller size it stops reading as
+      an object and starts disappearing into its own backdrop. */
+  hero: 'size-32 sm:size-40',
+} as const
+
 /**
- * The product's emblem: an isometric prism holding the product's own glyph.
+ * The product's emblem.
  *
- * One shape shared by all six products rather than six bespoke drawings —
- * the prism is the constant that says "Difaac product", and the glyph and
- * accent inside it are what say *which* product. Six unrelated drawings
- * would read as six different companies.
+ * Renders the product's own artwork when it has one, and otherwise an
+ * isometric prism holding the product's glyph — one shape shared by every
+ * product, because the prism is the constant that says "Difaac product" while
+ * the glyph and accent say *which* product.
  */
 export function ProductEmblem({
   icon: Icon,
   tone = 'brand',
+  slug,
+  size = 'hero',
   className,
 }: {
   icon: LucideIcon
   tone?: Tone
+  slug?: string
+  size?: keyof typeof EMBLEM_SIZE
   className?: string
 }) {
   const accent = toneVar[tone]
   // Scoped per tone so two emblems on one page cannot collide on gradient ids.
   const uid = `emblem-${tone}`
+  const sizeClass = EMBLEM_SIZE[size]
+  const image = slug ? PRODUCT_EMBLEM_IMAGE[slug] : undefined
+
+  if (image) {
+    return (
+      <GlassEmblem
+        src={image}
+        tone={tone}
+        sizeClass={sizeClass}
+        className={className}
+        eager={size === 'hero'}
+      />
+    )
+  }
 
   return (
-    <span className={`relative inline-flex size-28 items-center justify-center sm:size-32 ${className ?? ''}`}>
+    <span
+      className={`relative inline-flex shrink-0 items-center justify-center ${sizeClass} ${className ?? ''}`}
+    >
       {/* Ambient glow, sized past the prism so the light appears to come from
           the object rather than sitting behind it as a disc. */}
       <span
@@ -58,12 +89,7 @@ export function ProductEmblem({
         aria-hidden="true"
       />
 
-      <svg
-        viewBox="0 0 120 120"
-        className="relative size-full"
-        role="presentation"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 120 120" className="relative size-full" role="presentation" aria-hidden="true">
         <defs>
           <linearGradient id={`${uid}-face`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={accent} stopOpacity="0.30" />
@@ -106,7 +132,7 @@ export function ProductEmblem({
 
       {/* The product's own glyph, centred in the prism. */}
       <Icon
-        className={`absolute size-9 sm:size-10 ${toneText[tone]}`}
+        className={`absolute size-1/3 ${toneText[tone]}`}
         strokeWidth={1.25}
         aria-hidden="true"
       />
@@ -117,13 +143,16 @@ export function ProductEmblem({
 /**
  * Full-bleed hero backdrop.
  *
- * Three transparent layers in place of group-ib.com's background photograph:
- * two wide accent washes that give the hero depth, and a fine grid that
- * reads as texture at close range and disappears at a normal viewing
- * distance. Everything is transparent over the page ground, so the section
- * below meets it without a seam.
+ * Transparent gradients over the page ground, in place of group-ib.com's
+ * background photograph, so the section below meets it without a seam.
+ *
+ * Two things are deliberately absent. There is no grid layer: it read as
+ * clutter wherever a page carried its own linework, producing a
+ * criss-crossing lattice instead of texture. And there is no `blur` filter —
+ * a radial gradient is already soft, so blurring one only costs a paint and
+ * muddies the colour. The accent stays crisp and genuinely transparent.
  */
-export function HeroBackdrop({ tone = 'brand' }: { tone?: Tone }) {
+export function HeroBackdrop({ tone = 'brand', spread }: { tone?: Tone; spread?: boolean }) {
   const accent = toneVar[tone]
 
   return (
@@ -136,18 +165,17 @@ export function HeroBackdrop({ tone = 'brand' }: { tone?: Tone }) {
         }}
       />
 
-      {/* Grid, masked so it fades out before the fold instead of stopping on
-          a hard line. */}
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage: `linear-gradient(${accent} 1px, transparent 1px),
-             linear-gradient(90deg, ${accent} 1px, transparent 1px)`,
-          backgroundSize: '72px 72px',
-          maskImage: 'radial-gradient(120% 90% at 50% 0%, #000 20%, transparent 75%)',
-          WebkitMaskImage: 'radial-gradient(120% 90% at 50% 0%, #000 20%, transparent 75%)',
-        }}
-      />
+      {/* The product hero opts into a single wide pool of the accent, centred
+          high enough that the colour carries up behind the transparent header
+          and reaches the top of the page rather than starting below it. */}
+      {spread ? (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(78% 62% at 50% 16%, color-mix(in srgb, ${accent} 44%, transparent) 0%, color-mix(in srgb, ${accent} 16%, transparent) 42%, transparent 76%)`,
+          }}
+        />
+      ) : null}
 
       {/* Settles the wash back to the page ground at the fold. */}
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />

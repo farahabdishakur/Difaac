@@ -1,31 +1,40 @@
 import { HeroSection } from '@/components/home/hero-section'
-import { PlatformOverview } from '@/components/home/platform-overview'
-import { ProductsOverview } from '@/components/home/products-overview'
-import { StatsBand } from '@/components/home/stats-band'
-import { TestimonialsSection } from '@/components/home/testimonials-section'
+import { PlatformTabsSection } from '@/components/home/platform-tabs-section'
+import { ProductShowcase } from '@/components/home/product-showcase'
+import { PlatformCommitments } from '@/components/home/platform-commitments'
 import { ResourcesPreview } from '@/components/home/resources-preview'
 import { CTABanner } from '@/components/shared/cta-banner'
 
+/**
+ * Section order follows the shape group-ib.com uses on its own homepage:
+ * hero, a switcher that indexes the whole catalogue, then one full-width band
+ * per product rather than a grid, then the credibility section, resources,
+ * and a closing ask.
+ *
+ * What is deliberately absent is a customer-quote section. The slot exists on
+ * comparable sites and the components for it existed here, populated with
+ * invented people at invented companies. Difaac has been operating since April
+ * 2026; those quotes were not real, so the section is gone rather than
+ * dressed up. `PlatformCommitments` fills the same position with claims that
+ * are actually true.
+ */
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <PlatformOverview />
-      <ProductsOverview />
-      <StatsBand />
-      <TestimonialsSection />
+      <PlatformTabsSection />
+      <ProductShowcase />
+      <PlatformCommitments />
       <ResourcesPreview />
 
-      <section className="py-20 lg:py-28">
+      <section className="border-t border-line-soft py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <CTABanner
-            title="Ready to see your risk before attackers do?"
-            description="Talk to a Difaac security expert and get a tailored view of your exposure across the surface, dark web, and fraud landscape."
+            title="See what Difaac finds in your environment"
+            description="Tell us what you are defending and we will show you the exposure, fraud, and adversary activity we can already see against it."
           />
         </div>
       </section>
     </>
   )
 }
-
-

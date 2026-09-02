@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Radar, Fingerprint, ShieldAlert, Siren, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Radar, Fingerprint, ShieldAlert, Siren, Inbox, Settings, LogOut } from 'lucide-react'
 import { LogoMark } from '@/components/layout/logo-mark'
 import { useAuthUser } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
@@ -8,8 +8,9 @@ const navItems = [
   { to: '/workspace', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/workspace/threat-intelligence', label: 'Threat Intelligence', icon: Radar, end: false },
   { to: '/workspace/digital-risk', label: 'Digital Risk Protection', icon: Fingerprint, end: false },
-  { to: '/workspace/fraud', label: 'Fraud Cases', icon: ShieldAlert, end: false },
+  { to: '/workspace/fraud', label: 'Fraud Protection', icon: ShieldAlert, end: false },
   { to: '/workspace/incidents', label: 'Incidents', icon: Siren, end: false },
+  { to: '/workspace/demo-requests', label: 'Demo Requests', icon: Inbox, end: false },
   { to: '/workspace/settings', label: 'Settings', icon: Settings, end: false },
 ] as const
 

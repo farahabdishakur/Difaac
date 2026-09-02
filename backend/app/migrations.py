@@ -27,6 +27,13 @@ _ADD_COLUMNS: list[tuple[str, str, str]] = [
     ("users", "locked_until", "TEXT"),
     ("users", "last_login_at", "TEXT"),
     ("users", "password_changed_at", "TEXT"),
+    # Fraud case context, added when the fraud dashboard began breaking cases
+    # down by detector, channel, and region. Nullable because rows written
+    # before this existed genuinely do not know their values — backfilling a
+    # guess would put invented attribution in front of an analyst.
+    ("fraud_cases", "signal", "TEXT"),
+    ("fraud_cases", "channel", "TEXT"),
+    ("fraud_cases", "country", "TEXT"),
 ]
 
 
