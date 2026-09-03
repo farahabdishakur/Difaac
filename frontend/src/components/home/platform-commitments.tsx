@@ -28,7 +28,7 @@ export function PlatformCommitments() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div>
-            <h2 className="text-balance font-display text-[clamp(26px,3.2vw,40px)] font-semibold leading-[1.15] tracking-tight text-text">
+            <h2 className="text-balance font-display t-h2 font-semibold leading-[1.15] text-text">
               What we will hold ourselves to
             </h2>
             <p className="mt-6 max-w-lg text-pretty leading-relaxed text-body">

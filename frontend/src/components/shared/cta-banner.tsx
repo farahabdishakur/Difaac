@@ -77,7 +77,7 @@ export function CTABanner({
       />
 
       <div className="relative flex flex-col items-center gap-7 px-6 py-16 text-center sm:px-10 lg:py-20">
-        <h2 className="max-w-3xl text-balance font-display text-[clamp(24px,3vw,38px)] font-semibold leading-tight tracking-tight text-text">
+        <h2 className="max-w-3xl text-balance font-display t-h2 font-semibold text-text">
           {before}
           {after ? (
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">

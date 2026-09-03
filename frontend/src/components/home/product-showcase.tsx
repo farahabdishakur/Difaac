@@ -67,7 +67,7 @@ function ShowcaseBand({ entry, index }: { entry: ShowcaseEntry; index: number })
               </Link>
             </div>
 
-            <h2 className="mt-6 text-balance font-display text-[clamp(26px,3.2vw,40px)] font-semibold leading-[1.15] tracking-tight text-text">
+            <h2 className="mt-6 text-balance font-display t-h2 font-semibold leading-[1.15] text-text">
               {entry.headline}
             </h2>
 

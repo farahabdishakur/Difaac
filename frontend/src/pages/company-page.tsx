@@ -46,10 +46,10 @@ export default function CompanyPage() {
           </nav>
 
           <div className="max-w-3xl">
-            <h1 className="text-balance font-display text-[clamp(36px,5.5vw,60px)] font-semibold leading-[1.08] tracking-tight text-text">
+            <h1 className="text-balance font-display t-display font-semibold leading-[1.08] text-text">
               {mission.headline}
             </h1>
-            <p className="mt-6 max-w-2xl text-pretty text-[clamp(16px,1.6vw,19px)] leading-relaxed text-body">
+            <p className="mt-6 max-w-2xl text-pretty t-lead leading-relaxed text-body">
               {mission.body}
             </p>
 
@@ -74,7 +74,7 @@ export default function CompanyPage() {
               <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
                 Our story · Founded {founding.founded}
               </span>
-              <h2 className="font-display text-[clamp(26px,3.2vw,36px)] font-semibold leading-tight tracking-tight text-text">
+              <h2 className="font-display t-h2 font-semibold text-text">
                 Three students, one final-year project
               </h2>
               <p className="text-pretty leading-relaxed text-body">{founding.story}</p>
@@ -108,7 +108,7 @@ export default function CompanyPage() {
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <h2 className="font-display text-[clamp(26px,3.2vw,36px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="font-display t-h2 font-semibold text-text">
               What we do
             </h2>
             <p className="mt-4 text-pretty leading-relaxed text-body">
@@ -137,7 +137,7 @@ export default function CompanyPage() {
       {/* Service commitments */}
       <section className="bg-ink-2 py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-[clamp(22px,2.4vw,28px)] font-semibold tracking-tight text-text">
+          <h2 className="font-display t-h3 font-semibold text-text">
             What we commit to
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-body">
@@ -162,7 +162,7 @@ export default function CompanyPage() {
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <h2 className="font-display text-[clamp(26px,3.2vw,36px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="font-display t-h2 font-semibold text-text">
               How we work
             </h2>
             <p className="mt-4 text-pretty leading-relaxed text-body">

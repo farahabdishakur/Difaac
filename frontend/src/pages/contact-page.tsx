@@ -139,7 +139,7 @@ function SalesPage() {
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 text-center sm:px-6 lg:px-8 lg:pt-28">
-          <h1 className="font-display text-[clamp(30px,4.4vw,52px)] font-semibold leading-[1.15] tracking-tight text-text">
+          <h1 className="font-display t-display font-semibold leading-[1.15] text-text">
             Let&apos;s Talk
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-body">

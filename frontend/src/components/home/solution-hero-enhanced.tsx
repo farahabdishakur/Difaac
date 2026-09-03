@@ -39,7 +39,7 @@ export function SolutionHeroEnhanced({ name, tagline, description, group }: Solu
         </div>
 
         <div className="text-center">
-          <h1 className="font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight text-text">
+          <h1 className="font-display t-h1 font-semibold leading-[1.15] text-text">
             {tagline}
           </h1>
 

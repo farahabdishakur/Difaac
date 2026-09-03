@@ -292,3 +292,19 @@ export function useExecutiveOverview() {
   )
   return { overview: data, error, isLoading }
 }
+
+export type ActivityTrend = {
+  days: number
+  series: { day: string; count: number }[]
+  total: number
+}
+
+/** Security events per day, across intelligence, detection, and incidents. */
+export function useActivityTrend(days = 14) {
+  const { data, error, isLoading } = useSWR<ActivityTrend>(
+    `/api/overview/trend?days=${days}`,
+    authFetcher,
+    swrOptions,
+  )
+  return { trend: data, error, isLoading }
+}

@@ -13,7 +13,7 @@ export function HeroSection() {
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left: Headline & CTAs */}
           <div className="max-w-2xl">
-            <h1 className="text-balance font-display font-semibold leading-[1.15] tracking-tight text-text text-[clamp(32px,4.4vw,52px)]">
+            <h1 className="text-balance font-display font-semibold leading-[1.15] text-text t-display">
               Fight Somalian
               <br />
               cybercrime.

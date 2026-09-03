@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import logging
 import sqlite3
+from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, Query
 
@@ -609,3 +610,46 @@ def get_executive_overview():
         "tracked_actors": counts["tracked_actors"],
         "critical_events": critical_events,
     }
+
+
+@router.get("/overview/trend")
+def get_activity_trend(days: int = Query(14, ge=7, le=90)):
+    """Security events per day, across intelligence, detection, and incidents.
+
+    One series rather than three: the question this answers is "is activity
+    rising", and splitting it by source turns a glance into a comparison the
+    reader did not ask for. The consoles already break the same events down by
+    source for anyone who wants that.
+
+    Days with no events are returned as zeros rather than omitted — a gap in a
+    time series reads as missing data, not as a quiet day.
+    """
+    with get_connection() as conn:
+        rows = _rows(
+            conn,
+            """
+            WITH events(occurred_at) AS (
+                SELECT detected_at FROM ti_alerts
+                 UNION ALL
+                SELECT detected_at FROM xdr_detections
+                 UNION ALL
+                SELECT created_at  FROM incidents
+            )
+            SELECT DATE(occurred_at) AS day, COUNT(*) AS count
+              FROM events
+             WHERE DATE(occurred_at) >= DATE('now', ?)
+          GROUP BY day
+            """,
+            (f"-{days - 1} days",),
+        )
+
+    counted = {row["day"]: row["count"] for row in rows}
+    today = date.today()
+    series = [
+        {
+            "day": (day := (today - timedelta(days=offset)).isoformat()),
+            "count": counted.get(day, 0),
+        }
+        for offset in range(days - 1, -1, -1)
+    ]
+    return {"days": days, "series": series, "total": sum(p["count"] for p in series)}

@@ -110,7 +110,7 @@ export function ProductHero({
             <span className="text-sm font-medium">{hero.badge}</span>
           </div>
 
-          <h1 className="mt-8 font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight">
+          <h1 className="mt-8 font-display t-h1 font-semibold leading-[1.15]">
             <span className="text-text">{hero.headlineLead}</span>
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               {hero.headlineAccent}
@@ -188,7 +188,7 @@ export function ProductMidCTA({
         aria-hidden="true"
       />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-7 px-4 text-center sm:px-6 lg:px-8">
-        <h2 className="text-balance font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight tracking-tight text-text">
+        <h2 className="text-balance font-display t-h3 font-semibold text-text">
           {title}
         </h2>
         <LinkButton href="/talk-to-sales" size="lg">
@@ -241,7 +241,7 @@ export function ProductBand({ band }: { band: ProductPageContent['band'] }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Eyebrow>{band.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             <span className="text-gradient-brand">{band.headline}</span>
           </h2>
           <p className="mt-4 text-lg text-body">{band.description}</p>
@@ -292,7 +292,7 @@ export function ProductOverview({ overview }: { overview: ProductPageContent['ov
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.35fr] lg:items-start lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h2 className="font-display text-[clamp(20px,2.2vw,28px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="font-display t-h3 font-semibold text-text">
               {overview.title}
             </h2>
             <p className="text-sm leading-relaxed text-body">{overview.body}</p>
@@ -341,7 +341,7 @@ export function ProductFeatureGrid({ featureGrid }: { featureGrid: ProductPageCo
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <Eyebrow>Six core capabilities</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {featureGrid.heading}
           </h2>
         </div>
@@ -383,7 +383,7 @@ export function ProductTabs({ tabs, slug }: { tabs: ProductPageContent['tabs']; 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>Capabilities</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {tabs.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{tabs.description}</p>
@@ -458,7 +458,7 @@ export function ProductComparison({ comparison }: { comparison: ProductPageConte
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>How Difaac compares</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {comparison.heading}
           </h2>
           <p className="mt-4 text-body">{comparison.description}</p>
@@ -531,7 +531,7 @@ export function ProductPillars({ pillars, slug }: { pillars: ProductPageContent[
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>{pillars.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {pillars.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{pillars.description}</p>
@@ -590,7 +590,7 @@ export function ProductBenefits({ benefits }: { benefits: ProductPageContent['be
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>{benefits.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {benefits.heading}
           </h2>
         </div>
@@ -632,7 +632,7 @@ export function ProductFAQ({ faqs }: { faqs: ProductPageContent['faqs'] }) {
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="font-display t-h3 font-semibold text-text">
             Frequently asked questions
           </h2>
         </div>
@@ -677,7 +677,7 @@ export function ProductTrust({ trust }: { trust: ProductPageContent['trust'] }) 
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="font-display t-h3 font-semibold text-text">
             {trust.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{trust.description}</p>

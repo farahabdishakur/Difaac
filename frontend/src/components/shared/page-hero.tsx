@@ -58,11 +58,11 @@ export function PageHero({
             {eyebrow}
           </span>
 
-          <h1 className="text-balance font-display text-[clamp(28px,3.6vw,44px)] font-semibold leading-[1.15] tracking-tight text-text">
+          <h1 className="text-balance font-display t-h1 font-semibold leading-[1.15] text-text">
             {title}
           </h1>
 
-          <p className="max-w-2xl text-pretty leading-relaxed text-body text-[clamp(16px,1.4vw,18px)]">
+          <p className="max-w-2xl text-pretty leading-relaxed text-body t-lead">
             {description}
           </p>
         </div>

@@ -78,7 +78,7 @@ export function ProductDemoForm({
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h2 className="text-balance font-display text-[clamp(28px,3.4vw,40px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="text-balance font-display t-h2 font-semibold text-text">
               Request your demo of {productName}
             </h2>
             <p className="max-w-lg leading-relaxed text-body">

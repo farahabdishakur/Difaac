@@ -5,7 +5,8 @@ import { StatCard } from '@/components/workspace/stat-card'
 import { ScoreDial } from '@/components/workspace/score-dial'
 import { SeverityBadge } from '@/components/workspace/severity-badge'
 import { formatDateTime } from '@/lib/time'
-import { useExecutiveOverview } from '@/lib/workspace-api'
+import { ActivityTrend } from '@/components/workspace/activity-trend'
+import { useExecutiveOverview, useActivityTrend } from '@/lib/workspace-api'
 
 /**
  * The overview a manager or administrator sees.
@@ -37,6 +38,7 @@ function postureSentence(critical: number, incidents: number): string {
 
 export function ExecutiveOverview({ name }: { name: string }) {
   const { overview, error, isLoading } = useExecutiveOverview()
+  const { trend, isLoading: trendLoading } = useActivityTrend(14)
 
   return (
     <div className="flex flex-col gap-6">
@@ -124,6 +126,16 @@ export function ExecutiveOverview({ name }: { name: string }) {
           </div>
         </div>
       </div>
+
+      <section className="flat-card p-6 lg:p-7">
+        <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-display text-lg font-semibold text-text">Security events per day</h2>
+          <span className="text-xs text-muted-2">
+            {trend ? `${trend.total} in the last ${trend.days} days` : ''}
+          </span>
+        </div>
+        <ActivityTrend series={trend?.series ?? []} loading={trendLoading} />
+      </section>
 
       <Panel
         title="Recent critical activity"

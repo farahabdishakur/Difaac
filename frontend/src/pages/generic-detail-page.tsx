@@ -81,7 +81,7 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
               <span className="flex size-16 items-center justify-center border border-line bg-ink-3 text-brand">
                 <Icon className="size-8" aria-hidden="true" />
               </span>
-              <h2 className="font-display text-3xl font-bold text-text leading-tight">{data.tagline}</h2>
+              <h2 className="font-display t-h2 font-bold text-text">{data.tagline}</h2>
               <div className="h-1 w-12 bg-brand" />
               <p className="text-body text-lg leading-relaxed">{data.description}</p>
               

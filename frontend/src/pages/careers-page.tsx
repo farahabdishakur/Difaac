@@ -42,7 +42,7 @@ export default function CareersPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center max-w-2xl mx-auto">
             <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Why Difaac</span>
-            <h2 className="font-display text-3xl font-bold text-text mt-2">What working here actually looks like</h2>
+            <h2 className="font-display t-h2 font-bold text-text mt-2">What working here actually looks like</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

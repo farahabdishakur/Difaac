@@ -65,7 +65,7 @@ export default function ProductDetailPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.35fr] lg:items-start lg:gap-16">
             <div className="flex flex-col gap-6">
-              <h2 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-tight tracking-tight text-text">
+              <h2 className="font-display t-h3 font-semibold text-text">
                 {product.tagline}
               </h2>
               <ul className="flex flex-col gap-4 border-t border-line-soft pt-6">
@@ -151,7 +151,7 @@ export default function ProductDetailPage() {
                   <span className="text-xs font-medium uppercase tracking-[0.14em] text-muted-2">
                     Delivery
                   </span>
-                  <h2 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-tight tracking-tight text-text">
+                  <h2 className="font-display t-h3 font-semibold text-text">
                     Fits the stack you already run
                   </h2>
                   <p className="text-sm leading-relaxed text-body">

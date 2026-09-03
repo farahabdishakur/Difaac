@@ -284,7 +284,7 @@ export default function SolutionDetailPage() {
             <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[tone]}`}>
               Capabilities
             </span>
-            <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
               What {solution.name} puts in place
             </h2>
           </div>
@@ -309,7 +309,7 @@ export default function SolutionDetailPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               Where it applies
             </span>
-            <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
               Teams that come to us with this
             </h2>
           </div>
@@ -336,7 +336,7 @@ export default function SolutionDetailPage() {
               <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
                 Delivered by
               </span>
-              <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+              <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
                 The products that do this work
               </h2>
             </div>

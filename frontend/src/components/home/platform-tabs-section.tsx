@@ -127,7 +127,7 @@ export function PlatformTabsSection() {
     <section className="bg-ink-2 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-balance font-display font-semibold leading-[1.15] tracking-tight text-text text-[clamp(26px,3.4vw,38px)]">
+          <h2 className="text-balance font-display font-semibold leading-[1.15] text-text t-h2">
             Powering cybersecurity intelligence with the{' '}
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               Difaac Unified Risk Platform

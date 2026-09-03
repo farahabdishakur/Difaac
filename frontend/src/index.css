@@ -199,6 +199,52 @@ html {
     box-shadow: 0 4px 20px -4px rgba(0, 201, 121, 0.2);
   }
 
+
+  /* ── Type scale ──────────────────────────────────────────────────────────
+   *
+   * Four heading steps and one lead size, and nothing else. Before this,
+   * twenty-one different `clamp()` expressions were spread across the pages
+   * — every section had quietly invented its own size, so two headings of
+   * equal importance rarely matched and the page had no rhythm to read by.
+   *
+   * Each step fluidly scales between a phone and a desktop, so a heading is
+   * never larger than its line can carry on a narrow screen. The steps are
+   * spaced far enough apart to be legible as a hierarchy rather than as
+   * slightly different sizes.
+   */
+
+  .t-display {
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .t-h1 {
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -0.018em;
+  }
+
+  .t-h2 {
+    font-size: clamp(24px, 2.8vw, 34px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
+  .t-h3 {
+    font-size: clamp(20px, 2.2vw, 26px);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  /* Standfirst under a heading. Larger than body copy so the opening
+   * paragraph reads as part of the heading block rather than as the start of
+   * the article. */
+  .t-lead {
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.65;
+  }
+
   /* Hero ground.
    *
    * Three layers: a soft brand wash from the top-left, a cooler counterpoint

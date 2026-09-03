@@ -78,7 +78,7 @@ export function ServiceHero({
             already names the service, so a badge repeating it only pushes the
             headline down the page. */}
         <div className="text-center">
-          <h1 className="font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight">
+          <h1 className="font-display t-h1 font-semibold leading-[1.15]">
             <span className="text-text">{hero.headlineLead}</span>
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               {hero.headlineAccent}
@@ -131,7 +131,7 @@ export function ServiceOverview({ overview }: { overview: ServicePageContent['ov
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.35fr] lg:items-start lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h2 className="font-display text-[clamp(20px,2.2vw,28px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="font-display t-h3 font-semibold text-text">
               {overview.title}
             </h2>
             <p className="text-sm leading-relaxed text-body">{overview.body}</p>
@@ -172,7 +172,7 @@ export function ServicePhases({ phases }: { phases: ServicePageContent['phases']
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>Methodology</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {phases.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{phases.description}</p>
@@ -221,7 +221,7 @@ export function ServiceDeliverables({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <Eyebrow>Deliverables</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {deliverables.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{deliverables.description}</p>
@@ -266,7 +266,7 @@ export function ServiceAudience({ audience, group }: { audience: ServicePageCont
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <Eyebrow>Who it is for</Eyebrow>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             {audience.heading}
           </h2>
         </div>
@@ -298,7 +298,7 @@ export function ServiceFAQ({ faqs }: { faqs: ServicePageContent['faqs'] }) {
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="font-display t-h3 font-semibold text-text">
             Frequently asked questions
           </h2>
         </div>

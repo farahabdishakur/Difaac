@@ -69,7 +69,7 @@ export default function ServicesPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               How we work
             </span>
-            <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
               Every engagement runs the same way
             </h2>
             <p className="mt-4 text-pretty leading-relaxed text-body">
@@ -103,7 +103,7 @@ export default function ServicesPage() {
                 <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[tone]}`}>
                   {group.key}
                 </span>
-                <h2 className="mt-3 font-display text-[clamp(22px,2.4vw,30px)] font-semibold leading-tight text-text">
+                <h2 className="mt-3 font-display t-h3 font-semibold text-text">
                   {group.title}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-body">{group.description}</p>
@@ -148,7 +148,7 @@ export default function ServicesPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               Engagement models
             </span>
-            <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
               Two ways to work with us
             </h2>
           </div>

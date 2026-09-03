@@ -38,7 +38,7 @@ export function IndustryChallenges({ challenges }: IndustryChallengesProps) {
           <span className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-xs font-medium text-brand">
             Industry Challenges
           </span>
-          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
             Threats unique to your industry
           </h2>
         </div>

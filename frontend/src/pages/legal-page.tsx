@@ -90,7 +90,7 @@ export default function LegalPage({ type }: LegalPageProps) {
                 <ShieldCheck className="size-3.5" />
                 <span>Difaac Enterprise Legal Framework</span>
               </div>
-              <h1 className="font-display text-4xl font-bold tracking-tight text-text sm:text-5xl lg:text-6xl">
+              <h1 className="font-display t-h1 font-bold text-text">
                 {isPrivacy ? 'Privacy Policy' : 'Terms of Use'}
               </h1>
               <p className="mt-4 text-base sm:text-lg text-body leading-relaxed max-w-2xl">
