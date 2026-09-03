@@ -36,11 +36,9 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export function ServiceHero({
   hero,
-  breadcrumbName,
   group,
 }: {
   hero: ServicePageContent['hero']
-  breadcrumbName: string
   group: Service['group']
 }) {
   const Icon = getIcon(hero.badgeIcon)
@@ -69,8 +67,6 @@ export function ServiceHero({
                 Services
               </a>
             </li>
-            <li aria-hidden="true">/</li>
-            <li className="text-body">{breadcrumbName}</li>
           </ol>
         </nav>
 

@@ -17,6 +17,7 @@ from app.database import init_db
 from app.rate_limit import rate_limit_middleware
 from app.routes import (
     auth,
+    inspect,
     blog,
     demo_requests,
     health,
@@ -103,6 +104,10 @@ app = fastapi.FastAPI(
 # cannot read the rejection and reports an opaque network error instead.
 app.middleware("http")(rate_limit_middleware)
 
+# Inspection sits inside the rate limiter: a flood is rejected before it costs
+# a regex pass, and what reaches here is traffic worth scoring.
+app.middleware("http")(inspect.inspection_middleware)
+
 app.add_middleware(
     fastapi.middleware.cors.CORSMiddleware,
     allow_origins=CORS_ORIGINS,
@@ -177,4 +182,5 @@ app.include_router(demo_requests.public_router)
 # Authenticated SOC data. Registered last so it is easy to see that everything
 # above it is public content and everything in it is not.
 app.include_router(workspace.router)
+app.include_router(inspect.router)
 app.include_router(demo_requests.private_router)

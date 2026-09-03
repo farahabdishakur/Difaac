@@ -28,14 +28,10 @@ export default function CareersPage() {
     <>
       <PageHero
         tone="brand"
-        eyebrow="Careers at Difaac"
+        centered={true}
         title="We're a small team building something ambitious"
         description="Difaac was founded by three students in Somaliland and is still early. There are no open roles listed right now, but if you want to help build an intelligence-driven defence platform from the ground up, we want to hear from you."
-        breadcrumb={[
-          { label: 'Home', href: '/' },
-          { label: 'Company', href: '/company' },
-          { label: 'Careers' },
-        ]}
+        backgroundImage="/company/careers-hero-bg.jpg"
       />
 
       <section className="py-16 lg:py-24 bg-ink-2">
@@ -47,8 +43,10 @@ export default function CareersPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {reasons.map((reason) => (
-              <div key={reason.title} className="flat-card p-6 flex flex-col gap-3">
-                <reason.icon className="size-8 text-brand" strokeWidth={1.7} aria-hidden="true" />
+              <div key={reason.title} className="flat-card p-6 flex flex-col gap-4">
+                <div className="flex size-12 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
+                  <reason.icon className="size-6" strokeWidth={1.8} aria-hidden="true" />
+                </div>
                 <h3 className="font-display text-lg font-bold text-text">{reason.title}</h3>
                 <p className="text-sm text-body leading-relaxed">{reason.description}</p>
               </div>

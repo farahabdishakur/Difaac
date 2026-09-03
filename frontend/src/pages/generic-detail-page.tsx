@@ -67,7 +67,6 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
           breadcrumb={[
             { label: 'Home', href: '/' },
             { label: eyebrow, href: parentPath },
-            { label: data.name },
           ]}
         />
       </div>

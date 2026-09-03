@@ -13,12 +13,12 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
         const isLast = index === items.length - 1
         return (
           <span key={item.label} className="flex items-center gap-1.5">
-            {item.href && !isLast ? (
+            {item.href ? (
               <Link to={item.href} className="link-underline text-body hover:text-text">
                 {item.label}
               </Link>
             ) : (
-              <span aria-current={isLast ? 'page' : undefined} className={isLast ? 'text-text' : 'text-body'}>
+              <span aria-current="page" className="text-text">
                 {item.label}
               </span>
             )}

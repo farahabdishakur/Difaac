@@ -6,7 +6,7 @@ import { HeroBackdrop } from '@/components/product/product-emblem'
 import type { Tone } from '@/lib/tone'
 
 type PageHeroProps = {
-  eyebrow: string
+  eyebrow?: string
   title: string
   description: string
   breadcrumb?: { label: string; href?: string }[]
@@ -16,6 +16,7 @@ type PageHeroProps = {
   backgroundImage?: string
   /** Accent for the wash behind the hero. Brand green unless a page overrides it. */
   tone?: Tone
+  centered?: boolean
 }
 
 export function PageHero({
@@ -28,6 +29,7 @@ export function PageHero({
   icon: Icon,
   backgroundImage,
   tone = 'brand',
+  centered = false,
 }: PageHeroProps) {
   return (
     // `hero-ground` plus the negative margin is what the company page hero
@@ -35,39 +37,34 @@ export function PageHero({
     // the page ground below, so the section has no top edge. Every page hero
     // shares it rather than a flat `bg-ink` panel that starts under the nav.
     <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4rem)] pb-16 sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24">
-      <HeroBackdrop tone={tone} />
-      {backgroundImage ? (
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-15"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-          aria-hidden="true"
-        />
-      ) : null}
+      <HeroBackdrop tone={tone} bgImage={backgroundImage} spread />
 
-      <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:px-8">
+      <div className={`relative mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:px-8 ${centered ? 'items-center text-center' : ''}`}>
         {breadcrumb ? <Breadcrumb items={breadcrumb} /> : null}
 
-        <div className="flex max-w-3xl flex-col gap-4">
+        <div className={`flex max-w-3xl flex-col gap-4 ${centered ? 'items-center text-center mx-auto' : ''}`}>
           {Icon ? (
             <span className="flex size-11 items-center justify-center rounded-[4px] border border-line bg-ink-2 text-brand">
               <Icon className="size-5" aria-hidden="true" strokeWidth={1.5} />
             </span>
           ) : null}
 
-          <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
-            {eyebrow}
-          </span>
+          {eyebrow ? (
+            <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
+              {eyebrow}
+            </span>
+          ) : null}
 
           <h1 className="text-balance font-display t-h1 font-semibold leading-[1.15] text-text">
             {title}
           </h1>
 
-          <p className="max-w-2xl text-pretty leading-relaxed text-body t-lead">
+          <p className={`max-w-2xl text-pretty leading-relaxed text-body t-lead ${centered ? 'mx-auto' : ''}`}>
             {description}
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3 pt-2">
+        <div className={`flex flex-wrap gap-3 pt-2 ${centered ? 'justify-center' : ''}`}>
           <LinkButton href={primaryCta.href} size="lg">
             {primaryCta.label}
             <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />

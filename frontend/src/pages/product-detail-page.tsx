@@ -37,6 +37,7 @@ export default function ProductDetailPage() {
         title={product.name}
         description={product.description}
         icon={Icon}
+        backgroundImage={`/products/hero-${product.slug}.jpg`}
         breadcrumb={[
           { label: 'Home', href: '/' },
           { label: 'Products', href: '/products' },

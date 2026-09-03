@@ -33,7 +33,6 @@ export default function ServicePage() {
     <>
       <ServiceHero
         hero={content.hero}
-        breadcrumbName={service?.name ?? content.hero.badge}
         group={group}
       />
       <ServiceFacts facts={content.facts} group={group} />

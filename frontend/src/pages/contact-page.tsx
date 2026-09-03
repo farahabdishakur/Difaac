@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { PageHero } from '@/components/shared/page-hero'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Mail, Phone, MapPin, CheckCircle2, Check } from 'lucide-react'
+import { Mail, Phone, MapPin, CheckCircle2, Check, Clock, Zap } from 'lucide-react'
 import { somaliRegions, jobTitles } from '@/lib/data/nav'
 import { products } from '@/lib/data/products'
 import { getIcon } from '@/components/icons/icon-map'
-import { ProductEmblem } from '@/components/product/product-emblem'
+import { ProductEmblem, HeroBackdrop } from '@/components/product/product-emblem'
 import { productAccent } from '@/lib/tone'
 import { submitDemoRequest } from '@/lib/demo-requests'
+
 
 const SERVICE_GROUPS = [
   'Security Assessments',
@@ -371,7 +372,7 @@ function SalesPage() {
   )
 }
 
-/** General "Contact Us" page — kept as its own simpler, two-column layout. */
+/** General "Contact Us" page — redesigned to match the company page hero style. */
 function GeneralContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -409,195 +410,247 @@ function GeneralContactPage() {
 
   return (
     <>
-      <PageHero
-        tone="cyan"
-        eyebrow="Contact Us"
-        title="Connect with Difaac"
-        description="Get in touch with the team — questions about the platform, partnership interest, or anything else."
-        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
-      />
+      {/* Hero — mirrors the company page hero layout */}
+      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
+        <HeroBackdrop tone="brand" bgImage="/company-hero-3d.jpg" spread />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left Column */}
+            <div className="lg:col-span-6 flex flex-col gap-6">
+              <h1 className="text-balance font-display text-4xl sm:text-5xl lg:text-5xl font-extrabold leading-[1.1] text-text">
+                Connect with <span className="text-gradient">Difaac</span>
+              </h1>
 
-      <section className="py-16 lg:py-24 bg-ink-2">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-14 lg:grid-cols-12">
-            <div className="lg:col-span-5 flex flex-col gap-8">
-              <div className="flex flex-col gap-6">
-                <h3 className="font-display text-xl font-bold text-text">Get in touch</h3>
+              <p className="text-pretty text-base sm:text-lg leading-relaxed text-body max-w-xl">
+                Get in touch with the team — questions about the platform, partnership interest, or anything else. We&apos;re here to help.
+              </p>
 
-                <div className="flex items-start gap-4">
-                  <MapPin className="size-5 text-brand shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-text text-sm">Office</h4>
-                    <p className="text-xs text-body leading-relaxed">Awdal, Somaliland</p>
+              {/* Contact Info Metrics with clean icons */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-line-soft">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-brand">
+                    <Clock className="size-4 shrink-0" strokeWidth={2} />
+                    <span className="font-display text-2xl font-black">24/7</span>
                   </div>
+                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Availability</div>
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <Mail className="size-5 text-brand shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-text text-sm">Email</h4>
-                    <a href="mailto:Difaacgroup@gmail.com" className="text-xs text-brand hover:underline">
-                      Difaacgroup@gmail.com
-                    </a>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-brand">
+                    <Zap className="size-4 shrink-0" strokeWidth={2} />
+                    <span className="font-display text-2xl font-black">&lt;2 hrs</span>
                   </div>
+                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Response Time</div>
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <Phone className="size-5 text-brand shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-text text-sm">Phone</h4>
-                    <a href="tel:+252672489335" className="text-xs text-brand hover:underline">
-                      +252 672489335
-                    </a>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-brand">
+                    <MapPin className="size-4 shrink-0" strokeWidth={2} />
+                    <span className="font-display text-2xl font-black">Awdal</span>
                   </div>
+                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Headquarters</div>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-7 flat-card p-8 sm:p-10">
-              {submitted ? (
-                <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
-                  <CheckCircle2 className="size-16 text-brand" />
-                  <h3 className="font-display text-2xl font-bold text-text">Message Received</h3>
-                  <p className="max-w-md text-sm text-body leading-relaxed">
-                    Thank you for reaching out to Difaac. Your request is in the queue and a
-                    specialist will review it shortly.
-                  </p>
-                  <Button variant="outline" onClick={() => setSubmitted(false)} className="mt-4">
-                    Send another message
-                  </Button>
+            {/* Right Column: Contact Info Card */}
+            <div className="lg:col-span-6 relative">
+              <div className="relative rounded-2xl border border-brand/30 bg-ink-2/80 p-6 sm:p-8 shadow-[0_0_80px_rgba(0,201,121,0.2)] backdrop-blur-md">
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
+                      <MapPin className="size-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-text text-sm">Office</h4>
+                      <p className="text-xs text-body leading-relaxed">Awdal, Somaliland</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
+                      <Mail className="size-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-text text-sm">Email</h4>
+                      <a href="mailto:Difaacgroup@gmail.com" className="text-xs text-brand hover:underline">
+                        Difaacgroup@gmail.com
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
+                      <Phone className="size-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-text text-sm">Phone</h4>
+                      <a href="tel:+252672489335" className="text-xs text-brand hover:underline">
+                        +252 672489335
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
+                      <Clock className="size-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-text text-sm">Business Hours</h4>
+                      <p className="text-xs text-body leading-relaxed">Saturday – Thursday, 8:00 AM – 6:00 PM (EAT)</p>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                  <h3 className="font-display text-xl font-bold text-text mb-1">Send us a message</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="firstName" className="text-xs font-semibold text-text uppercase tracking-wider">
-                        First Name *
-                      </label>
-                      <Input
-                        id="firstName"
-                        required
-                        value={formData.firstName}
-                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        placeholder="Elena"
-                        className="bg-ink-3 border-line"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="lastName" className="text-xs font-semibold text-text uppercase tracking-wider">
-                        Last Name *
-                      </label>
-                      <Input
-                        id="lastName"
-                        required
-                        value={formData.lastName}
-                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        placeholder="Marsh"
-                        className="bg-ink-3 border-line"
-                      />
-                    </div>
-                  </div>
+      {/* Contact Form Section */}
+      <section className="py-16 lg:py-24 bg-ink-2">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="flat-card p-8 sm:p-10">
+            {submitted ? (
+              <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
+                <CheckCircle2 className="size-16 text-brand" />
+                <h3 className="font-display text-2xl font-bold text-text">Message Received</h3>
+                <p className="max-w-md text-sm text-body leading-relaxed">
+                  Thank you for reaching out to Difaac. Your request is in the queue and a
+                  specialist will review it shortly.
+                </p>
+                <Button variant="outline" onClick={() => setSubmitted(false)} className="mt-4">
+                  Send another message
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <h3 className="font-display text-xl font-bold text-text mb-1">Send us a message</h3>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="workEmail" className="text-xs font-semibold text-text uppercase tracking-wider">
-                        Work Email *
-                      </label>
-                      <Input
-                        id="workEmail"
-                        type="email"
-                        required
-                        value={formData.workEmail}
-                        onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
-                        placeholder="elena@company.com"
-                        className="bg-ink-3 border-line"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="company" className="text-xs font-semibold text-text uppercase tracking-wider">
-                        Company Name *
-                      </label>
-                      <Input
-                        id="company"
-                        required
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        placeholder="Acme Corp"
-                        className="bg-ink-3 border-line"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="jobTitle" className="text-xs font-semibold text-text uppercase tracking-wider">
-                        Job Title
-                      </label>
-                      <select
-                        id="jobTitle"
-                        value={formData.jobTitle}
-                        onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
-                        className="h-10 rounded-none border border-line bg-ink-3 px-3 text-sm text-text focus:outline-none focus:border-brand"
-                      >
-                        {jobTitles.map((jt) => (
-                          <option key={jt} value={jt} className="bg-ink-2 text-text">
-                            {jt}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="country" className="text-xs font-semibold text-text uppercase tracking-wider">
-                        Region
-                      </label>
-                      <select
-                        id="country"
-                        value={formData.country}
-                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                        className="h-10 rounded-none border border-line bg-ink-3 px-3 text-sm text-text focus:outline-none focus:border-brand"
-                      >
-                        {somaliRegions.map((c) => (
-                          <option key={c} value={c} className="bg-ink-2 text-text">
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="message" className="text-xs font-semibold text-text uppercase tracking-wider">
-                      How can we help?
+                    <label htmlFor="firstName" className="text-xs font-semibold text-text uppercase tracking-wider">
+                      First Name *
                     </label>
-                    <Textarea
-                      id="message"
-                      rows={4}
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Tell us about your organization's security goals or current exposure..."
+                    <Input
+                      id="firstName"
+                      required
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                      placeholder="Elena"
                       className="bg-ink-3 border-line"
                     />
                   </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="lastName" className="text-xs font-semibold text-text uppercase tracking-wider">
+                      Last Name *
+                    </label>
+                    <Input
+                      id="lastName"
+                      required
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      placeholder="Marsh"
+                      className="bg-ink-3 border-line"
+                    />
+                  </div>
+                </div>
 
-                  {error ? (
-                    <p className="rounded-[4px] border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
-                      {error}
-                    </p>
-                  ) : null}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="workEmail" className="text-xs font-semibold text-text uppercase tracking-wider">
+                      Work Email *
+                    </label>
+                    <Input
+                      id="workEmail"
+                      type="email"
+                      required
+                      value={formData.workEmail}
+                      onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
+                      placeholder="elena@company.com"
+                      className="bg-ink-3 border-line"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="company" className="text-xs font-semibold text-text uppercase tracking-wider">
+                      Company Name *
+                    </label>
+                    <Input
+                      id="company"
+                      required
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      placeholder="Acme Corp"
+                      className="bg-ink-3 border-line"
+                    />
+                  </div>
+                </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={submitting}
-                    className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-semibold"
-                  >
-                    {submitting ? 'Submitting…' : 'Submit Request'}
-                  </Button>
-                </form>
-              )}
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="jobTitle" className="text-xs font-semibold text-text uppercase tracking-wider">
+                      Job Title
+                    </label>
+                    <select
+                      id="jobTitle"
+                      value={formData.jobTitle}
+                      onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
+                      className="h-10 rounded-none border border-line bg-ink-3 px-3 text-sm text-text focus:outline-none focus:border-brand"
+                    >
+                      {jobTitles.map((jt) => (
+                        <option key={jt} value={jt} className="bg-ink-2 text-text">
+                          {jt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="country" className="text-xs font-semibold text-text uppercase tracking-wider">
+                      Region
+                    </label>
+                    <select
+                      id="country"
+                      value={formData.country}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                      className="h-10 rounded-none border border-line bg-ink-3 px-3 text-sm text-text focus:outline-none focus:border-brand"
+                    >
+                      {somaliRegions.map((c) => (
+                        <option key={c} value={c} className="bg-ink-2 text-text">
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="message" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    How can we help?
+                  </label>
+                  <Textarea
+                    id="message"
+                    rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    placeholder="Tell us about your organization's security goals or current exposure..."
+                    className="bg-ink-3 border-line"
+                  />
+                </div>
+
+                {error ? (
+                  <p className="rounded-[4px] border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
+                    {error}
+                  </p>
+                ) : null}
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={submitting}
+                  className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-semibold"
+                >
+                  {submitting ? 'Submitting…' : 'Submit Request'}
+                </Button>
+              </form>
+            )}
           </div>
         </div>
       </section>

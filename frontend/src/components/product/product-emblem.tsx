@@ -28,6 +28,8 @@ const PRODUCT_EMBLEM_IMAGE: Record<string, string> = {
 }
 
 const EMBLEM_SIZE = {
+  /** Product switcher tabs: the whole catalogue has to fit on one row. */
+  tab: 'size-7',
   /** Mega-menu row: big enough that the render still reads as glass, not a smudge. */
   menu: 'size-10',
   /** Product card and selection rows. */
@@ -140,25 +142,61 @@ export function ProductEmblem({
   )
 }
 
+/** The product hero background artwork, by slug. */
+export const PRODUCT_BACKGROUND_IMAGE: Record<string, string> = {
+  'threat-intelligence': '/products/hero-threat-intelligence.jpg',
+  'managed-xdr': '/products/hero-managed-xdr.jpg',
+  'fraud-protection': '/products/hero-fraud-protection.jpg',
+  'digital-risk-protection': '/products/hero-digital-risk-protection.jpg',
+  'attack-surface-management': '/products/hero-attack-surface-management.jpg',
+  'business-email-protection': '/products/hero-business-email-protection.jpg',
+}
+
 /**
  * Full-bleed hero backdrop.
  *
- * Transparent gradients over the page ground, in place of group-ib.com's
- * background photograph, so the section below meets it without a seam.
- *
- * Two things are deliberately absent. There is no grid layer: it read as
- * clutter wherever a page carried its own linework, producing a
- * criss-crossing lattice instead of texture. And there is no `blur` filter —
- * a radial gradient is already soft, so blurring one only costs a paint and
- * muddies the colour. The accent stays crisp and genuinely transparent.
+ * Combines high-resolution, thematic cyber defense imagery with tailored
+ * transparent gradients and radial vignetting over the page ground.
+ * Blends smoothly to ink at the fold and below the header with zero seams.
  */
-export function HeroBackdrop({ tone = 'brand', spread }: { tone?: Tone; spread?: boolean }) {
+export function HeroBackdrop({ 
+  tone = 'brand', 
+  spread,
+  slug,
+  bgImage,
+}: { 
+  tone?: Tone; 
+  spread?: boolean;
+  slug?: string;
+  bgImage?: string;
+}) {
   const accent = toneVar[tone]
+  const image = bgImage ?? (slug ? PRODUCT_BACKGROUND_IMAGE[slug] : undefined)
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {/* Thematic product cyber photography / telemetry backdrop */}
+      {image ? (
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src={image}
+            alt=""
+            className="size-full object-cover object-center opacity-35 mix-blend-screen scale-105 transition-transform duration-1000"
+          />
+          {/* Top shadow settling into header */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-transparent opacity-80" />
+          {/* Radial mask to ensure center text and emblem stay high-contrast */}
+          <div 
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 35%, rgba(1,0,5,0.25) 0%, rgba(1,0,5,0.65) 55%, rgba(1,0,5,0.95) 100%)'
+            }}
+          />
+        </div>
+      ) : null}
+
       <div
-        className="absolute inset-0 opacity-[0.55]"
+        className="absolute inset-0 opacity-[0.45]"
         style={{
           backgroundImage: `radial-gradient(120% 80% at 15% -10%, color-mix(in srgb, ${accent} 22%, transparent) 0%, transparent 60%),
              radial-gradient(90% 70% at 95% 5%, color-mix(in srgb, ${accent} 14%, transparent) 0%, transparent 65%)`,
@@ -178,7 +216,8 @@ export function HeroBackdrop({ tone = 'brand', spread }: { tone?: Tone; spread?:
       ) : null}
 
       {/* Settles the wash back to the page ground at the fold. */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-b from-transparent via-ink/80 to-ink" />
     </div>
   )
 }
+

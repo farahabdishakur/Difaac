@@ -26,14 +26,10 @@ export default function PartnersPage() {
     <>
       <PageHero
         tone="violet"
-        eyebrow="Partner Ecosystem"
+        centered={true}
         title="Scale Security Value with Difaac Intelligence"
         description="Partner with Difaac to empower your security operations, increase recurring revenue, and protect client ecosystems against modern cybercrime."
-        breadcrumb={[
-          { label: 'Home', href: '/' },
-          { label: 'Company', href: '/company' },
-          { label: 'Partners' },
-        ]}
+        backgroundImage="/company/partners-hero-bg.jpg"
       />
 
       <section className="py-16 lg:py-24 bg-ink-2">
@@ -49,8 +45,8 @@ export default function PartnersPage() {
               return (
                 <div key={idx} className="flat-card p-8 flex flex-col justify-between">
                   <div className="flex flex-col gap-4">
-                    <span className="flex size-12 items-center justify-center bg-brand/10 text-brand">
-                      <Icon className="size-6" />
+                    <span className="flex size-12 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
+                      <Icon className="size-6" strokeWidth={1.8} />
                     </span>
                     <h3 className="font-display text-xl font-bold text-text">{pt.title}</h3>
                     <p className="text-sm text-body leading-relaxed">{pt.desc}</p>

@@ -95,7 +95,7 @@ export function ProductHero({
     <section className="-mt-14 pt-[calc(3.5rem+5rem)] lg:-mt-16 lg:pt-[calc(4rem+7rem)] relative overflow-hidden pb-24 lg:pb-32">
       {/* `spread` widens the accent until it carries the whole hero, so the
           emblem below sits in a lit space rather than on a dark band. */}
-      <HeroBackdrop tone={tone} spread />
+      <HeroBackdrop tone={tone} spread slug={slug} />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
