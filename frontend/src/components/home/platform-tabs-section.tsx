@@ -126,7 +126,7 @@ export function PlatformTabsSection() {
   return (
     <section className="bg-ink-2 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
+        <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-balance font-display font-semibold leading-[1.15] tracking-tight text-text text-[clamp(26px,3.4vw,38px)]">
             Powering cybersecurity intelligence with the{' '}
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
@@ -134,7 +134,7 @@ export function PlatformTabsSection() {
             </span>
           </h2>
 
-          <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-body sm:text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-body sm:text-lg">
             Difaac maps the threat actors targeting your organisation and tunes your defenses around
             them. Adversary intelligence sits at the core of every product, so a signal caught in one
             area strengthens detection everywhere else.
@@ -142,7 +142,7 @@ export function PlatformTabsSection() {
         </div>
 
         {/* Tab switcher */}
-        <div className="mt-10 grid grid-cols-3 gap-3 sm:max-w-xl">
+        <div className="mx-auto mt-10 grid grid-cols-3 gap-3 sm:max-w-xl">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -165,7 +165,7 @@ export function PlatformTabsSection() {
           <ActivePanel />
         </div>
 
-        <div className="mt-10 border-t border-line-soft pt-8">
+        <div className="mt-10 border-t border-line-soft pt-8 text-center">
           <Link
             to="/products"
             className="group inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"

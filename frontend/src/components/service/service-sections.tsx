@@ -12,7 +12,8 @@ import { ArrowRight, ChevronDown } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
 import { GlassIcon } from '@/components/product/product-sections'
-import { serviceGroupAccent, toneBadge, toneGlow } from '@/lib/tone'
+import { HeroBackdrop } from '@/components/product/product-emblem'
+import { serviceGroupAccent, toneText } from '@/lib/tone'
 import type { ServicePageContent } from '@/lib/data/service-pages'
 import type { Service } from '@/lib/data/services'
 
@@ -49,10 +50,10 @@ export function ServiceHero({
 
   return (
     <section className="-mt-14 pt-[calc(3.5rem+5rem)] lg:-mt-16 lg:pt-[calc(4rem+7rem)] relative overflow-hidden pb-24 lg:pb-32">
-      <div
-        className={`pointer-events-none absolute -top-24 right-[-10%] size-[32rem] rounded-full blur-3xl opacity-20 ${toneGlow[tone]}`}
-        aria-hidden="true"
-      />
+      {/* The same wash the product heroes use: the accent carries up behind
+          the transparent header and settles into the page ground, so the
+          section has no top edge. */}
+      <HeroBackdrop tone={tone} spread />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <nav aria-label="Breadcrumb" className="mb-8 flex justify-center">
@@ -73,13 +74,11 @@ export function ServiceHero({
           </ol>
         </nav>
 
+        {/* No name pill above the headline: the breadcrumb directly above it
+            already names the service, so a badge repeating it only pushes the
+            headline down the page. */}
         <div className="text-center">
-          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm ${toneBadge[tone]}`}>
-            <Icon className="size-4" aria-hidden="true" />
-            <span className="text-sm font-medium">{hero.badge}</span>
-          </div>
-
-          <h1 className="mt-8 font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight">
+          <h1 className="font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight">
             <span className="text-text">{hero.headlineLead}</span>
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               {hero.headlineAccent}
@@ -215,9 +214,12 @@ export function ServiceDeliverables({
   const tone = serviceGroupAccent[group]
 
   return (
-    <section className="py-16 lg:py-24">
+    // The deliverables are numbered rather than shown as an unordered grid:
+    // this is the list of what physically arrives at the end of the
+    // engagement, and a buyer reads it as a sequence, not a feature set.
+    <section className="border-t border-line-soft bg-ink-2 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 text-center">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
           <Eyebrow>Deliverables</Eyebrow>
           <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {deliverables.heading}
@@ -226,14 +228,19 @@ export function ServiceDeliverables({
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {deliverables.items.map((item) => {
+          {deliverables.items.map((item, index) => {
             const Icon = getIcon(item.icon)
             return (
               <div
                 key={item.title}
-                className="flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2/50 p-6 backdrop-blur-sm transition-all duration-200 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
+                className="flex flex-col gap-4 rounded-lg border border-line bg-ink/60 p-6 transition-colors duration-200 hover:border-brand/40"
               >
-                <GlassIcon icon={Icon} tone={tone} size="sm" />
+                <div className="flex items-center justify-between">
+                  <GlassIcon icon={Icon} tone={tone} size="sm" />
+                  <span className="font-mono text-xs text-muted-2">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
                 <div>
                   <h3 className="font-display text-sm font-semibold text-text">{item.title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-body">{item.description}</p>
@@ -251,10 +258,15 @@ export function ServiceAudience({ audience, group }: { audience: ServicePageCont
   const tone = serviceGroupAccent[group]
 
   return (
-    <section className="py-16 lg:py-24">
+    // Split by who receives what. An engagement produces different things for
+    // the security team, for management, and for the person accountable for
+    // the budget, and naming the recipient is what makes the section useful
+    // rather than three more benefit cards.
+    <section className="border-t border-line-soft py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <Eyebrow>Who it is for</Eyebrow>
+          <h2 className="mt-6 font-display text-[clamp(22px,2.6vw,32px)] font-semibold leading-tight text-text">
             {audience.heading}
           </h2>
         </div>
@@ -265,10 +277,10 @@ export function ServiceAudience({ audience, group }: { audience: ServicePageCont
             return (
               <div
                 key={item.title}
-                className="flex flex-col gap-4 rounded-lg border border-line-soft bg-ink-2/60 p-8 backdrop-blur-sm transition-all duration-200 hover:border-brand/40"
+                className="flex flex-col gap-4 rounded-lg border border-line bg-ink-2/60 p-8 transition-colors duration-200 hover:border-brand/40"
               >
                 <GlassIcon icon={Icon} tone={tone} />
-                <h3 className="font-display text-lg font-semibold text-text">{item.title}</h3>
+                <h3 className={`font-display text-lg font-semibold ${toneText[tone]}`}>{item.title}</h3>
                 <p className="text-sm leading-relaxed text-body">{item.description}</p>
               </div>
             )

@@ -37,7 +37,83 @@ export type PhishingDomain = {
   id: number
   domain: string
   status: string
+  channel: string | null
+  risk: string | null
+  takedown_at: string | null
   discovered_at: string
+}
+
+export type DrpSummary = {
+  total_items: number
+  taken_down: number
+  active: number
+  high_risk: number
+  median_takedown_hours: number | null
+  by_channel: { channel: string; count: number }[]
+}
+
+export type AsmAsset = {
+  id: number
+  host: string
+  asset_type: string
+  service: string | null
+  port: number | null
+  issue: string | null
+  exposure_score: number
+  is_shadow_it: number
+  status: string
+  discovered_at: string
+}
+
+export type AsmSummary = {
+  total_assets: number
+  shadow_it: number
+  critical_exposures: number
+  assets_with_issues: number
+  average_exposure: number
+  by_type: { asset_type: string; count: number }[]
+}
+
+export type BepMessage = {
+  id: number
+  subject: string
+  sender: string
+  recipient: string
+  threat_type: string
+  verdict: string
+  has_payload: number
+  confidence: number
+  detected_at: string
+}
+
+export type BepSummary = {
+  total_messages: number
+  stopped: number
+  quarantined: number
+  payload_free: number
+  bec: number
+  by_threat_type: { threat_type: string; count: number }[]
+  by_verdict: { verdict: string; count: number }[]
+}
+
+export type XdrDetection = {
+  id: number
+  rule: string
+  layer: string
+  severity: string
+  status: string
+  host: string | null
+  technique: string | null
+  detected_at: string
+}
+
+export type XdrSummary = {
+  total_detections: number
+  open: number
+  contained: number
+  high_severity: number
+  by_layer: { layer: string; count: number }[]
+  by_severity: { severity: string; count: number }[]
 }
 
 export type TiAlert = {
@@ -144,6 +220,41 @@ export function usePhishingDomains(limit = 100) {
 export function useFraudCases(limit = 100) {
   const { data, error, isLoading } = useSWR<FraudCase[]>(`/api/fraud/cases?limit=${limit}`, authFetcher, swrOptions)
   return { cases: data ?? [], error, isLoading }
+}
+
+export function useDrpSummary() {
+  const { data, error, isLoading } = useSWR<DrpSummary>('/api/drp/summary', authFetcher, swrOptions)
+  return { summary: data, error, isLoading }
+}
+
+export function useAsmAssets(limit = 100) {
+  const { data, error, isLoading } = useSWR<AsmAsset[]>(`/api/asm/assets?limit=${limit}`, authFetcher, swrOptions)
+  return { assets: data ?? [], error, isLoading }
+}
+
+export function useAsmSummary() {
+  const { data, error, isLoading } = useSWR<AsmSummary>('/api/asm/summary', authFetcher, swrOptions)
+  return { summary: data, error, isLoading }
+}
+
+export function useBepMessages(limit = 100) {
+  const { data, error, isLoading } = useSWR<BepMessage[]>(`/api/bep/messages?limit=${limit}`, authFetcher, swrOptions)
+  return { messages: data ?? [], error, isLoading }
+}
+
+export function useBepSummary() {
+  const { data, error, isLoading } = useSWR<BepSummary>('/api/bep/summary', authFetcher, swrOptions)
+  return { summary: data, error, isLoading }
+}
+
+export function useXdrDetections(limit = 100) {
+  const { data, error, isLoading } = useSWR<XdrDetection[]>(`/api/xdr/detections?limit=${limit}`, authFetcher, swrOptions)
+  return { detections: data ?? [], error, isLoading }
+}
+
+export function useXdrSummary() {
+  const { data, error, isLoading } = useSWR<XdrSummary>('/api/xdr/summary', authFetcher, swrOptions)
+  return { summary: data, error, isLoading }
 }
 
 export function useIncidents(limit = 100) {

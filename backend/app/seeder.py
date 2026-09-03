@@ -18,7 +18,14 @@ from app.seed_data.services import SERVICES
 from app.seed_data.resources import RESOURCES
 from app.seed_data.blog_posts import BLOG_POSTS
 from app.seed_data.site_content import SITE_CONTENT
-from app.seed_data.workspace import TI_ALERTS, FRAUD_CASES
+from app.seed_data.workspace import (
+    ASM_ASSETS,
+    BEP_MESSAGES,
+    DRP_ITEMS,
+    FRAUD_CASES,
+    TI_ALERTS,
+    XDR_DETECTIONS,
+)
 from app.auth_utils import hash_password
 
 logger = logging.getLogger(__name__)
@@ -53,6 +60,10 @@ def seed_workspace_demo(conn: sqlite3.Connection) -> None:
     """
     _seed_ti_alerts(conn)
     _seed_fraud_cases(conn)
+    _seed_asm_assets(conn)
+    _seed_bep_messages(conn)
+    _seed_xdr_detections(conn)
+    _seed_drp_items(conn)
 
 
 def _is_empty(conn: sqlite3.Connection, table: str) -> bool:
@@ -109,6 +120,87 @@ def _seed_fraud_cases(conn: sqlite3.Connection) -> None:
     )
     conn.commit()
     logger.info("  Seeded %d fraud cases.", len(FRAUD_CASES))
+
+
+def _seed_asm_assets(conn: sqlite3.Connection) -> None:
+    if not _is_empty(conn, "asm_assets"):
+        return
+    conn.executemany(
+        "INSERT INTO asm_assets"
+        " (host, asset_type, service, port, issue, exposure_score, is_shadow_it, status, discovered_at)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            (host, kind, service, port, issue, score, shadow, status, _hours_ago(hours))
+            for host, kind, service, port, issue, score, shadow, status, hours in ASM_ASSETS
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d attack surface assets.", len(ASM_ASSETS))
+
+
+def _seed_bep_messages(conn: sqlite3.Connection) -> None:
+    if not _is_empty(conn, "bep_messages"):
+        return
+    conn.executemany(
+        "INSERT INTO bep_messages"
+        " (subject, sender, recipient, threat_type, verdict, has_payload, confidence, detected_at)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            (subject, sender, to, kind, verdict, payload, confidence, _hours_ago(hours))
+            for subject, sender, to, kind, verdict, payload, confidence, hours in BEP_MESSAGES
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d email messages.", len(BEP_MESSAGES))
+
+
+def _seed_xdr_detections(conn: sqlite3.Connection) -> None:
+    if not _is_empty(conn, "xdr_detections"):
+        return
+    conn.executemany(
+        "INSERT INTO xdr_detections"
+        " (rule, layer, severity, status, host, technique, detected_at)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [
+            (rule, layer, severity, status, host, technique, _hours_ago(hours))
+            for rule, layer, severity, status, host, technique, hours in XDR_DETECTIONS
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d XDR detections.", len(XDR_DETECTIONS))
+
+
+def _seed_drp_items(conn: sqlite3.Connection) -> None:
+    """Seed brand-abuse items, replacing rows that predate the channel column.
+
+    Like the fraud seed, this also runs when the table holds only rows written
+    before the widening — those cannot populate the channel or takedown
+    figures and are demo data themselves.
+    """
+    total = conn.execute("SELECT COUNT(*) FROM drp_phishing").fetchone()[0]
+    unclassified = conn.execute(
+        "SELECT COUNT(*) FROM drp_phishing WHERE channel IS NULL"
+    ).fetchone()[0]
+
+    if total and unclassified != total:
+        return
+    if total:
+        conn.execute("DELETE FROM drp_phishing")
+
+    rows = []
+    for name, status, channel, risk, hours, takedown_after in DRP_ITEMS:
+        discovered = _hours_ago(hours)
+        # A takedown lands some hours after discovery, never before it.
+        taken = _hours_ago(hours - takedown_after) if takedown_after is not None else None
+        rows.append((name, status, channel, risk, taken, discovered))
+
+    conn.executemany(
+        "INSERT INTO drp_phishing (domain, status, channel, risk, takedown_at, discovered_at)"
+        " VALUES (?, ?, ?, ?, ?, ?)",
+        rows,
+    )
+    conn.commit()
+    logger.info("  Seeded %d digital risk items.", len(DRP_ITEMS))
 
 
 # ---------------------------------------------------------------------------

@@ -237,6 +237,239 @@ def get_fraud_summary():
         }
 
 
+@router.get("/asm/assets")
+def get_asm_assets(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
+    """External assets, most exposed first.
+
+    Ordered by exposure rather than discovery date because this list is worked
+    top-down: the question is what to fix next, not what turned up last.
+    """
+    with get_connection() as conn:
+        return _rows(
+            conn,
+            """
+            SELECT id, host, asset_type, service, port, issue,
+                   exposure_score, is_shadow_it, status, discovered_at
+              FROM asm_assets
+          ORDER BY exposure_score DESC, discovered_at DESC
+             LIMIT ?
+            """,
+            (limit,),
+        )
+
+
+@router.get("/asm/summary")
+def get_asm_summary():
+    """Counts and exposure breakdown for the attack surface dashboard."""
+    with get_connection() as conn:
+        totals = conn.execute(
+            """
+            SELECT COUNT(*)                                   AS total,
+                   COALESCE(SUM(is_shadow_it), 0)             AS shadow_it,
+                   COALESCE(SUM(exposure_score >= 70), 0)     AS critical,
+                   COALESCE(SUM(issue IS NOT NULL), 0)        AS with_issues,
+                   COALESCE(AVG(exposure_score), 0)           AS average_exposure
+              FROM asm_assets
+             WHERE status = 'active'
+            """
+        ).fetchone()
+
+        return {
+            "total_assets": totals["total"],
+            "shadow_it": totals["shadow_it"],
+            "critical_exposures": totals["critical"],
+            "assets_with_issues": totals["with_issues"],
+            "average_exposure": round(totals["average_exposure"], 1),
+            "by_type": _rows(
+                conn,
+                """
+                SELECT asset_type, COUNT(*) AS count
+                  FROM asm_assets
+                 WHERE status = 'active'
+              GROUP BY asset_type
+              ORDER BY count DESC
+                """,
+                (),
+            ),
+        }
+
+
+@router.get("/bep/messages")
+def get_bep_messages(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
+    """Messages the email gateway acted on, newest first."""
+    with get_connection() as conn:
+        return _rows(
+            conn,
+            """
+            SELECT id, subject, sender, recipient, threat_type,
+                   verdict, has_payload, confidence, detected_at
+              FROM bep_messages
+          ORDER BY detected_at DESC
+             LIMIT ?
+            """,
+            (limit,),
+        )
+
+
+@router.get("/bep/summary")
+def get_bep_summary():
+    """Aggregates for the email protection dashboard.
+
+    `payload_free` is called out separately because it is the half of the
+    problem detonation cannot catch, and therefore the half worth watching.
+    """
+    with get_connection() as conn:
+        totals = conn.execute(
+            """
+            SELECT COUNT(*)                                                AS total,
+                   COALESCE(SUM(verdict IN ('blocked', 'detonated')), 0)   AS stopped,
+                   COALESCE(SUM(verdict = 'quarantined'), 0)               AS quarantined,
+                   COALESCE(SUM(has_payload = 0), 0)                       AS payload_free,
+                   COALESCE(SUM(threat_type = 'bec'), 0)                   AS bec
+              FROM bep_messages
+            """
+        ).fetchone()
+
+        return {
+            "total_messages": totals["total"],
+            "stopped": totals["stopped"],
+            "quarantined": totals["quarantined"],
+            "payload_free": totals["payload_free"],
+            "bec": totals["bec"],
+            "by_threat_type": _rows(
+                conn,
+                """
+                SELECT threat_type, COUNT(*) AS count
+                  FROM bep_messages
+              GROUP BY threat_type
+              ORDER BY count DESC
+                """,
+                (),
+            ),
+            "by_verdict": _rows(
+                conn,
+                """
+                SELECT verdict, COUNT(*) AS count
+                  FROM bep_messages
+              GROUP BY verdict
+              ORDER BY count DESC
+                """,
+                (),
+            ),
+        }
+
+
+@router.get("/xdr/detections")
+def get_xdr_detections(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
+    """Detections across every monitored layer, newest first."""
+    with get_connection() as conn:
+        return _rows(
+            conn,
+            """
+            SELECT id, rule, layer, severity, status, host, technique, detected_at
+              FROM xdr_detections
+          ORDER BY detected_at DESC
+             LIMIT ?
+            """,
+            (limit,),
+        )
+
+
+@router.get("/xdr/summary")
+def get_xdr_summary():
+    """Aggregates for the managed detection dashboard."""
+    with get_connection() as conn:
+        totals = conn.execute(
+            """
+            SELECT COUNT(*)                                        AS total,
+                   COALESCE(SUM(status = 'open'), 0)               AS open,
+                   COALESCE(SUM(status = 'contained'), 0)          AS contained,
+                   COALESCE(SUM(severity IN ('critical','high')), 0) AS high_severity
+              FROM xdr_detections
+            """
+        ).fetchone()
+
+        return {
+            "total_detections": totals["total"],
+            "open": totals["open"],
+            "contained": totals["contained"],
+            "high_severity": totals["high_severity"],
+            "by_layer": _rows(
+                conn,
+                """
+                SELECT layer, COUNT(*) AS count
+                  FROM xdr_detections
+              GROUP BY layer
+              ORDER BY count DESC
+                """,
+                (),
+            ),
+            "by_severity": _rows(
+                conn,
+                """
+                SELECT severity, COUNT(*) AS count
+                  FROM xdr_detections
+              GROUP BY severity
+              ORDER BY count DESC
+                """,
+                (),
+            ),
+        }
+
+
+@router.get("/drp/summary")
+def get_drp_summary():
+    """Aggregates for the digital risk dashboard.
+
+    The median time to takedown is computed in SQL over completed takedowns
+    only — averaging in the items still open would report a number that gets
+    better every time a case stalls.
+    """
+    with get_connection() as conn:
+        totals = conn.execute(
+            """
+            SELECT COUNT(*)                                        AS total,
+                   COALESCE(SUM(takedown_at IS NOT NULL), 0)       AS taken_down,
+                   COALESCE(SUM(status = 'active'), 0)             AS active,
+                   COALESCE(SUM(risk IN ('critical','high')), 0)   AS high_risk
+              FROM drp_phishing
+            """
+        ).fetchone()
+
+        hours = [
+            row["hours"]
+            for row in _rows(
+                conn,
+                """
+                SELECT (julianday(takedown_at) - julianday(discovered_at)) * 24 AS hours
+                  FROM drp_phishing
+                 WHERE takedown_at IS NOT NULL
+              ORDER BY hours
+                """,
+                (),
+            )
+        ]
+        median = round(hours[len(hours) // 2], 1) if hours else None
+
+        return {
+            "total_items": totals["total"],
+            "taken_down": totals["taken_down"],
+            "active": totals["active"],
+            "high_risk": totals["high_risk"],
+            "median_takedown_hours": median,
+            "by_channel": _rows(
+                conn,
+                """
+                SELECT COALESCE(channel, 'unknown') AS channel, COUNT(*) AS count
+                  FROM drp_phishing
+              GROUP BY channel
+              ORDER BY count DESC
+                """,
+                (),
+            ),
+        }
+
+
 @router.get("/drp/phishing")
 def get_phishing_domains(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
     """Phishing domains detected against the customer's brand."""
@@ -244,7 +477,7 @@ def get_phishing_domains(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
         return _rows(
             conn,
             """
-            SELECT id, domain, status, discovered_at
+            SELECT id, domain, status, channel, risk, takedown_at, discovered_at
               FROM drp_phishing
           ORDER BY discovered_at DESC
              LIMIT ?

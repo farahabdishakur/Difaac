@@ -10,6 +10,9 @@ import OverviewPage from '@/pages/workspace/overview-page'
 import ThreatIntelligencePage from '@/pages/workspace/threat-intelligence-page'
 import DigitalRiskPage from '@/pages/workspace/digital-risk-page'
 import FraudPage from '@/pages/workspace/fraud-page'
+import ManagedXdrPage from '@/pages/workspace/managed-xdr-page'
+import AttackSurfacePage from '@/pages/workspace/attack-surface-page'
+import EmailProtectionPage from '@/pages/workspace/email-protection-page'
 import IncidentsPage from '@/pages/workspace/incidents-page'
 import SettingsPage from '@/pages/workspace/settings-page'
 import DemoRequestsPage from '@/pages/workspace/demo-requests-page'
@@ -73,6 +76,9 @@ export default function App() {
             <Route path="threat-intelligence" element={<ThreatIntelligencePage />} />
             <Route path="digital-risk" element={<DigitalRiskPage />} />
             <Route path="fraud" element={<FraudPage />} />
+            <Route path="managed-xdr" element={<ManagedXdrPage />} />
+            <Route path="attack-surface" element={<AttackSurfacePage />} />
+            <Route path="email-protection" element={<EmailProtectionPage />} />
             <Route path="incidents" element={<IncidentsPage />} />
             <Route path="demo-requests" element={<DemoRequestsPage />} />
             <Route path="settings" element={<SettingsPage />} />

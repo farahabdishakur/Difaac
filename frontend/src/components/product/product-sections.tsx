@@ -327,9 +327,13 @@ export function ProductOverview({ overview }: { overview: ProductPageContent['ov
 }
 
 export function ProductFeatureGrid({ featureGrid }: { featureGrid: ProductPageContent['featureGrid'] }) {
+  // `overflow-hidden` on the section is load-bearing, not cosmetic: the
+  // decorative discs below are 24rem wide and anchored to its edges, so on a
+  // phone they extend past the viewport and give the whole page a horizontal
+  // scrollbar unless the section clips them.
   return (
-    <section className="relative py-20 lg:py-28">
-      <div className="absolute inset-0 opacity-40" aria-hidden="true">
+    <section className="relative overflow-hidden py-20 lg:py-28">
+      <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden="true">
         <div className="absolute right-0 top-0 size-96 rounded-full bg-brand/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 size-96 rounded-full bg-accent-cyan/5 blur-3xl" />
       </div>

@@ -31,7 +31,7 @@ const EMBLEM_SIZE = {
   /** Mega-menu row: big enough that the render still reads as glass, not a smudge. */
   menu: 'size-10',
   /** Product card and selection rows. */
-  card: 'size-12',
+  card: 'size-14',
   /** Product hero. Sized up from the card treatment because the emblem shares
       the accent of the wash behind it — at a smaller size it stops reading as
       an object and starts disappearing into its own backdrop. */

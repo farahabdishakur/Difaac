@@ -25,10 +25,10 @@ function ShowcaseArt({ entry, tone, slug }: { entry: ShowcaseEntry; tone: Tone; 
     return <BrowserFrame tone={tone} image={entry.screenshot.image} path={entry.screenshot.path} />
   }
 
-  // No workspace section built for this product yet, so there is nothing
-  // honest to screenshot. The emblem on its own panel is a deliberate
-  // alternative rather than a placeholder waiting to be filled — showing a
-  // mocked-up console here would be inventing a product that does not run.
+  // Every product currently ships a console, so this path is unused today. It
+  // stays as the honest fallback for the next product added: a mocked-up
+  // screenshot would advertise an interface that does not exist, where the
+  // emblem on its own panel reads as a deliberate choice.
   const Icon = getIcon(getProductBySlug(slug)?.icon ?? 'ShieldCheck')
   return (
     <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl border border-line bg-ink-2">

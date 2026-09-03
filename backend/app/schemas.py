@@ -135,11 +135,22 @@ CREATE TABLE IF NOT EXISTS ti_alerts (
 CREATE INDEX IF NOT EXISTS idx_ti_alerts_detected ON ti_alerts(detected_at);
 CREATE INDEX IF NOT EXISTS idx_ti_alerts_severity ON ti_alerts(severity);
 
--- Digital Risk Protection (DRP): Phishing Domains
+-- Digital Risk Protection: brand abuse found outside the perimeter.
+--
+-- Named for phishing domains because that is what it first held, but the
+-- `channel` column is what makes it useful: impersonation shows up on social
+-- platforms, marketplaces, and app stores as often as it does on a
+-- registered lookalike domain, and a brand team needs all of it in one list.
+--
+-- `takedown_at` being nullable is the point of the table — the gap between
+-- `discovered_at` and it is the number the team is measured on.
 CREATE TABLE IF NOT EXISTS drp_phishing (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     domain        TEXT UNIQUE NOT NULL,
     status        TEXT NOT NULL,
+    channel       TEXT,
+    risk          TEXT,
+    takedown_at   TEXT,
     discovered_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -165,6 +176,69 @@ CREATE TABLE IF NOT EXISTS fraud_cases (
 );
 
 CREATE INDEX IF NOT EXISTS idx_fraud_cases_detected ON fraud_cases(detected_at);
+
+-- Attack Surface Management: externally reachable assets.
+--
+-- `is_shadow_it` marks an asset discovery found that nobody had declared —
+-- the single most useful column on the table, because a forgotten host is
+-- what an attacker reaches first. It is stored rather than inferred, since
+-- only the discovery run knows whether the asset was in the declared
+-- inventory at the time it was found.
+--
+-- `exposure_score` is per-asset and set by the scanner; the dashboard
+-- aggregates it rather than recomputing what the scanner already decided.
+CREATE TABLE IF NOT EXISTS asm_assets (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    host           TEXT    NOT NULL,
+    asset_type     TEXT    NOT NULL,
+    service        TEXT,
+    port           INTEGER,
+    issue          TEXT,
+    exposure_score INTEGER NOT NULL DEFAULT 0,
+    is_shadow_it   INTEGER NOT NULL DEFAULT 0,
+    status         TEXT    NOT NULL DEFAULT 'active',
+    discovered_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_asm_assets_discovered ON asm_assets(discovered_at);
+
+-- Business Email Protection: messages the gateway acted on.
+--
+-- `has_payload` separates the two halves of the problem. Attachment and link
+-- attacks are caught by detonation; business email compromise carries nothing
+-- to detonate and is caught on language and context instead. A dashboard that
+-- did not distinguish them would hide which half is actually working.
+CREATE TABLE IF NOT EXISTS bep_messages (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    subject           TEXT    NOT NULL,
+    sender            TEXT    NOT NULL,
+    recipient         TEXT    NOT NULL,
+    threat_type       TEXT    NOT NULL,
+    verdict           TEXT    NOT NULL,
+    has_payload       INTEGER NOT NULL DEFAULT 1,
+    confidence        INTEGER NOT NULL DEFAULT 0,
+    detected_at       TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_bep_messages_detected ON bep_messages(detected_at);
+
+-- Managed XDR: detections across the monitored layers.
+--
+-- Separate from `incidents`: a detection is what a rule fired on, an incident
+-- is what an analyst opened after confirming one or correlating several. The
+-- ratio between the two tables is the number the SOC is actually judged on.
+CREATE TABLE IF NOT EXISTS xdr_detections (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    rule         TEXT    NOT NULL,
+    layer        TEXT    NOT NULL,
+    severity     TEXT    NOT NULL,
+    status       TEXT    NOT NULL DEFAULT 'open',
+    host         TEXT,
+    technique    TEXT,
+    detected_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_xdr_detections_detected ON xdr_detections(detected_at);
 
 -- Incident Response: Cases
 CREATE TABLE IF NOT EXISTS incidents (

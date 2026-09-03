@@ -1,50 +1,54 @@
 import { ArrowRight } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
-import { getIcon } from '@/components/icons/icon-map'
-import { solutionGroupAccent, toneBadge, toneGlow } from '@/lib/tone'
+import { Breadcrumb } from '@/components/layout/breadcrumb'
+import { HeroBackdrop } from '@/components/product/product-emblem'
+import { solutionGroupAccent } from '@/lib/tone'
 import type { Solution } from '@/lib/data/solutions'
 
 interface SolutionHeroProps {
   name: string
   tagline: string
   description: string
-  icon: string
   group: Solution['group']
 }
 
-export function SolutionHeroEnhanced({ name, tagline, description, icon, group }: SolutionHeroProps) {
-  const Icon = getIcon(icon)
+export function SolutionHeroEnhanced({ name, tagline, description, group }: SolutionHeroProps) {
   // Accent follows the solution's group (use-case / role / industry) rather
   // than the individual slug — see `solutionGroupAccent` in `@/lib/tone`.
   const tone = solutionGroupAccent[group]
 
   return (
-    <section className="relative overflow-hidden border-b border-brand/20 bg-gradient-to-b from-ink via-brand-ink/20 to-ink pt-20 pb-24 lg:pt-28 lg:pb-32">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className={`absolute -top-40 -right-40 h-80 w-80 rounded-full blur-3xl opacity-30 ${toneGlow[tone]}`} />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-accent-cyan/10 blur-3xl opacity-20" />
-        <div className="absolute top-1/2 left-1/4 h-64 w-64 rounded-full bg-brand/10 blur-3xl opacity-20" />
-      </div>
+    <section className="-mt-14 pt-[calc(3.5rem+4rem)] lg:-mt-16 lg:pt-[calc(4rem+5rem)] relative overflow-hidden pb-24 lg:pb-32">
+      {/* The same wash the product and service heroes use: the accent carries
+          up behind the transparent header and settles into the page ground,
+          so the section has no top edge. */}
+      <HeroBackdrop tone={tone} spread />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm ${toneBadge[tone]}`}>
-            <Icon className="size-4" />
-            <span className="text-sm font-medium">{name}</span>
-          </div>
+        {/* The breadcrumb carries the solution's name, so the headline is free
+            to be the promise rather than repeating the label — and the top of
+            the hero is anchored rather than starting on empty space. */}
+        <div className="mb-10 flex justify-center">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Solutions', href: '/solutions' },
+              { label: name },
+            ]}
+          />
+        </div>
 
-          <h1 className="mt-8 font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight text-text">
+        <div className="text-center">
+          <h1 className="font-display text-[clamp(30px,4vw,50px)] font-semibold leading-[1.15] tracking-tight text-text">
             {tagline}
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-body leading-relaxed">
-            {description}
-          </p>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-body">{description}</p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <LinkButton href="/talk-to-sales" size="lg" className="gap-2">
-              Let's Talk
-              <ArrowRight className="size-4" />
+              Let&apos;s Talk
+              <ArrowRight className="size-4" aria-hidden="true" />
             </LinkButton>
             <LinkButton href="/products" variant="secondary" size="lg">
               View Products

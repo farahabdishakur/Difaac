@@ -31,7 +31,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <CTABanner
             title="See what Difaac finds in your environment"
+            highlight="Difaac finds"
             description="Tell us what you are defending and we will show you the exposure, fraud, and adversary activity we can already see against it."
+            secondaryCta={{ label: 'Explore products', href: '/products' }}
           />
         </div>
       </section>

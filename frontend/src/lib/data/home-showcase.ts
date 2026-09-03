@@ -47,8 +47,8 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Signals from endpoints, network, email, and cloud land in one timeline instead of four consoles. Analysts who know your environment triage what fires, confirm what is real, and contain it under playbooks you approved in advance.',
     screenshot: {
-      image: '/screenshots/workspace-incidents.png',
-      path: '/workspace/incidents',
+      image: '/screenshots/workspace-managed-xdr.png',
+      path: '/workspace/managed-xdr',
     },
   },
   {
@@ -56,6 +56,10 @@ export const showcase: ShowcaseEntry[] = [
     headline: 'See everything you have left exposed',
     description:
       'Difaac maps the domains, hosts, and services that carry your name — including the ones nobody remembers deploying — and ranks what it finds by what an attacker could realistically reach, not by severity score alone.',
+    screenshot: {
+      image: '/screenshots/workspace-attack-surface.png',
+      path: '/workspace/attack-surface',
+    },
   },
   {
     slug: 'digital-risk-protection',
@@ -72,5 +76,9 @@ export const showcase: ShowcaseEntry[] = [
     headline: 'Keep the inbox from being the way in',
     description:
       'Attachments and links are detonated in isolation before they reach a mailbox, and the attempts that carry no payload at all — invoice fraud, executive impersonation — are caught on language and context instead.',
+    screenshot: {
+      image: '/screenshots/workspace-email-protection.png',
+      path: '/workspace/email-protection',
+    },
   },
 ]

@@ -20,6 +20,13 @@ const INDUSTRY_EMBLEM_IMAGE: Record<string, string> = {
   healthcare: '/industries/healthcare.png',
 }
 
+/** The emblem's image URL for a slug, for callers that need to place it
+ *  themselves rather than render the standard component — the industry hero
+ *  uses this to build its backdrop. */
+export function getIndustryEmblem(slug: string): string | undefined {
+  return INDUSTRY_EMBLEM_IMAGE[slug]
+}
+
 const EMBLEM_SIZE = {
   /** Mega-menu row, matching the product menu's emblem. */
   menu: 'size-10',

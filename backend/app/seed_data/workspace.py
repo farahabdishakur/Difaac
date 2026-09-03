@@ -110,6 +110,68 @@ TI_ALERTS: list[tuple[str, str, str, str, str | None, int, int]] = [
     ),
 ]
 
+# (host, asset_type, service, port, issue, exposure_score, shadow_it, status, hours_ago)
+ASM_ASSETS: list[tuple[str, str, str | None, int | None, str | None, int, int, str, int]] = [
+    ("legacy-vpn.difaac.io", "domain", "SSL VPN", 443, "End-of-life appliance, no vendor patches", 94, 1, "active", 3),
+    ("staging-api.difaac.io", "domain", "HTTP API", 8080, "Staging environment reachable from the internet", 88, 1, "active", 8),
+    ("mail-relay.difaac.io", "domain", "SMTP", 25, "Open relay test inconclusive, needs manual review", 76, 0, "active", 14),
+    ("backup-01.difaac.io", "domain", "RDP", 3389, "Remote desktop exposed without a gateway", 91, 1, "active", 19),
+    ("cdn-assets.difaac.io", "domain", "HTTPS", 443, None, 22, 0, "active", 26),
+    ("difaac-reports.s3.amazonaws.com", "cloud", "Object storage", None, "Bucket listing enabled", 82, 1, "active", 31),
+    ("41.203.18.44", "ip", "PostgreSQL", 5432, "Database port reachable from any address", 96, 0, "active", 38),
+    ("41.203.18.51", "ip", "HTTPS", 443, "Certificate expires in 9 days", 48, 0, "active", 45),
+    ("portal.difaac.io", "domain", "HTTPS", 443, None, 18, 0, "active", 52),
+    ("old-blog.difaac.io", "domain", "HTTP", 80, "Unmaintained CMS, plaintext only", 71, 1, "active", 60),
+    ("dev-jenkins.difaac.io", "domain", "Jenkins", 8443, "Build server exposed, anonymous read enabled", 89, 1, "active", 67),
+    ("archive.difaac.io", "domain", "HTTPS", 443, None, 15, 0, "retired", 80),
+]
+
+# (subject, sender, recipient, threat_type, verdict, has_payload, confidence, hours_ago)
+BEP_MESSAGES: list[tuple[str, str, str, str, str, int, int, int]] = [
+    ("Updated bank details for this month's invoice", "accounts@difaac-finance.co", "finance@difaac.io", "bec", "blocked", 0, 97, 1),
+    ("Urgent: approve this payment before close of business", "ceo.difaac@mail-secure.net", "finance@difaac.io", "bec", "blocked", 0, 95, 3),
+    ("Purchase order 4471 attached", "orders@supplier-portal.net", "procurement@difaac.io", "malware", "detonated", 1, 92, 5),
+    ("Your mailbox storage is full — verify now", "no-reply@difaac-webmail.info", "staff@difaac.io", "credential-harvest", "blocked", 1, 94, 7),
+    ("Shared document: Q3 payroll", "hr-share@docs-viewer.co", "hr@difaac.io", "phishing", "quarantined", 1, 86, 11),
+    ("RE: contract amendment", "legal@difaac-partners.org", "legal@difaac.io", "bec", "quarantined", 0, 78, 16),
+    ("Delivery failed — reschedule your parcel", "tracking@parcel-notice.info", "staff@difaac.io", "phishing", "blocked", 1, 88, 21),
+    ("Scanned document from the office printer", "scanner@difaac.io", "staff@difaac.io", "malware", "detonated", 1, 90, 28),
+    ("Payroll correction — action required", "payroll@difaac-hr.net", "finance@difaac.io", "bec", "quarantined", 0, 81, 34),
+    ("Security alert: unusual sign-in", "security@difaac-alerts.co", "staff@difaac.io", "credential-harvest", "blocked", 1, 93, 41),
+    ("Invoice reminder", "billing@known-supplier.com", "finance@difaac.io", "phishing", "delivered", 1, 34, 49),
+    ("Meeting notes", "colleague@difaac.io", "staff@difaac.io", "phishing", "delivered", 0, 21, 58),
+]
+
+# (rule, layer, severity, status, host, technique, hours_ago)
+XDR_DETECTIONS: list[tuple[str, str, str, str, str | None, str | None, int]] = [
+    ("Credential dumping via LSASS access", "endpoint", "critical", "contained", "WKS-2041", "T1003.001", 2),
+    ("Encoded PowerShell spawned by Office", "endpoint", "critical", "contained", "WKS-1187", "T1059.001", 4),
+    ("Beaconing to newly registered domain", "network", "high", "triaged", "WKS-2041", "T1071.001", 6),
+    ("Suspicious OAuth consent granted", "cloud", "high", "open", None, "T1528", 9),
+    ("Mailbox forwarding rule created", "email", "high", "open", None, "T1114.003", 12),
+    ("Scheduled task created by unsigned binary", "endpoint", "medium", "triaged", "SRV-0032", "T1053.005", 17),
+    ("Lateral SMB authentication burst", "network", "high", "contained", "SRV-0032", "T1021.002", 23),
+    ("Impossible travel on admin account", "cloud", "medium", "closed", None, "T1078.004", 29),
+    ("Archive password-protected on egress", "network", "medium", "open", "WKS-1187", "T1560.001", 36),
+    ("Defender exclusion path added", "endpoint", "high", "triaged", "WKS-0918", "T1562.001", 44),
+    ("Anomalous volume of file reads", "endpoint", "medium", "closed", "SRV-0011", "T1005", 52),
+    ("Sign-in from unfamiliar ASN", "cloud", "low", "closed", None, "T1078", 61),
+]
+
+# (domain/handle, status, channel, risk, hours_ago, takedown_hours_after or None)
+DRP_ITEMS: list[tuple[str, str, str, str, int, int | None]] = [
+    ("difaac-secure-login.com", "takedown_in_progress", "domain", "critical", 2, None),
+    ("difaac-support.info", "active", "domain", "high", 6, None),
+    ("d1faac.com", "taken_down", "domain", "high", 30, 19),
+    ("@difaac_official_help", "takedown_in_progress", "social", "high", 9, None),
+    ("Difaac Wallet (unofficial)", "taken_down", "app-store", "critical", 54, 26),
+    ("difaac-verify.net", "taken_down", "domain", "medium", 72, 31),
+    ("@difaac.rewards", "active", "social", "medium", 15, None),
+    ("Difaac branded merchandise listing", "taken_down", "marketplace", "low", 96, 58),
+    ("difaac-billing.co", "monitoring", "domain", "medium", 21, None),
+    ("Difaac Security (fake page)", "takedown_in_progress", "social", "high", 27, None),
+]
+
 # (session_id, risk_score, status, signal, channel, country, hours_ago)
 FRAUD_CASES: list[tuple[str, int, str, str, str, str, int]] = [
     ("sess_a1b2c3", 97, "blocked", "Credential stuffing", "web", "Somalia", 1),

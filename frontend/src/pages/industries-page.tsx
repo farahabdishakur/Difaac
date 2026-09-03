@@ -31,6 +31,7 @@ export default function IndustriesPage() {
           eyebrow="Industries"
           title="Protecting Every Sector"
           description="Tailored threat intelligence and cyber defense solutions designed for the unique challenges of your industry."
+          tone="brand"
           breadcrumb={[
             { label: 'Home', href: '/' },
             { label: 'Industries' },

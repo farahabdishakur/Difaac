@@ -1,12 +1,39 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Check, ArrowRight } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { SolutionHeroEnhanced } from '@/components/home/solution-hero-enhanced'
 import { SolutionHighlights } from '@/components/home/solution-highlights'
 import { GlassIcon } from '@/components/product/product-sections'
-import { solutionGroupAccent } from '@/lib/tone'
+import { ProductEmblem } from '@/components/product/product-emblem'
+import { getIcon } from '@/components/icons/icon-map'
+import { solutionGroupAccent, productAccent, toneText } from '@/lib/tone'
 import { getSolutionBySlug } from '@/lib/data/solutions'
+import { getProductBySlug } from '@/lib/data/products'
 import NotFoundPage from '@/pages/not-found-page'
+
+/**
+ * Which products deliver each solution.
+ *
+ * A solution is a problem framing, not a thing you can buy — the page has to
+ * end by naming what actually does the work, or it leaves the reader with a
+ * diagnosis and no prescription. Mapped explicitly rather than inferred from
+ * keywords so a wrong pairing is a visible edit, not a silent match.
+ */
+const relatedProducts: Record<string, string[]> = {
+  'ransomware-protection': ['managed-xdr', 'threat-intelligence', 'attack-surface-management'],
+  'phishing-scam-protection': ['digital-risk-protection', 'business-email-protection'],
+  'bot-protection': ['fraud-protection'],
+  'dark-web-monitoring': ['threat-intelligence', 'digital-risk-protection'],
+  'data-leak-detection': ['digital-risk-protection', 'threat-intelligence'],
+  'vulnerability-management': ['attack-surface-management'],
+  'network-security': ['managed-xdr', 'threat-intelligence'],
+  ciso: ['managed-xdr', 'threat-intelligence', 'attack-surface-management'],
+  'head-of-fraud': ['fraud-protection', 'digital-risk-protection'],
+  'head-of-brand-protection': ['digital-risk-protection', 'business-email-protection'],
+  'head-of-threat-intelligence': ['threat-intelligence'],
+  'soc-manager': ['managed-xdr', 'threat-intelligence'],
+  'security-analyst': ['threat-intelligence', 'managed-xdr'],
+}
 
 const solutionDetails: Record<string, { benefits: string[]; useCases: string[] }> = {
   'ransomware-protection': {
@@ -234,6 +261,10 @@ export default function SolutionDetailPage() {
   }
 
   const tone = solutionGroupAccent[solution.group]
+  // The products that actually deliver this solution. A solution page that
+  // never names them leaves the reader with a problem and no way to buy the
+  // answer, which is the one thing it exists to prevent.
+  const related = relatedProducts[slug] ?? []
 
   return (
     <>
@@ -241,30 +272,29 @@ export default function SolutionDetailPage() {
         name={solution.name}
         tagline={solution.tagline}
         description={solution.description}
-        icon={solution.icon}
         group={solution.group}
       />
 
       <SolutionHighlights highlights={solution.highlights || details.benefits.slice(0, 4)} group={solution.group} />
 
-      <section className="py-16 lg:py-24">
+      {/* What the solution actually does, as an ordered capability list. */}
+      <section className="border-t border-line-soft bg-ink-2 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
-            <span className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-xs font-medium text-brand">
-              Full Benefits
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[tone]}`}>
+              Capabilities
             </span>
-            <h2 className="mt-6 font-display text-[clamp(28px,4vw,42px)] font-bold leading-tight text-text">
-              Complete capabilities
+            <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+              What {solution.name} puts in place
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {details.benefits.map((benefit, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-4 rounded-lg border border-line-soft bg-ink-2/50 p-6 backdrop-blur-sm"
-              >
-                <GlassIcon icon={Check} tone={tone} size="sm" />
+          <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
+            {details.benefits.map((benefit, index) => (
+              <div key={benefit} className="flex items-start gap-4 bg-ink px-6 py-6">
+                <span className="mt-0.5 font-mono text-xs text-muted-2">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
                 <p className="text-sm leading-relaxed text-body">{benefit}</p>
               </div>
             ))}
@@ -272,21 +302,25 @@ export default function SolutionDetailPage() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24">
+      {/* Who runs into this, in their own words. */}
+      <section className="border-t border-line-soft py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
-            <h2 className="font-display text-[clamp(28px,4vw,42px)] font-bold leading-tight text-text">
-              Common use cases
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
+              Where it applies
+            </span>
+            <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+              Teams that come to us with this
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {details.useCases.map((useCase, idx) => (
+          <div className="grid gap-5 sm:grid-cols-2">
+            {details.useCases.map((useCase) => (
               <div
-                key={idx}
-                className="flex items-center gap-4 rounded-lg border border-line-soft bg-ink-2/50 p-6 backdrop-blur-sm transition-all duration-200 hover:border-brand/40"
+                key={useCase}
+                className="flex items-start gap-4 rounded-lg border border-line bg-ink-2/60 p-6 transition-colors hover:border-brand/40"
               >
-                <GlassIcon icon={ArrowRight} tone={tone} size="sm" />
+                <GlassIcon icon={Check} tone={tone} size="sm" />
                 <p className="text-sm leading-relaxed text-body">{useCase}</p>
               </div>
             ))}
@@ -294,11 +328,61 @@ export default function SolutionDetailPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28">
+      {/* The products behind it. */}
+      {related.length > 0 ? (
+        <section className="border-t border-line-soft bg-ink-2 py-16 lg:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
+                Delivered by
+              </span>
+              <h2 className="mt-4 text-balance font-display text-[clamp(24px,2.8vw,34px)] font-semibold leading-tight tracking-tight text-text">
+                The products that do this work
+              </h2>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((productSlug) => {
+                const product = getProductBySlug(productSlug)
+                if (!product) return null
+                const Icon = getIcon(product.icon)
+                return (
+                  <Link
+                    key={product.slug}
+                    to={`/products/${product.slug}`}
+                    className="group flex flex-col gap-4 rounded-lg border border-line bg-ink/60 p-6 transition-colors hover:border-brand/40 hover:bg-ink-3"
+                  >
+                    <ProductEmblem
+                      icon={Icon}
+                      tone={productAccent[product.slug] ?? 'brand'}
+                      slug={product.slug}
+                      size="card"
+                    />
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-display text-base font-semibold text-text">{product.name}</h3>
+                      <p className="text-sm leading-relaxed text-body">{product.tagline}</p>
+                    </div>
+                    <span className="mt-auto flex items-center gap-2 text-xs font-medium text-brand">
+                      Explore the product
+                      <ArrowRight
+                        className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="border-t border-line-soft py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <CTABanner
-            title={`Ready to implement ${solution.name}?`}
-            description="Talk to a Difaac specialist to see how this solution fits your organization."
+            title={`See ${solution.name} against your environment`}
+            highlight={solution.name}
+            description="Tell us what you are defending and we will show you what this looks like on your own estate rather than in the abstract."
           />
         </div>
       </section>

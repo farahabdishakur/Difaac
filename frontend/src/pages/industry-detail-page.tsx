@@ -15,7 +15,7 @@ interface IndustryData {
 
 const industryDetails: Record<string, IndustryData> = {
   'financial-services': {
-    highlight: 'Protect every transaction, every account, every day.',
+    highlight: 'Enterprise-Grade Cyber Defense for Financial Institutions',
     challenges: [
       {
         title: 'Account Takeover (ATO)',
@@ -60,7 +60,7 @@ const industryDetails: Record<string, IndustryData> = {
     ],
   },
   government: {
-    highlight: 'Defend critical infrastructure from evolving cyber threats.',
+    highlight: 'Mission-Critical Threat Intelligence for National Security',
     challenges: [
       {
         title: 'Advanced Persistent Threats',
@@ -105,7 +105,7 @@ const industryDetails: Record<string, IndustryData> = {
     ],
   },
   telecom: {
-    highlight: 'Secure networks that billions of users depend on.',
+    highlight: 'Advanced Network Protection for Telecommunications Infrastructure',
     challenges: [
       {
         title: 'SIM Swap & Account Fraud',
@@ -150,7 +150,7 @@ const industryDetails: Record<string, IndustryData> = {
     ],
   },
   'retail-ecommerce': {
-    highlight: 'Stop fraud without slowing down checkout.',
+    highlight: 'Intelligent Fraud Prevention for Modern Commerce',
     challenges: [
       {
         title: 'Account Takeover',
@@ -195,7 +195,7 @@ const industryDetails: Record<string, IndustryData> = {
     ],
   },
   crypto: {
-    highlight: 'Protect digital assets from emerging cryptocurrency threats.',
+    highlight: 'Comprehensive Threat Defense for Digital Asset Platforms',
     challenges: [
       {
         title: 'Account & Wallet Compromise',
@@ -240,7 +240,7 @@ const industryDetails: Record<string, IndustryData> = {
     ],
   },
   healthcare: {
-    highlight: 'Protect patient data and clinical systems from cyber threats.',
+    highlight: 'Clinical-Grade Cybersecurity for Healthcare Organizations',
     challenges: [
       {
         title: 'Ransomware & Extortion',

@@ -14,7 +14,7 @@ type PageHeroProps = {
   secondaryCta?: { label: string; href: string }
   icon?: LucideIcon
   backgroundImage?: string
-  /** Opt-in glass wash behind the hero, in this tone. Omit for the plain background most pages use. */
+  /** Accent for the wash behind the hero. Brand green unless a page overrides it. */
   tone?: Tone
 }
 
@@ -27,11 +27,15 @@ export function PageHero({
   secondaryCta,
   icon: Icon,
   backgroundImage,
-  tone,
+  tone = 'brand',
 }: PageHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-ink py-16 sm:py-20 lg:py-24">
-      {tone ? <HeroBackdrop tone={tone} /> : null}
+    // `hero-ground` plus the negative margin is what the company page hero
+    // does: the green runs up behind the transparent header and settles into
+    // the page ground below, so the section has no top edge. Every page hero
+    // shares it rather than a flat `bg-ink` panel that starts under the nav.
+    <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4rem)] pb-16 sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24">
+      <HeroBackdrop tone={tone} />
       {backgroundImage ? (
         <div
           className="absolute inset-0 bg-cover bg-center opacity-15"

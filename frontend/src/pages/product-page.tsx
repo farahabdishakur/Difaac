@@ -21,17 +21,20 @@ import { getProductBySlug } from '@/lib/data/products'
 import ProductDetailPage from '@/pages/product-detail-page'
 
 /**
- * Products whose marketing page can show a real screenshot of the Difaac
- * workspace, because that product has a built workspace section to
- * screenshot. Attack Surface Management and Business Email Protection have
- * no workspace section yet, so they keep the page without one rather than
- * showing a screenshot of somewhere else's dashboard.
+ * The console each product ships, shown on its page as a real screenshot of
+ * the running workspace rather than a mock-up.
+ *
+ * Regenerate the images with `backend/capture_console_screenshots.py` after
+ * changing a dashboard, or the page will advertise an interface that no
+ * longer exists.
  */
 const workspaceScreenshot: Record<string, { image: string; path: string }> = {
   'threat-intelligence': { image: '/screenshots/workspace-threat-intelligence.png', path: '/workspace/threat-intelligence' },
-  'digital-risk-protection': { image: '/screenshots/workspace-digital-risk.png', path: '/workspace/digital-risk' },
   'fraud-protection': { image: '/screenshots/workspace-fraud.png', path: '/workspace/fraud' },
-  'managed-xdr': { image: '/screenshots/workspace-incidents.png', path: '/workspace/incidents' },
+  'managed-xdr': { image: '/screenshots/workspace-managed-xdr.png', path: '/workspace/managed-xdr' },
+  'attack-surface-management': { image: '/screenshots/workspace-attack-surface.png', path: '/workspace/attack-surface' },
+  'digital-risk-protection': { image: '/screenshots/workspace-digital-risk.png', path: '/workspace/digital-risk' },
+  'business-email-protection': { image: '/screenshots/workspace-email-protection.png', path: '/workspace/email-protection' },
 }
 
 /**

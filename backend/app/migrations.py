@@ -34,6 +34,11 @@ _ADD_COLUMNS: list[tuple[str, str, str]] = [
     ("fraud_cases", "signal", "TEXT"),
     ("fraud_cases", "channel", "TEXT"),
     ("fraud_cases", "country", "TEXT"),
+    # Digital risk widened from "phishing domains" to brand abuse across every
+    # channel, and to tracking how long a takedown actually took.
+    ("drp_phishing", "channel", "TEXT"),
+    ("drp_phishing", "risk", "TEXT"),
+    ("drp_phishing", "takedown_at", "TEXT"),
 ]
 
 

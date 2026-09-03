@@ -1,14 +1,33 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Radar, Fingerprint, ShieldAlert, Siren, Inbox, Settings, LogOut } from 'lucide-react'
+import {
+  LayoutDashboard,
+  Radar,
+  Fingerprint,
+  ShieldAlert,
+  Siren,
+  Inbox,
+  Settings,
+  LogOut,
+  Activity,
+  Globe,
+  Mail,
+} from 'lucide-react'
 import { LogoMark } from '@/components/layout/logo-mark'
 import { useAuthUser } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
 
+// The six products first, in the order they appear on the marketing site, so
+// a customer who bought "Attack Surface Management" finds a console with that
+// exact name in the same position. Everything after the rule is workspace
+// plumbing rather than a product.
 const navItems = [
   { to: '/workspace', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/workspace/threat-intelligence', label: 'Threat Intelligence', icon: Radar, end: false },
-  { to: '/workspace/digital-risk', label: 'Digital Risk Protection', icon: Fingerprint, end: false },
   { to: '/workspace/fraud', label: 'Fraud Protection', icon: ShieldAlert, end: false },
+  { to: '/workspace/managed-xdr', label: 'Managed XDR', icon: Activity, end: false },
+  { to: '/workspace/attack-surface', label: 'Attack Surface', icon: Globe, end: false },
+  { to: '/workspace/digital-risk', label: 'Digital Risk', icon: Fingerprint, end: false },
+  { to: '/workspace/email-protection', label: 'Email Protection', icon: Mail, end: false },
   { to: '/workspace/incidents', label: 'Incidents', icon: Siren, end: false },
   { to: '/workspace/demo-requests', label: 'Demo Requests', icon: Inbox, end: false },
   { to: '/workspace/settings', label: 'Settings', icon: Settings, end: false },

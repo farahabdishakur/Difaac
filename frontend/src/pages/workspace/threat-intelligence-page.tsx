@@ -7,26 +7,7 @@ import { StatCard } from '@/components/workspace/stat-card'
 import { ScoreDial } from '@/components/workspace/score-dial'
 import { BreakdownBars } from '@/components/workspace/breakdown-bars'
 import { useIocs, useThreatActors, useTiAlerts, useTiSummary } from '@/lib/workspace-api'
-
-/**
- * Relative time, to the coarsest useful unit.
- *
- * An alert feed is scanned, not read: "4h ago" answers "is this still live?"
- * in one glance where a full timestamp makes the reader do the subtraction.
- * The exact time stays available on the tables further down the page.
- */
-function timeAgo(iso: string): string {
-  // SQLite writes "YYYY-MM-DD HH:MM:SS" in UTC with no zone marker, which
-  // JavaScript would otherwise read as local time and show as hours adrift.
-  const value = new Date(iso.includes('T') ? iso : `${iso.replace(' ', 'T')}Z`)
-  const minutes = Math.round((Date.now() - value.getTime()) / 60_000)
-
-  if (minutes < 1) return 'just now'
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.round(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  return `${Math.round(hours / 24)}d ago`
-}
+import { formatDateTime, timeAgo } from '@/lib/time'
 
 function AlertRow({
   title,
@@ -218,7 +199,7 @@ export default function ThreatIntelligencePage() {
             { header: 'Type', cell: (r) => r.type },
             { header: 'Severity', cell: (r) => <SeverityBadge value={r.severity} /> },
             { header: 'Source', cell: (r) => r.source },
-            { header: 'Observed', cell: (r) => new Date(r.created_at).toLocaleString() },
+            { header: 'Observed', cell: (r) => formatDateTime(r.created_at) },
           ]}
         />
       </Panel>
