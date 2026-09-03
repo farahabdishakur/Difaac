@@ -29,12 +29,13 @@ import sqlite3
 import sys
 
 from app.auth_utils import hash_password
+from app.permissions import Role, permissions_for
 from app.database import get_connection
 from app.models import MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH
 
-# The roles the platform recognises. `analyst` is what self-service
-# registration assigns; `admin` is only ever set from here.
-ROLES = ("analyst", "admin")
+# Read from the permission model rather than restated here, so a role added
+# to `app/permissions.py` is immediately creatable without touching this file.
+ROLES = tuple(r.value for r in Role)
 
 
 def _normalise(email: str) -> str:

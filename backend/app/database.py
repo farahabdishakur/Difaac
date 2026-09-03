@@ -9,7 +9,7 @@ import sqlite3
 from contextlib import contextmanager
 from typing import Generator
 
-from app.config import DB_PATH
+from app.config import DB_PATH, SEED_DEMO_DATA
 from app.migrations import run_migrations
 from app.schemas import SCHEMA_SQL
 from app.seeder import seed_all, seed_workspace_demo
@@ -73,7 +73,12 @@ def init_db() -> None:
             
         # Workspace tables are seeded separately: they were added after the
         # first release, so an existing database has products but no SOC data.
-        seed_workspace_demo(conn)
+        # Gated, because this is illustrative data — never something a real
+        # customer should find in their console.
+        if SEED_DEMO_DATA:
+            seed_workspace_demo(conn)
+        else:
+            logger.info("Demo workspace data disabled (DIFAAC_SEED_DEMO is off).")
 
         # Ensure at least one user exists
         user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]

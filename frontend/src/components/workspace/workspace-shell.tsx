@@ -14,24 +14,34 @@ import {
 } from 'lucide-react'
 import { LogoMark } from '@/components/layout/logo-mark'
 import { useAuthUser } from '@/hooks/use-auth'
+import { PERMISSION, type PermissionName } from '@/hooks/use-permission'
 import { signOut } from '@/lib/auth'
 
 // The six products first, in the order they appear on the marketing site, so
 // a customer who bought "Attack Surface Management" finds a console with that
 // exact name in the same position. Everything after the rule is workspace
 // plumbing rather than a product.
-const navItems = [
+type NavItem = {
+  to: string
+  label: string
+  icon: typeof LayoutDashboard
+  end: boolean
+  /** Hidden unless the signed-in account holds this. Omit for always-visible. */
+  requires?: PermissionName
+}
+
+const navItems: NavItem[] = [
   { to: '/workspace', label: 'Overview', icon: LayoutDashboard, end: true },
-  { to: '/workspace/threat-intelligence', label: 'Threat Intelligence', icon: Radar, end: false },
-  { to: '/workspace/fraud', label: 'Fraud Protection', icon: ShieldAlert, end: false },
-  { to: '/workspace/managed-xdr', label: 'Managed XDR', icon: Activity, end: false },
-  { to: '/workspace/attack-surface', label: 'Attack Surface', icon: Globe, end: false },
-  { to: '/workspace/digital-risk', label: 'Digital Risk', icon: Fingerprint, end: false },
-  { to: '/workspace/email-protection', label: 'Email Protection', icon: Mail, end: false },
-  { to: '/workspace/incidents', label: 'Incidents', icon: Siren, end: false },
-  { to: '/workspace/demo-requests', label: 'Demo Requests', icon: Inbox, end: false },
+  { to: '/workspace/threat-intelligence', label: 'Threat Intelligence', icon: Radar, end: false, requires: PERMISSION.intelRead },
+  { to: '/workspace/fraud', label: 'Fraud Protection', icon: ShieldAlert, end: false, requires: PERMISSION.consolesRead },
+  { to: '/workspace/managed-xdr', label: 'Managed XDR', icon: Activity, end: false, requires: PERMISSION.consolesRead },
+  { to: '/workspace/attack-surface', label: 'Attack Surface', icon: Globe, end: false, requires: PERMISSION.consolesRead },
+  { to: '/workspace/digital-risk', label: 'Digital Risk', icon: Fingerprint, end: false, requires: PERMISSION.consolesRead },
+  { to: '/workspace/email-protection', label: 'Email Protection', icon: Mail, end: false, requires: PERMISSION.consolesRead },
+  { to: '/workspace/incidents', label: 'Incidents', icon: Siren, end: false, requires: PERMISSION.incidentsRead },
+  { to: '/workspace/demo-requests', label: 'Sales Enquiries', icon: Inbox, end: false, requires: PERMISSION.leadsRead },
   { to: '/workspace/settings', label: 'Settings', icon: Settings, end: false },
-] as const
+]
 
 /**
  * App shell for the authenticated SOC workspace.
@@ -44,6 +54,14 @@ const navItems = [
 export function WorkspaceShell() {
   const user = useAuthUser()
   const navigate = useNavigate()
+
+  // A viewer and an administrator sign in at the same place and land on the
+  // same platform; what differs is what it contains. Filtering here is a
+  // convenience so nobody is shown a door that will not open — the API
+  // enforces the same permissions on every request regardless.
+  const visibleNav = navItems.filter(
+    (item) => !item.requires || (user?.permissions?.includes(item.requires) ?? false),
+  )
 
   async function handleSignOut() {
     await signOut()
@@ -58,7 +76,7 @@ export function WorkspaceShell() {
         </div>
 
         <nav aria-label="Workspace" className="flex flex-1 flex-col gap-1 p-4">
-          {navItems.map((item) => (
+          {visibleNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -110,7 +128,7 @@ export function WorkspaceShell() {
             a tablet without adding a second navigation pattern to build and
             maintain. */}
         <nav aria-label="Workspace" className="flex gap-1 overflow-x-auto border-b border-line-soft bg-ink-2/60 px-4 py-2 lg:hidden">
-          {navItems.map((item) => (
+          {visibleNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

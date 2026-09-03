@@ -25,6 +25,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app import auth_service
+from app.permissions import Permission, has_permission, permissions_for
 from app.auth_utils import (
     create_access_token,
     decode_access_token,
@@ -77,6 +78,10 @@ def _row_to_profile(row: sqlite3.Row) -> dict:
         "full_name": row["full_name"],
         "role": row["role"],
         "created_at": row["created_at"],
+        # Resolved here rather than derived on the client: the client must not
+        # hold its own copy of the role table, or the two will disagree the
+        # first time a permission moves between roles.
+        "permissions": sorted(permissions_for(row["role"])),
     }
 
 
@@ -163,6 +168,32 @@ async def get_current_user(
     profile = _row_to_profile(row)
     profile["id"] = row["id"]
     return profile
+
+
+def require_permission(permission: Permission):
+    """A dependency that admits only users holding `permission`.
+
+    Written as a factory so a route declares the permission it needs rather
+    than the roles that happen to have it today — adding a role then means
+    editing one table in `permissions.py`, not hunting through the routes.
+
+    A refusal is 403, not 404: the caller authenticated successfully and the
+    resource exists, they are simply not allowed it. Hiding that distinction
+    would make a permissions bug indistinguishable from a broken URL.
+    """
+
+    async def dependency(user: dict = Depends(get_current_user)) -> dict:
+        if not has_permission(user["role"], permission):
+            logger.warning(
+                "Denied %s to %s (role %s)", permission, user["email"], user["role"]
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"This account does not have the '{permission}' permission",
+            )
+        return user
+
+    return dependency
 
 
 # ---------------------------------------------------------------------------

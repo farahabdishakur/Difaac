@@ -18,6 +18,15 @@ export type AuthUser = {
   full_name: string | null
   role: string
   created_at: string
+  /**
+   * What this account may do, resolved by the server from its role.
+   *
+   * The client renders from this rather than from `role`, so moving a
+   * permission between roles needs no frontend release. It is a rendering
+   * input only — every endpoint enforces the same check server-side, so a
+   * client that ignored this list would gain nothing but a 403.
+   */
+  permissions: string[]
 }
 
 type TokenPayload = {

@@ -4,6 +4,8 @@ import type { LucideIcon } from 'lucide-react'
 import { Panel } from '@/components/workspace/panel'
 import { SeverityBadge } from '@/components/workspace/severity-badge'
 import { useAuthUser } from '@/hooks/use-auth'
+import { PERMISSION, useHasPermission } from '@/hooks/use-permission'
+import { ExecutiveOverview } from '@/components/workspace/executive-overview'
 import { toneChip } from '@/lib/tone'
 import type { Tone } from '@/lib/tone'
 import { formatDateTime } from '@/lib/time'
@@ -68,8 +70,21 @@ function ProductCard({
   )
 }
 
+/**
+ * The workspace landing page, which is not the same page for everyone.
+ *
+ * Someone accountable for the organisation — an administrator or a security
+ * manager — opens the platform to judge posture and decide what to direct.
+ * An analyst opens it holding a queue, and needs the fastest route into
+ * whichever console has work in it. Same platform, same URL, same sign-in;
+ * the page answers whichever question the reader actually arrived with.
+ *
+ * The split is on a permission rather than a role name, so a role added later
+ * lands on the right side of it without editing this file.
+ */
 export default function OverviewPage() {
   const user = useAuthUser()
+  const isAccountable = useHasPermission(PERMISSION.auditRead)
   const ti = useTiSummary()
   const fraud = useFraudSummary()
   const xdr = useXdrSummary()
@@ -77,6 +92,10 @@ export default function OverviewPage() {
   const drp = useDrpSummary()
   const bep = useBepSummary()
   const { incidents, error: incidentsError, isLoading: incidentsLoading } = useIncidents(5)
+
+  if (isAccountable) {
+    return <ExecutiveOverview name={user?.full_name ?? ''} />
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -173,10 +192,6 @@ export default function OverviewPage() {
         </ul>
       </Panel>
 
-      <div className="rounded-[4px] border border-amber-line bg-amber-soft px-4 py-3 text-xs text-amber">
-        This workspace runs on seed data during development — see{' '}
-        <span className="font-mono">backend/app/routes/workspace.py</span> for the live endpoints it reads from.
-      </div>
     </div>
   )
 }

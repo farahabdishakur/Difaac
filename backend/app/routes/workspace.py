@@ -22,7 +22,8 @@ import sqlite3
 from fastapi import APIRouter, Depends, Query
 
 from app.database import get_connection
-from app.routes.auth import get_current_user
+from app.permissions import Permission
+from app.routes.auth import require_permission
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(
     prefix="/api",
     tags=["SOC Workspace"],
-    dependencies=[Depends(get_current_user)],
+    dependencies=[Depends(require_permission(Permission.CONSOLES_READ))],
 )
 
 DEFAULT_LIMIT = 100
@@ -516,3 +517,95 @@ def get_incidents(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             """,
             (limit,),
         )
+
+
+# ---------------------------------------------------------------------------
+# Organisation-wide view
+# ---------------------------------------------------------------------------
+# What a manager or administrator opens the platform to see: not six consoles
+# to visit in turn, but one answer to "how bad is it right now, and what needs
+# a decision today".
+
+
+@router.get("/overview/executive")
+def get_executive_overview():
+    """A single cross-product picture of where the organisation stands.
+
+    Every figure here is a live count over the same tables the consoles read,
+    so this page and the console a reader clicks into can never disagree. The
+    posture score is a weighted blend of the individual product signals rather
+    than a seventh number stored somewhere — a stored score is one that goes
+    stale the moment anything else changes.
+    """
+    with get_connection() as conn:
+        counts = conn.execute(
+            """
+            SELECT
+                (SELECT COUNT(*) FROM ti_alerts WHERE severity = 'critical')          AS critical_intel,
+                (SELECT COUNT(*) FROM xdr_detections WHERE severity = 'critical')     AS critical_detections,
+                (SELECT COUNT(*) FROM incidents WHERE status != 'RESOLVED')           AS open_incidents,
+                (SELECT COUNT(*) FROM xdr_detections WHERE status = 'open')           AS open_detections,
+                (SELECT COUNT(*) FROM asm_assets WHERE exposure_score >= 70
+                                                   AND status = 'active')             AS exposed_assets,
+                (SELECT COUNT(*) FROM asm_assets WHERE status = 'active')             AS total_assets,
+                (SELECT COUNT(*) FROM drp_phishing WHERE takedown_at IS NULL)         AS live_brand_abuse,
+                (SELECT COUNT(*) FROM fraud_cases WHERE risk_score >= 70)             AS high_risk_sessions,
+                (SELECT COUNT(*) FROM bep_messages WHERE threat_type = 'bec')         AS bec_attempts,
+                (SELECT COUNT(*) FROM ti_actors)                                      AS tracked_actors
+            """
+        ).fetchone()
+
+        # The events a decision-maker would want to see first, drawn from the
+        # three tables that carry severity, merged and ranked by recency. A
+        # UNION rather than three requests so the ordering is done once, by
+        # the database, over the whole set.
+        critical_events = _rows(
+            conn,
+            """
+            SELECT title, 'Threat intelligence' AS source, severity, detected_at AS occurred_at
+              FROM ti_alerts   WHERE severity IN ('critical', 'high')
+             UNION ALL
+            SELECT rule AS title, 'Managed XDR' AS source, severity, detected_at AS occurred_at
+              FROM xdr_detections WHERE severity IN ('critical', 'high')
+             UNION ALL
+            SELECT title, 'Incident' AS source, severity, created_at AS occurred_at
+              FROM incidents   WHERE severity IN ('CRITICAL', 'HIGH')
+          ORDER BY occurred_at DESC
+             LIMIT 8
+            """,
+            (),
+        )
+
+    critical_total = counts["critical_intel"] + counts["critical_detections"]
+
+    # Posture is expressed as risk, so 0 is a clean estate and 100 is one on
+    # fire. Each term is capped before weighting, so a single noisy signal
+    # cannot drive the whole figure — an estate with 400 exposed assets is in
+    # trouble, but not four times the trouble of one with 100.
+    def capped(value: int, ceiling: int) -> float:
+        return min(value, ceiling) / ceiling
+
+    posture = round(
+        100
+        * (
+            0.35 * capped(critical_total, 12)
+            + 0.25 * capped(counts["open_incidents"], 8)
+            + 0.20 * capped(counts["exposed_assets"], 10)
+            + 0.10 * capped(counts["live_brand_abuse"], 8)
+            + 0.10 * capped(counts["high_risk_sessions"], 12)
+        )
+    )
+
+    return {
+        "posture_score": posture,
+        "critical_threats": critical_total,
+        "open_incidents": counts["open_incidents"],
+        "unresolved_detections": counts["open_detections"],
+        "exposed_assets": counts["exposed_assets"],
+        "total_assets": counts["total_assets"],
+        "live_brand_abuse": counts["live_brand_abuse"],
+        "high_risk_sessions": counts["high_risk_sessions"],
+        "bec_attempts": counts["bec_attempts"],
+        "tracked_actors": counts["tracked_actors"],
+        "critical_events": critical_events,
+    }

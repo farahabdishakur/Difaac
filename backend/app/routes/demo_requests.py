@@ -22,7 +22,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 
 from app.database import get_connection
 from app.models import DemoRequestCreate, DemoRequestResponse, MessageResponse
-from app.routes.auth import get_current_user
+from app.permissions import Permission
+from app.routes.auth import require_permission
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ public_router = APIRouter(tags=["Demo Requests"])
 private_router = APIRouter(
     prefix="/api",
     tags=["Demo Requests"],
-    dependencies=[Depends(get_current_user)],
+    dependencies=[Depends(require_permission(Permission.LEADS_READ))],
 )
 
 DEFAULT_LIMIT = 100

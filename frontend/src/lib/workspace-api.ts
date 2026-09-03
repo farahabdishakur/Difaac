@@ -261,3 +261,34 @@ export function useIncidents(limit = 100) {
   const { data, error, isLoading } = useSWR<Incident[]>(`/api/incidents?limit=${limit}`, authFetcher, swrOptions)
   return { incidents: data ?? [], error, isLoading }
 }
+
+export type CriticalEvent = {
+  title: string
+  source: string
+  severity: string
+  occurred_at: string
+}
+
+export type ExecutiveOverview = {
+  posture_score: number
+  critical_threats: number
+  open_incidents: number
+  unresolved_detections: number
+  exposed_assets: number
+  total_assets: number
+  live_brand_abuse: number
+  high_risk_sessions: number
+  bec_attempts: number
+  tracked_actors: number
+  critical_events: CriticalEvent[]
+}
+
+/** The organisation-wide picture, for the roles that are accountable for it. */
+export function useExecutiveOverview() {
+  const { data, error, isLoading } = useSWR<ExecutiveOverview>(
+    '/api/overview/executive',
+    authFetcher,
+    swrOptions,
+  )
+  return { overview: data, error, isLoading }
+}

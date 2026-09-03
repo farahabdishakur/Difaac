@@ -138,6 +138,10 @@ class UserProfileResponse(BaseModel):
     full_name: str | None = None
     role: str
     created_at: str
+    # What this account may actually do. The client renders from this rather
+    # than from `role`, so a permission moving between roles needs no client
+    # release. Enforcement is still server-side on every endpoint.
+    permissions: list[str] = []
 
 
 class TokenResponse(BaseModel):

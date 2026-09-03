@@ -149,3 +149,13 @@ REFRESH_COOKIE_NAME: str = "difaac_refresh"
 
 SENTRY_DSN: str = os.getenv("DIFAAC_SENTRY_DSN", "").strip()
 
+# Whether to fill empty workspace tables with demonstration data.
+#
+# Defaults to on in DEBUG and off everywhere else, which is the safe way round:
+# a production deployment that forgets to set this shows a customer an empty
+# console, while the reverse would show them fabricated alerts about threat
+# actors that were never seen anywhere near their estate.
+SEED_DEMO_DATA: bool = os.getenv(
+    "DIFAAC_SEED_DEMO", "true" if DEBUG else "false"
+).lower() in ("1", "true", "yes")
+
