@@ -1,0 +1,34 @@
+# Reverse proxy and TLS for the Difaac platform.
+#
+# Caddy terminates HTTPS and gets its certificate from Let's Encrypt
+# automatically — the only thing it needs is a real domain pointed at this
+# server and ports 80/443 open. Everything is served from one origin: the
+# marketing site and app from the frontend container, and every /api and
+# /auth path from the backend. Same-origin is deliberate — it lets the
+# refresh-token cookie work as a plain SameSite=Lax cookie with no
+# cross-site handling.
+#
+# Replace difaac.example.com with the domain you pointed at this server.
+# For a first run without a domain yet, change the site line to :80 and
+# Caddy will serve plain HTTP so you can test by IP.
+
+difaac.example.com {
+	encode zstd gzip
+
+	# The API and auth endpoints go to the backend, everything else to the
+	# static frontend. Ordered most-specific first.
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+	handle /auth/* {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		reverse_proxy frontend:80
+	}
+
+	# HSTS: once a browser has seen HTTPS here, never let it fall back to
+	# plaintext. Safe because Caddy always serves this site over TLS.
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+}

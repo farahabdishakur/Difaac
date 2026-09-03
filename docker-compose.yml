@@ -1,20 +1,58 @@
-version: "3.8"
+# Production stack for a single VPS (e.g. a Hostinger VPS).
+#
+# Three services on one host: the FastAPI backend, the built frontend served
+# by nginx, and Caddy in front terminating TLS and routing everything from a
+# single domain. The database is SQLite on a named volume — a real file that
+# survives redeploys, which the ephemeral filesystem of a PaaS would not
+# provide. See DEPLOY.md for the Litestream backup add-on.
+#
+# Start:   docker compose up -d --build
+# Update:  git pull && docker compose up -d --build
+# Logs:    docker compose logs -f
 
 services:
   backend:
-    build: 
+    build:
       context: ./backend
-      dockerfile: Dockerfile
-    container_name: difaac_backend
-    restart: always
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
     volumes:
       - difaac_data:/data
     env_file:
       - ./backend/.env
     environment:
       - DIFAAC_DEBUG=false
+    # Not published to the host: only Caddy reaches it, over the internal
+    # network. The database and API are never exposed directly.
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Empty means "same origin": the browser calls /api/... on the domain
+        # it is already on, and Caddy routes it to the backend. This is what
+        # lets the auth cookie stay a simple same-site cookie.
+        VITE_API_URL: ""
+    restart: unless-stopped
+    expose:
+      - "80"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
 
 volumes:
   difaac_data:
+  caddy_data:
+  caddy_config:
