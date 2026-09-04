@@ -13,15 +13,22 @@ export function HeroSection() {
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left: Headline & CTAs */}
           <div className="max-w-2xl">
-            <h1 className="text-balance font-display font-semibold leading-[1.15] text-text t-display">
+            {/* A quiet line that says plainly what Difaac is before the
+                headline says what it does — one small accent, nothing more. */}
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">
+              Intelligent cyber defence
+            </span>
+
+            <h1 className="mt-4 text-balance font-display font-semibold leading-[1.15] text-text t-display">
               Fight Somalian
               <br />
               cybercrime.
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
-              Difaac maps the threat actors targeting your organisation and turns intelligence into
-              action — stopping breaches, fraud, and brand abuse before they cost you.
+              Difaac is a cyber defence platform built for organisations across Somalia and the
+              Horn of Africa. We track the groups behind ransomware, fraud, and brand abuse, and
+              give your team the intelligence to stop them before they do real harm.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">

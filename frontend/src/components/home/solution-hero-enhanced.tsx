@@ -1,6 +1,5 @@
 import { ArrowRight } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
-import { Breadcrumb } from '@/components/layout/breadcrumb'
 import { HeroBackdrop } from '@/components/product/product-emblem'
 import { solutionGroupAccent } from '@/lib/tone'
 import type { Solution } from '@/lib/data/solutions'
@@ -25,18 +24,6 @@ export function SolutionHeroEnhanced({ name, tagline, description, group }: Solu
       <HeroBackdrop tone={tone} spread />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        {/* The trail stops at the parent. The headline names the solution
-            immediately below it, so repeating the name here would only say the
-            same thing twice in the space of two lines. */}
-        <div className="mb-10 flex justify-center">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/' },
-              { label: 'Solutions', href: '/solutions' },
-            ]}
-          />
-        </div>
-
         <div className="text-center">
           <h1 className="font-display t-h1 font-semibold leading-[1.15] text-text">
             {tagline}

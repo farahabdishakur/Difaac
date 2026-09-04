@@ -86,7 +86,7 @@ export function MobileNav() {
                 nativeButton={false}
                 className="flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-brand hover:bg-ink-3 transition-colors"
               >
-                <span>Subscription Plans</span>
+                <span>Pricing</span>
                 <ChevronRight className="size-4 text-brand" />
               </SheetClose>
             </div>

@@ -51,7 +51,7 @@ export const productsMenu: MenuPanel = {
     image: '/emblems/emblem_unified-risk-platform.png',
     links: [
       { label: 'Explore the platform', href: '/products' },
-      { label: 'Subscription plans', href: '/subscriptions' },
+      { label: 'Pricing', href: '/subscriptions' },
     ],
   },
   eyebrow: 'Products',

@@ -54,25 +54,9 @@ export function ServiceHero({
       <HeroBackdrop tone={tone} spread />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <nav aria-label="Breadcrumb" className="mb-8 flex justify-center">
-          <ol className="flex flex-wrap items-center gap-2 text-xs text-muted-2">
-            <li>
-              <a href="/" className="transition-colors hover:text-brand">
-                Home
-              </a>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <a href="/services" className="transition-colors hover:text-brand">
-                Services
-              </a>
-            </li>
-          </ol>
-        </nav>
-
-        {/* No name pill above the headline: the breadcrumb directly above it
-            already names the service, so a badge repeating it only pushes the
-            headline down the page. */}
+        {/* No name pill above the headline: the nav already names where you
+            are, so a badge repeating the service only pushes the headline down
+            the page. */}
         <div className="text-center">
           <h1 className="font-display t-h1 font-semibold leading-[1.15]">
             <span className="text-text">{hero.headlineLead}</span>

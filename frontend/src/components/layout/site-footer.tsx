@@ -10,7 +10,7 @@ const columns = [
       { label: 'Managed XDR', href: '/products/managed-xdr' },
       { label: 'Fraud Protection', href: '/products/fraud-protection' },
       { label: 'Attack Surface Management', href: '/products/attack-surface-management' },
-      { label: 'Subscription Plans', href: '/subscriptions/managed-xdr' },
+      { label: 'Pricing', href: '/subscriptions/managed-xdr' },
       { label: 'All products', href: '/products' },
     ],
   },
