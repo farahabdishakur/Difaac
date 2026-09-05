@@ -1,77 +1,86 @@
-import { PageHero } from '@/components/shared/page-hero'
+import { getIcon } from '@/components/icons/icon-map'
 import { CTABanner } from '@/components/shared/cta-banner'
-import { LinkButton } from '@/components/shared/link-button'
-import { ShieldCheck, Network, Award, ArrowRight } from 'lucide-react'
+import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
+import { partnerTracks } from '@/lib/data/company'
 
+/**
+ * Partners.
+ *
+ * The same company grammar, applied to partnerships. Honest about the stage:
+ * the programme is forming, so the page describes the shapes a partnership can
+ * take and how an engagement is agreed — not tiers, margins, or a channel org
+ * that does not exist yet.
+ */
 export default function PartnersPage() {
-  const partnerTypes = [
-    {
-      title: 'Managed Security Service Providers (MSSPs)',
-      desc: 'Embed Difaac Threat Intelligence and Managed XDR feeds into your SOC offerings to deliver high-margin threat hunting to your clients.',
-      icon: Network,
-    },
-    {
-      title: 'Technology Integrators & SIEM/SOAR Vendors',
-      desc: 'Integrate STIX/TAXII indicator feeds and automated enrichment APIs directly into existing security stack products.',
-      icon: ShieldCheck,
-    },
-    {
-      title: 'Channel & Advisory Partners',
-      desc: 'Deliver Difaac attack surface management, digital risk protection, and IR retainers with dedicated technical support and deal registration.',
-      icon: Award,
-    },
-  ]
-
   return (
     <>
-      <PageHero
-        tone="violet"
-        centered={true}
-        title="Scale Security Value with Difaac Intelligence"
-        description="Partner with Difaac to empower your security operations, increase recurring revenue, and protect client ecosystems against modern cybercrime."
-        backgroundImage="/company/partners-hero-bg.jpg"
+      <CompanyHero
+        heading={{ lead: 'Build on', accent: 'Difaac intelligence' }}
+        description="Difaac is designed to sit inside the security you already sell or run. If you deliver security services, integrate tooling, or advise organisations on their defence, there is a way to build on the platform together."
+        primary={{ label: 'Become a partner', href: '/company/contact' }}
+        secondary={{ label: 'See the platform', href: '/products' }}
+        bgImage="/company/partners-hero-bg.jpg"
       />
 
-      <section className="py-16 lg:py-24 bg-ink-2">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Partner Tracks</span>
-            <h2 className="font-display text-3xl font-bold text-text mt-1">Built for Strategic Alignment</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {partnerTypes.map((pt, idx) => {
-              const Icon = pt.icon
+      {/* Partner tracks — the three shapes a partnership can take. */}
+      <Band>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="Partner tracks"
+            heading={{ lead: 'Three ways to', accent: 'work together' }}
+            description="Whichever fits, the terms are scoped and priced in writing before either side commits."
+          />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {partnerTracks.map((track) => {
+              const Icon = getIcon(track.icon)
               return (
-                <div key={idx} className="flat-card p-8 flex flex-col justify-between">
-                  <div className="flex flex-col gap-4">
-                    <span className="flex size-12 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
-                      <Icon className="size-6" strokeWidth={1.8} />
-                    </span>
-                    <h3 className="font-display text-xl font-bold text-text">{pt.title}</h3>
-                    <p className="text-sm text-body leading-relaxed">{pt.desc}</p>
-                  </div>
-                  <div className="mt-8">
-                    <LinkButton href="/talk-to-sales" size="sm" variant="secondary" className="w-full justify-center border-line">
-                      Become a Partner
-                      <ArrowRight className="size-3.5 ml-1" />
-                    </LinkButton>
-                  </div>
+                <div key={track.title} className="flex flex-col gap-4 rounded-2xl border border-line bg-ink-2 p-6">
+                  <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-ink-3 text-brand">
+                    <Icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                  <h3 className="font-display text-lg font-medium text-text">{track.title}</h3>
+                  <p className="text-sm leading-relaxed text-body">{track.description}</p>
                 </div>
               )
             })}
           </div>
         </div>
-      </section>
+      </Band>
 
-      <section className="py-20 lg:py-28 bg-ink border-t border-line">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <CTABanner
-            title="Ready to elevate your security portfolio?"
-            description="Speak with our Global Channel Team to discuss partner tier requirements, margin structures, and joint go-to-market programs."
+      {/* How it works — honest about the stage. */}
+      <Band muted>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
+          <SectionHead
+            align="left"
+            eyebrow="How it works"
+            heading={{ lead: 'A programme', accent: 'still being built' }}
+            description="Difaac is early, and so is its partner programme. That means the first partners help shape it — the terms, the support, the way we go to market — rather than signing into something fixed. We would rather agree a working arrangement with a few good partners than publish tiers we cannot yet stand behind."
           />
+          <ol className="flex flex-col gap-3">
+            {[
+              { n: '01', t: 'Talk', d: 'Tell us what you deliver and who you deliver it to.' },
+              { n: '02', t: 'Scope', d: 'We agree what each side brings, in writing, before any commitment.' },
+              { n: '03', t: 'Build', d: 'Ship it to your customers, with a direct line to the people who built the platform.' },
+            ].map((step) => (
+              <li key={step.n} className="flex gap-4 rounded-2xl border border-line bg-ink-3/40 p-5">
+                <span className="font-mono text-sm tabular-nums text-brand/60">{step.n}</span>
+                <div>
+                  <span className="block text-sm font-medium text-text">{step.t}</span>
+                  <span className="mt-1 block text-sm leading-relaxed text-body">{step.d}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
-      </section>
+      </Band>
+
+      <Band>
+        <CTABanner
+          title="Interested in partnering?"
+          description="Tell us about your business and how you would want to work together. You will reach a founder, not a form."
+          primaryCta={{ label: 'Become a partner', href: '/company/contact' }}
+        />
+      </Band>
     </>
   )
 }

@@ -242,6 +242,34 @@ export function ServicesMegaMenu({ isOpen }: { isOpen: boolean }) {
   return <Panel panel={servicesMenu} isOpen={isOpen} width="max-w-[1180px]" />
 }
 
+/**
+ * Company is not a mega-menu.
+ *
+ * group-ib.com's smaller sections drop a plain vertical list of links rather
+ * than the featured panel the product menus use — a short set of destinations
+ * does not need a feature block or descriptions to be scannable, and a full
+ * panel over five names reads as scaffolding with nothing to hold up. This is
+ * that list: the entries stacked, names only, anchored under the Company item
+ * rather than spanning the viewport.
+ */
 export function CompanyDropdown({ isOpen }: { isOpen: boolean }) {
-  return <Panel panel={companyMenu} isOpen={isOpen} width="max-w-[880px]" />
+  return (
+    <div
+      className={cn(
+        'absolute left-0 top-full z-40 mt-2 w-60 overflow-hidden rounded-b-md border border-line border-t-2 border-t-brand bg-ink-2 py-2 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.9)] transition-[opacity,transform] duration-150 ease-out',
+        visibility(isOpen),
+      )}
+      inert={!isOpen}
+    >
+      {companyMenu.items.map((item) => (
+        <Link
+          key={item.key}
+          to={item.href}
+          className="block px-5 py-2.5 text-sm font-medium text-body transition-colors hover:bg-ink-3 hover:text-brand"
+        >
+          {item.name}
+        </Link>
+      ))}
+    </div>
+  )
 }

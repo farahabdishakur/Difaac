@@ -556,13 +556,9 @@ export default function ResourcesPage() {
       {/* ── Top Hero ── */}
       <div className="relative overflow-hidden bg-ink">
         <PageHero
-          eyebrow="Threat Intelligence Hub"
+          centered
           title="Threat Research & Analyst Briefs"
           description="Actionable intelligence, in-depth adversary investigations, APT campaign breakdowns, and defense playbooks from the frontlines of Difaac Cyber Defense Lab."
-          breadcrumb={[
-            { label: 'Home', href: '/' },
-            { label: 'Resources' },
-          ]}
         />
       </div>
 

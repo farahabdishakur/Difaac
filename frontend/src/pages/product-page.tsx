@@ -64,17 +64,17 @@ export default function ProductPage() {
   return (
     <>
       <ProductHero hero={content.hero} slug={slug} />
-      <ProductNotice tone={tone}>
+      <ProductNotice>
         {name} is delivered through the Difaac Unified Risk Platform — one deployment, shared
         intelligence across every product you run.
       </ProductNotice>
 
       {screenshot ? <ProductScreenshot tone={tone} image={screenshot.image} path={screenshot.path} /> : null}
 
-      <ProductBand band={content.band} />
+      <ProductBand band={content.band} tone={tone} />
       <ProductMetrics metrics={content.metrics} />
       <ProductOverview overview={content.overview} />
-      <ProductFeatureGrid featureGrid={content.featureGrid} />
+      <ProductFeatureGrid featureGrid={content.featureGrid} tone={tone} />
       <ProductTabs tabs={content.tabs} slug={slug} />
 
       <ProductMidCTA
@@ -83,9 +83,9 @@ export default function ProductPage() {
         action="Book a walkthrough"
       />
 
-      <ProductComparison comparison={content.comparison} />
+      <ProductComparison comparison={content.comparison} tone={tone} />
       <ProductPillars pillars={content.pillars} slug={slug} />
-      <ProductBenefits benefits={content.benefits} />
+      <ProductBenefits benefits={content.benefits} tone={tone} />
       <ProductTrust trust={content.trust} />
 
       <ProductDemoForm productName={name} productSlug={slug} tone={tone} />

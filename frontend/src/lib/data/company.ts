@@ -40,6 +40,9 @@ export type Commitment = {
 export type Founder = {
   name: string
   role: string
+  /** Portrait path under /public. Missing files fall back to a monogram, so a
+      photo can be dropped in at any time without touching code. */
+  photo?: string
 }
 
 /** What the company is for. */
@@ -65,9 +68,9 @@ export const founding = {
 }
 
 export const founders: Founder[] = [
-  { name: 'Farah', role: 'Co-Founder' },
-  { name: 'Sharmaarke', role: 'Co-Founder' },
-  { name: 'Khaalid', role: 'Co-Founder' },
+  { name: 'Farah', role: 'Co-Founder', photo: '/team/farah.jpg' },
+  { name: 'Sharmaarke', role: 'Co-Founder', photo: '/team/sharmaarke.jpg' },
+  { name: 'Khaalid', role: 'Co-Founder', photo: '/team/khaalid.jpg' },
 ]
 
 /**
@@ -152,6 +155,113 @@ export const capabilities: Capability[] = [
     title: 'Incident response',
     description:
       'On-demand response to contain an active incident, establish scope, and preserve evidence to a standard that survives scrutiny.',
+  },
+]
+
+/**
+ * Where the company is, and how to reach it.
+ *
+ * One office, stated as one office. The email and number are the real ones —
+ * the same pair carried in the footer and the contact panel — because a
+ * contact page that lists channels nobody answers is worse than one honest
+ * address.
+ */
+export const office = {
+  city: 'Awdal, Somaliland',
+  detail: 'Borama, Awdal region — where Difaac was founded and is built.',
+  hours: 'Saturday – Thursday · 08:00 – 18:00 EAT',
+}
+
+export type ContactChannel = {
+  icon: string
+  label: string
+  value: string
+  href: string
+  note: string
+}
+
+export const contactChannels: ContactChannel[] = [
+  {
+    icon: 'Mail',
+    label: 'Email',
+    value: 'Difaacgroup@gmail.com',
+    href: 'mailto:Difaacgroup@gmail.com',
+    note: 'General questions, partnerships, and careers — all reach the team here.',
+  },
+  {
+    icon: 'Phone',
+    label: 'Phone',
+    value: '+252 67 248 9335',
+    href: 'tel:+252672489335',
+    note: 'Reach a person directly during business hours.',
+  },
+  {
+    icon: 'MapPin',
+    label: 'Office',
+    value: office.city,
+    href: '#office',
+    note: office.detail,
+  },
+]
+
+/**
+ * How the team is described on the Team page.
+ *
+ * The founders are the whole team today, and the page says so. `titleLead`
+ * and the founding note carry the honesty principle at the top of this file:
+ * three people, named, with no invented seniority or fabricated advisory board.
+ */
+export const teamNote =
+  'Difaac is three people today — the founders who built it. As the platform grows so will the team, and this page will grow with it. We would rather show three real names than a page of invented titles.'
+
+/** Partner tracks. Framed as programmes being built, not an established one. */
+export type PartnerTrack = { icon: string; title: string; description: string }
+
+export const partnerTracks: PartnerTrack[] = [
+  {
+    icon: 'Network',
+    title: 'Managed service providers',
+    description:
+      'Fold Difaac intelligence and managed detection into the SOC service you already sell, so your customers get adversary context without you standing up a research team.',
+  },
+  {
+    icon: 'Boxes',
+    title: 'Technology integrators',
+    description:
+      'Pull indicators and enrichment into your own product over STIX/TAXII and REST. Difaac is built to sit inside a stack, not to replace one.',
+  },
+  {
+    icon: 'Handshake',
+    title: 'Channel and advisory',
+    description:
+      'Take Difaac to organisations you already advise, with the engagement scoped and priced in writing before either of us commits.',
+  },
+]
+
+/**
+ * Why someone would join. Honest about the stage: the draw is ownership and
+ * early influence, not scale or perks a three-person company cannot offer.
+ */
+export type CareerValue = { icon: string; title: string; description: string }
+
+export const careerValues: CareerValue[] = [
+  {
+    icon: 'Hammer',
+    title: 'Build it, don’t maintain it',
+    description:
+      'Difaac is early. Whatever you touch — detection logic, the analyst workspace, the platform itself — you are shaping how it works, not fitting into a system that already exists.',
+  },
+  {
+    icon: 'GitBranch',
+    title: 'No layer between idea and ship',
+    description:
+      'A small team means what you build is what customers use, without an org chart in between. Ownership is direct from the first week.',
+  },
+  {
+    icon: 'GraduationCap',
+    title: 'Started by students',
+    description:
+      'Difaac began as a Borama University final-year project. We look for the same curiosity and follow-through that carried it from an assignment to a working platform.',
   },
 ]
 

@@ -61,6 +61,10 @@ import {
   ScanSearch,
   MailWarning,
   ShieldAlert,
+  Phone,
+  MapPin,
+  Hammer,
+  GitBranch,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -127,6 +131,10 @@ const iconMap: Record<string, LucideIcon> = {
   ScanSearch,
   MailWarning,
   ShieldAlert,
+  Phone,
+  MapPin,
+  Hammer,
+  GitBranch,
 }
 
 export function getIcon(name?: string): LucideIcon {

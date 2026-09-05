@@ -1,80 +1,127 @@
-import { PageHero } from '@/components/shared/page-hero'
+import { ArrowRight } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
-import { Sparkles, Code2, GraduationCap } from 'lucide-react'
+import { LinkButton } from '@/components/shared/link-button'
+import { getIcon } from '@/components/icons/icon-map'
+import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
+import { careerValues } from '@/lib/data/company'
 
-const reasons = [
+/**
+ * The areas Difaac will open first. Not postings — the page is honest that no
+ * role is live — but the real disciplines the platform needs people in, so the
+ * "no openings" section says something a candidate can act on rather than
+ * leaving a bare line under a heading.
+ */
+const futureAreas = [
   {
-    icon: Sparkles,
-    title: 'Build the platform, not maintain someone else’s',
-    description:
-      'Difaac is early. Whatever you touch — detection logic, the SOC workspace, the platform itself — you are shaping how it works, not fitting into a system that already exists.',
+    title: 'Detection engineering',
+    description: 'Writing and tuning the rules that turn raw telemetry into detections worth an analyst’s time.',
   },
   {
-    icon: Code2,
-    title: 'Direct ownership from day one',
-    description:
-      'A small team means no layer between an idea and shipping it. What you build is what customers use.',
+    title: 'Threat analysis',
+    description: 'Validating detections, running down leads, and attributing activity to tracked actors.',
   },
   {
-    icon: GraduationCap,
-    title: 'Started by students, open to the same drive',
-    description:
-      'Difaac began as a Borama University final-year project. We look for the same curiosity and follow-through that took it from an assignment to a working platform.',
+    title: 'Offensive security',
+    description: 'Penetration testing and adversary simulation, reported with evidence a team can act on.',
   },
 ]
 
+/**
+ * Careers.
+ *
+ * group-ib.com's careers page runs a louder version of the same grammar and
+ * closes on real openings. Difaac's honest version keeps the grammar and is
+ * plain about the stage: three founders, early, no roles posted yet. The draw
+ * on offer is ownership and influence — not scale or perks a three-person
+ * company cannot honestly promise.
+ */
 export default function CareersPage() {
   return (
     <>
-      <PageHero
-        tone="brand"
-        centered={true}
-        title="We're a small team building something ambitious"
-        description="Difaac was founded by three students in Somaliland and is still early. There are no open roles listed right now, but if you want to help build an intelligence-driven defence platform from the ground up, we want to hear from you."
-        backgroundImage="/company/careers-hero-bg.jpg"
+      <CompanyHero
+        heading={{ lead: 'Build a defence platform', accent: 'from the ground up' }}
+        description="Difaac was founded by three students in Somaliland and is still early. There are no roles posted right now — but if you want to help build an intelligence-driven defence platform, we want to hear from you."
+        primary={{ label: 'Introduce yourself', href: '/company/contact' }}
+        secondary={{ label: 'Meet the team', href: '/company/team' }}
+        bgImage="/company/careers-hero-bg.jpg"
       />
 
-      <section className="py-16 lg:py-24 bg-ink-2">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center max-w-2xl mx-auto">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Why Difaac</span>
-            <h2 className="font-display t-h2 font-bold text-text mt-2">What working here actually looks like</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {reasons.map((reason) => (
-              <div key={reason.title} className="flat-card p-6 flex flex-col gap-4">
-                <div className="flex size-12 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
-                  <reason.icon className="size-6" strokeWidth={1.8} aria-hidden="true" />
-                </div>
-                <h3 className="font-display text-lg font-bold text-text">{reason.title}</h3>
-                <p className="text-sm text-body leading-relaxed">{reason.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 lg:py-24 bg-ink border-t border-line">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <span className="text-xs font-medium uppercase tracking-[0.14em] text-brand">Open roles</span>
-          <h2 className="mt-2 font-display text-2xl font-bold text-text">Nothing posted right now</h2>
-          <p className="mt-4 text-sm leading-relaxed text-body">
-            We are not hiring for specific positions at the moment. That will change as Difaac
-            grows — until then, an introduction from someone who wants to build this with us is
-            worth more than a role we invented to fill this page.
-          </p>
-        </div>
-      </section>
-
-      <section className="py-20 lg:py-28 bg-ink-2">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <CTABanner
-            title="Want to build this with us?"
-            description="Send us a note about what you would bring — we read every one."
+      {/* Why join — the honest draws, as a three-column grid. */}
+      <Band>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="Why Difaac"
+            heading={{ lead: 'What working here', accent: 'actually looks like' }}
           />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {careerValues.map((value) => {
+              const Icon = getIcon(value.icon)
+              return (
+                <div key={value.title} className="flex flex-col gap-4 rounded-2xl border border-line bg-ink-2 p-6">
+                  <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-ink-3 text-brand">
+                    <Icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                  <h3 className="font-display text-lg font-medium text-text">{value.title}</h3>
+                  <p className="text-sm leading-relaxed text-body">{value.description}</p>
+                </div>
+              )
+            })}
+          </div>
         </div>
-      </section>
+      </Band>
+
+      {/* Open roles — plainly none yet, but the section still gives a candidate
+          something to act on: the disciplines we hire into first, and a way in
+          before a posting exists. */}
+      <Band muted>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="Open roles"
+            heading={{ lead: 'The roles we’re', accent: 'building toward' }}
+            description="Difaac is early, so formal postings are still ahead of us. These are the disciplines we hire into first — reach out and you are known to us before a role is ever listed."
+          />
+
+          <div className="overflow-hidden rounded-2xl border border-line bg-ink-3/40">
+            <div className="flex flex-col gap-1.5 border-b border-line p-6 sm:p-8">
+              <h3 className="font-display text-lg font-medium text-text">Where we hire first</h3>
+              <p className="text-sm leading-relaxed text-body">
+                When roles open, they open in these areas. Tell us which one is yours.
+              </p>
+            </div>
+
+            <ul className="divide-y divide-line">
+              {futureAreas.map((area) => (
+                <li
+                  key={area.title}
+                  className="grid grid-cols-1 gap-2 p-6 sm:grid-cols-[minmax(0,14rem)_1fr] sm:gap-8 sm:p-8"
+                >
+                  <span className="font-display text-base font-medium text-text">{area.title}</span>
+                  <span className="text-sm leading-relaxed text-body">{area.description}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex flex-col items-start gap-4 border-t border-line p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+              <p className="text-sm text-body">
+                Don’t see your discipline? Reach out anyway — we would rather hear from the right
+                person early than wait for the right posting.
+              </p>
+              <LinkButton href="/company/contact" className="shrink-0">
+                Introduce yourself
+                <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
+              </LinkButton>
+            </div>
+          </div>
+        </div>
+      </Band>
+
+      <Band>
+        <CTABanner
+          title="Want to build this with us?"
+          description="Send a note about what you would bring. We read every one."
+          primaryCta={{ label: 'Get in touch', href: '/company/contact' }}
+        />
+      </Band>
     </>
   )
 }

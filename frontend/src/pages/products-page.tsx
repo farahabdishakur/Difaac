@@ -18,10 +18,9 @@ export default function ProductsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Products"
+        centered
         title="One platform for every layer of defense"
         description="Difaac unifies six products into a single intelligence-driven platform, so your team can detect, investigate, and respond without switching tools."
-        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Products' }]}
         secondaryCta={{ label: 'Compare products', href: '/subscriptions' }}
       />
 
@@ -39,6 +38,7 @@ export default function ProductsPage() {
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
+            align="center"
             eyebrow="The platform"
             title="Six products, one intelligence layer"
             description="Every product draws on the same adversary intelligence, so a signal detected in one area strengthens detection across the rest."

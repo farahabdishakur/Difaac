@@ -1,37 +1,46 @@
 import { Link } from 'react-router-dom'
-import {
-  ArrowRight,
-  Building2,
-  Mail,
-  Handshake,
-  Clock,
-  Zap,
-  Target,
-  ShieldCheck,
-} from 'lucide-react'
+import { ArrowRight, Users, Handshake, Mail } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
-import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
-import { HeroBackdrop } from '@/components/product/product-emblem'
-import { capabilities, commitments, principles, founders } from '@/lib/data/company'
+import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
+import { PersonGrid } from '@/components/company/person-grid'
+import {
+  mission,
+  founding,
+  founders,
+  capabilities,
+  principles,
+  commitments,
+  office,
+} from '@/lib/data/company'
+
+/**
+ * About Difaac.
+ *
+ * Built on group-ib.com's company grammar — an eyebrow, a plain headline with
+ * one phrase in the accent, a grey line, then content, repeated with room to
+ * breathe. The content is deliberately honest: what the platform does and
+ * commits to, how young the company is, and the three people who built it.
+ * Nothing here asserts a history Difaac has not had.
+ */
 
 const destinations = [
   {
-    icon: Building2,
-    title: 'Careers',
-    description: 'Open roles across intelligence, detection engineering, and offensive security.',
-    href: '/company/careers',
+    icon: Users,
+    title: 'The team',
+    description: 'The three founders building Difaac, and how the team grows from here.',
+    href: '/company/team',
   },
   {
     icon: Handshake,
     title: 'Partners',
-    description: 'MSSP, reseller, and technology partnerships.',
+    description: 'How service providers and integrators build on Difaac.',
     href: '/company/partners',
   },
   {
     icon: Mail,
     title: 'Contact',
-    description: 'Talk to the team, or reach the incident hotline.',
+    description: 'Reach the team directly — questions, partnerships, or an active incident.',
     href: '/company/contact',
   },
 ]
@@ -39,250 +48,146 @@ const destinations = [
 export default function CompanyPage() {
   return (
     <>
-      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
-        <HeroBackdrop tone="brand" bgImage="/company-hero-3d.jpg" spread />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column: Mission Narrative & Actions */}
-            <div className="lg:col-span-6 flex flex-col gap-6">
-              <h1 className="text-balance font-display text-4xl sm:text-5xl lg:text-5xl font-extrabold leading-[1.15] text-text">
-                Sovereign Defense. <span className="text-gradient">Relentless Precision.</span>
-              </h1>
+      <CompanyHero
+        heading={{ lead: 'Difaac builds', accent: 'intelligence-driven cyber defence' }}
+        description={mission.body}
+        primary={{ label: "Let's talk", href: '/talk-to-sales' }}
+        secondary={{ label: 'See the platform', href: '/products' }}
+        bgImage="/company-hero-3d.jpg"
+      />
 
-              <p className="text-pretty text-base sm:text-lg leading-relaxed text-body max-w-xl">
-                Difaac unites adversary intelligence, continuous detection, and rapid containment into a sovereign defense platform engineered to safeguard vital organizations against modern threats.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                <LinkButton href="/talk-to-sales" size="lg" className="font-bold shadow-lg shadow-brand/20">
-                  Let&apos;s Talk
-                  <ArrowRight className="size-4 ml-1.5" data-icon="inline-end" aria-hidden="true" />
-                </LinkButton>
-                <LinkButton href="/company/careers" variant="secondary" size="lg" className="border-line hover:border-brand">
-                  Explore Careers
-                </LinkButton>
-              </div>
-
-              {/* Enterprise Defense Metrics with refined icons */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-line-soft">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <Clock className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">24/7/365</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Continuous SOC</div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <Zap className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">&lt;15 min</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Response SLA</div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <Target className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">700+</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Tracked Actors</div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <ShieldCheck className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">100%</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Sovereign Data</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Specialists Planning Visual */}
-            <div className="lg:col-span-6 relative">
-              <div className="relative overflow-hidden rounded-2xl border-2 border-brand/40 bg-ink-2/80 p-2 shadow-[0_0_60px_rgba(0,201,121,0.2)] backdrop-blur-md">
-                <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-ink">
-                  <img
-                    src="/company-planning.jpg"
-                    alt="Four Difaac founders and architects collaborating around a conference table, brainstorming and planning platform architecture"
-                    className="size-full object-cover object-center transition-transform duration-700 hover:scale-105"
-                  />
-                </div>
-              </div>
-            </div>
+      {/* Aspiration — the mission stated plainly, with the one real photograph. */}
+      <Band>
+        <div className="flex flex-col items-center gap-12">
+          <SectionHead
+            eyebrow="Why we exist"
+            heading={{ lead: 'Fighting cybercrime is', accent: "Difaac's reason to exist" }}
+            description={mission.headline}
+          />
+          <div className="w-full overflow-hidden rounded-2xl border border-line">
+            <img
+              src="/company-planning.jpg"
+              alt="The Difaac founders planning the platform's architecture around a table"
+              className="aspect-[16/7] w-full object-cover object-center"
+              loading="lazy"
+            />
           </div>
         </div>
-      </section>
+      </Band>
 
-      {/* Our story */}
-      <section className="border-b border-line-soft bg-ink-2 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-16">
-            <div className="flex flex-col gap-4">
-              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-                Founded April 2026
-              </span>
-              <h2 className="font-display t-h2 font-bold text-text">
-                Built on Mission
-              </h2>
-              <p className="text-pretty leading-relaxed text-body">
-                Difaac began at Borama University with a singular conviction: that sovereign, intelligence-driven cyber defense could be engineered locally to protect national and regional enterprise infrastructure. Today, it stands as a proven unified defense platform.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-muted-2">Founders</h3>
-              {founders.map((founder) => (
-                <div
-                  key={founder.name}
-                  className="flex items-center gap-4 rounded-xl border border-line-soft bg-ink-2/60 p-4 backdrop-blur-sm transition-colors hover:border-brand/30"
-                >
-                  <span
-                    className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-brand/30 bg-brand/10 font-mono text-sm font-bold text-brand shadow-sm"
-                    aria-hidden="true"
-                  >
-                    {founder.name[0]}
-                  </span>
-                  <div>
-                    <span className="block text-sm font-semibold text-text">{founder.name}</span>
-                    <span className="block text-xs text-muted-2">{founder.role}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Founding story, then the founders as a portrait grid — the Leadership
+          Team section the way Group-IB's About page runs it. */}
+      <Band muted>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow={`Founded ${founding.founded}`}
+            heading={{ lead: 'Built as a', accent: 'final-year project' }}
+            description={founding.story}
+          />
+          <PersonGrid people={founders} />
         </div>
-      </section>
+      </Band>
 
-      {/* What we do */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">Capabilities</span>
-            <h2 className="mt-2 font-display t-h2 font-bold text-text">
-              Unified Defense
-            </h2>
-            <p className="mt-3 text-pretty leading-relaxed text-body">
-              Six synchronized defense layers powered by a single real-time intelligence engine.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* Capabilities — the workhorse three-column grid. */}
+      <Band>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="What we do"
+            heading={{ lead: 'One platform,', accent: 'six defence layers' }}
+            description="Every layer draws on the same adversary intelligence, so a signal seen in one strengthens detection across the rest."
+          />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {capabilities.map((item) => {
               const Icon = getIcon(item.icon)
               return (
-                <div
-                  key={item.title}
-                  className="flex items-start gap-4 rounded-xl border border-line-soft/60 bg-ink-2/40 p-5 backdrop-blur-sm transition-all duration-200 hover:border-brand/40 hover:bg-ink-2"
-                >
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
-                    <Icon className="size-5" strokeWidth={1.8} aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-base font-semibold text-text">{item.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-body">{item.description}</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Service commitments */}
-      <section className="bg-ink-2 py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">Standards</span>
-          <h2 className="mt-2 font-display t-h3 font-bold text-text">
-            Our Commitments
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-body">
-            Verifiable operational standards backed by contractual service guarantees.
-          </p>
-
-          <dl className="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-            {commitments.map((item) => (
-              <div key={item.label} className="flex flex-col gap-2 rounded-xl border border-line-soft/50 bg-ink-3/40 p-5">
-                <dt className="font-display text-2xl font-black text-brand">{item.value}</dt>
-                <dd>
-                  <span className="block text-sm font-semibold text-text">{item.label}</span>
-                  <span className="mt-1 block text-xs leading-relaxed text-muted-2">{item.detail}</span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/* How we work */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">Principles</span>
-            <h2 className="mt-2 font-display t-h2 font-bold text-text">
-              How We Operate
-            </h2>
-            <p className="mt-3 text-pretty leading-relaxed text-body">
-              The core tenets that define our engineering, analysis, and client defense.
-            </p>
-          </div>
-
-          <div className="mt-12 flex flex-col gap-px overflow-hidden rounded-xl border border-line-soft bg-line-soft">
-            {principles.map((item, index) => {
-              const Icon = getIcon(item.icon)
-              return (
-                <div
-                  key={item.title}
-                  className="grid grid-cols-1 gap-5 bg-ink-2 p-7 transition-colors duration-200 hover:bg-ink-3 lg:grid-cols-[auto_1fr_1.4fr] lg:items-start lg:gap-10 lg:p-8"
-                >
-                  <div className="flex items-center gap-4 lg:w-14 lg:flex-col lg:items-start lg:gap-3">
-                    <span className="font-display text-sm font-semibold tabular-nums text-brand/50">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <div className="flex size-11 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
-                      <Icon className="size-5" aria-hidden="true" strokeWidth={1.8} />
-                    </div>
-                  </div>
-
-                  <h3 className="font-display text-lg font-semibold text-text">{item.title}</h3>
-
+                <div key={item.title} className="flex flex-col gap-3 rounded-2xl border border-line bg-ink-2 p-6">
+                  <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-ink-3 text-brand">
+                    <Icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                  <h3 className="font-display text-base font-medium text-text">{item.title}</h3>
                   <p className="text-sm leading-relaxed text-body">{item.description}</p>
                 </div>
               )
             })}
           </div>
         </div>
-      </section>
+      </Band>
 
-      {/* Where to go next */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 max-w-2xl">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">Navigation</span>
-            <h2 className="mt-2 font-display t-h2 font-bold text-text">
-              Explore Difaac
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-body">
-              Connect with our team, discover career paths, or explore strategic partnerships.
-            </p>
+      {/* Principles — a plain list; the number is the only ornament, and it is
+          true (these are ordered, but read as a set). */}
+      <Band muted>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="How we operate"
+            heading={{ lead: 'Commitments, not', accent: 'achievements' }}
+            description="Written as things a customer can hold us to on the first day of a contract, rather than claims about a past."
+          />
+          <div className="grid gap-4 md:grid-cols-2">
+            {principles.map((item) => {
+              const Icon = getIcon(item.icon)
+              return (
+                <div key={item.title} className="flex gap-4 rounded-2xl border border-line bg-ink-3/40 p-6">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-line bg-ink-2 text-brand">
+                    <Icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="font-display text-base font-medium text-text">{item.title}</h3>
+                    <p className="text-sm leading-relaxed text-body">{item.description}</p>
+                  </div>
+                </div>
+              )
+            })}
           </div>
+        </div>
+      </Band>
 
-          <div className="grid gap-6 md:grid-cols-3">
+      {/* Commitments — four figures that are true from day one. */}
+      <Band>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="What we commit to"
+            heading={{ lead: 'The service', accent: 'you actually receive' }}
+          />
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {commitments.map((item) => (
+              <div key={item.label} className="flex flex-col gap-2 rounded-2xl border border-line bg-ink-2 p-6">
+                <dt className="font-display text-2xl font-normal text-brand">{item.value}</dt>
+                <dd>
+                  <span className="block text-sm font-medium text-text">{item.label}</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-2">{item.detail}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </Band>
+
+      {/* Where to go next. */}
+      <Band muted>
+        <div className="flex flex-col gap-12">
+          <SectionHead
+            eyebrow="Where we are"
+            heading={{ lead: 'Built in', accent: office.city }}
+            description={office.detail}
+          />
+          <div className="grid gap-4 md:grid-cols-3">
             {destinations.map((item) => (
               <Link
                 key={item.title}
                 to={item.href}
-                className="group flex flex-col gap-4 rounded-xl border border-line-soft bg-ink-2 p-7 transition-all duration-200 hover:border-brand/40 hover:bg-ink-3"
+                className="group flex flex-col gap-4 rounded-2xl border border-line bg-ink-3/40 p-6 transition-colors hover:border-brand/50"
               >
-                <div className="flex size-12 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand shadow-sm">
-                  <item.icon className="size-6" strokeWidth={1.8} aria-hidden="true" />
-                </div>
+                <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-ink-2 text-brand">
+                  <item.icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                </span>
                 <div>
-                  <h3 className="font-display text-lg font-semibold text-text">{item.title}</h3>
+                  <h3 className="font-display text-base font-medium text-text">{item.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-body">{item.description}</p>
                 </div>
-                <span className="mt-auto flex items-center gap-2 pt-3 text-sm font-medium text-brand">
-                  Learn more
+                <span className="mt-auto flex items-center gap-2 text-sm text-brand">
+                  Open
                   <ArrowRight
-                    className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+                    className="size-4 transition-transform group-hover:translate-x-0.5"
                     aria-hidden="true"
                   />
                 </span>
@@ -290,16 +195,14 @@ export default function CompanyPage() {
             ))}
           </div>
         </div>
-      </section>
+      </Band>
 
-      <section className="py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <CTABanner
-            title="Defend Your Enterprise"
-            description="Whether evaluating our platform or responding to an active incident, our specialists are ready to assist."
-          />
-        </div>
-      </section>
+      <Band>
+        <CTABanner
+          title="Talk to the people who built it"
+          description="Whether you are weighing the platform or facing an active incident, you reach the team directly — there is no queue between you and an analyst."
+        />
+      </Band>
     </>
   )
 }

@@ -33,6 +33,7 @@ import ContactPage from '@/pages/contact-page'
 import AuthPage from '@/pages/auth-page'
 import CareersPage from '@/pages/careers-page'
 import PartnersPage from '@/pages/partners-page'
+import TeamPage from '@/pages/team-page'
 import SubscriptionsPage from '@/pages/subscriptions-page'
 import LegalPage from '@/pages/legal-page'
 import NotFoundPage from '@/pages/not-found-page'
@@ -117,6 +118,8 @@ export default function App() {
 
           {/* Company */}
           <Route path="/company" element={<CompanyPage />} />
+          <Route path="/company/team" element={<TeamPage />} />
+          <Route path="/team" element={<TeamPage />} />
           <Route path="/company/careers" element={<CareersPage />} />
           <Route path="/company/partners" element={<PartnersPage />} />
           <Route path="/company/contact" element={<ContactPage />} />

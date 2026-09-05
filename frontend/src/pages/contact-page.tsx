@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Mail, Phone, MapPin, CheckCircle2, Check, Clock, Zap } from 'lucide-react'
+import { CheckCircle2, Check } from 'lucide-react'
 import { somaliRegions, jobTitles } from '@/lib/data/nav'
 import { products } from '@/lib/data/products'
 import { getIcon } from '@/components/icons/icon-map'
-import { ProductEmblem, HeroBackdrop } from '@/components/product/product-emblem'
+import { ProductEmblem } from '@/components/product/product-emblem'
 import { productAccent } from '@/lib/tone'
 import { submitDemoRequest } from '@/lib/demo-requests'
+import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
+import { contactChannels, office } from '@/lib/data/company'
 
 
 const SERVICE_GROUPS = [
@@ -372,7 +373,13 @@ function SalesPage() {
   )
 }
 
-/** General "Contact Us" page — redesigned to match the company page hero style. */
+/**
+ * General "Contact Us" page, on group-ib.com's contact grammar: a centred
+ * hero, then get-in-touch — copy on one side, a panel of real channels on the
+ * other — then the office, then the form. The invented "response time" and
+ * "availability" figures the old version carried are gone; a contact page
+ * should not open with numbers it cannot stand behind.
+ */
 function GeneralContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -410,105 +417,74 @@ function GeneralContactPage() {
 
   return (
     <>
-      {/* Hero — mirrors the company page hero layout */}
-      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
-        <HeroBackdrop tone="brand" bgImage="/company-hero-3d.jpg" spread />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column */}
-            <div className="lg:col-span-6 flex flex-col gap-6">
-              <h1 className="text-balance font-display text-4xl sm:text-5xl lg:text-5xl font-extrabold leading-[1.1] text-text">
-                Connect with <span className="text-gradient">Difaac</span>
-              </h1>
+      <CompanyHero
+        heading={{ lead: 'Connect with', accent: 'Difaac' }}
+        description="Questions about the platform, partnership interest, or an active incident — you reach the team directly, not a call centre."
+        primary={{ label: 'Talk to sales', href: '/talk-to-sales' }}
+        bgImage="/company-hero-3d.jpg"
+      />
 
-              <p className="text-pretty text-base sm:text-lg leading-relaxed text-body max-w-xl">
-                Get in touch with the team — questions about the platform, partnership interest, or anything else. We&apos;re here to help.
-              </p>
+      {/* Get in touch — copy beside a panel of the real channels. */}
+      <Band>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-16">
+          <SectionHead
+            align="left"
+            eyebrow="Get in touch"
+            heading={{ lead: 'Reach the team', accent: 'directly' }}
+            description="Difaac is small enough that a message reaches a person, not a queue. Use whichever channel suits — they all land with the same team."
+          />
 
-              {/* Contact Info Metrics with clean icons */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-line-soft">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <Clock className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">24/7</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Availability</div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <Zap className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">&lt;2 hrs</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Response Time</div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-brand">
-                    <MapPin className="size-4 shrink-0" strokeWidth={2} />
-                    <span className="font-display text-2xl font-black">Awdal</span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-2 font-medium">Headquarters</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Contact Info Card */}
-            <div className="lg:col-span-6 relative">
-              <div className="relative rounded-2xl border border-brand/30 bg-ink-2/80 p-6 sm:p-8 shadow-[0_0_80px_rgba(0,201,121,0.2)] backdrop-blur-md">
-                <div className="flex flex-col gap-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
-                      <MapPin className="size-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-text text-sm">Office</h4>
-                      <p className="text-xs text-body leading-relaxed">Awdal, Somaliland</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
-                      <Mail className="size-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-text text-sm">Email</h4>
-                      <a href="mailto:Difaacgroup@gmail.com" className="text-xs text-brand hover:underline">
-                        Difaacgroup@gmail.com
+          <div className="flex flex-col divide-y divide-line overflow-hidden rounded-2xl border border-line bg-ink-2">
+            {contactChannels.map((channel) => {
+              const Icon = getIcon(channel.icon)
+              const isLink = channel.href.startsWith('mailto:') || channel.href.startsWith('tel:')
+              return (
+                <div key={channel.label} className="flex items-start gap-4 p-6">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-line bg-ink-3 text-brand">
+                    <Icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-medium uppercase tracking-[0.14em] text-muted-2">
+                      {channel.label}
+                    </span>
+                    {isLink ? (
+                      <a href={channel.href} className="text-base text-brand transition-colors hover:text-brand-bright">
+                        {channel.value}
                       </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
-                      <Phone className="size-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-text text-sm">Phone</h4>
-                      <a href="tel:+252672489335" className="text-xs text-brand hover:underline">
-                        +252 672489335
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand border border-brand/20 shadow-sm">
-                      <Clock className="size-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-text text-sm">Business Hours</h4>
-                      <p className="text-xs text-body leading-relaxed">Saturday – Thursday, 8:00 AM – 6:00 PM (EAT)</p>
-                    </div>
+                    ) : (
+                      <span className="text-base text-text">{channel.value}</span>
+                    )}
+                    <span className="mt-0.5 text-sm leading-relaxed text-muted-2">{channel.note}</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              )
+            })}
           </div>
         </div>
-      </section>
+      </Band>
 
-      {/* Contact Form Section */}
-      <section className="py-16 lg:py-24 bg-ink-2">
+      {/* The office — one, stated as one. */}
+      <Band muted className="scroll-mt-24" >
+        <div id="office">
+          <SectionHead
+            eyebrow="Where we are"
+            heading={{ lead: 'Find us in', accent: office.city }}
+            description={office.detail}
+          />
+          <p className="mx-auto mt-6 max-w-xl text-center text-sm text-muted-2">{office.hours}</p>
+        </div>
+      </Band>
+
+      {/* The message form. */}
+      <section className="pb-24 lg:pb-32">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="flat-card p-8 sm:p-10">
+          <div className="mb-10">
+            <SectionHead
+              eyebrow="Or write to us"
+              heading={{ lead: 'Send', accent: 'a message' }}
+            />
+          </div>
+          <div className="rounded-2xl border border-line bg-ink-2 p-8 sm:p-10">
             {submitted ? (
               <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
                 <CheckCircle2 className="size-16 text-brand" />

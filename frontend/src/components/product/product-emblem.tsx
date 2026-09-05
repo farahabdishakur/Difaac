@@ -159,13 +159,13 @@ export const PRODUCT_BACKGROUND_IMAGE: Record<string, string> = {
  * transparent gradients and radial vignetting over the page ground.
  * Blends smoothly to ink at the fold and below the header with zero seams.
  */
-export function HeroBackdrop({ 
-  tone = 'brand', 
+export function HeroBackdrop({
+  tone = 'brand',
   spread,
   slug,
   bgImage,
-}: { 
-  tone?: Tone; 
+}: {
+  tone?: Tone;
   spread?: boolean;
   slug?: string;
   bgImage?: string;
@@ -186,7 +186,7 @@ export function HeroBackdrop({
           {/* Top shadow settling into header */}
           <div className="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-transparent opacity-80" />
           {/* Radial mask to ensure center text and emblem stay high-contrast */}
-          <div 
+          <div
             className="absolute inset-0"
             style={{
               background: 'radial-gradient(ellipse at 50% 35%, rgba(1,0,5,0.25) 0%, rgba(1,0,5,0.65) 55%, rgba(1,0,5,0.95) 100%)'
