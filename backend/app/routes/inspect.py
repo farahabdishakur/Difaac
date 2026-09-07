@@ -81,7 +81,7 @@ def record_detection(
     conn.execute(
         """
         INSERT INTO xdr_detections (rule, layer, severity, status, host, technique)
-        VALUES (?, 'network', ?, 'open', ?, ?)
+        VALUES (%s, 'network', %s, 'open', %s, %s)
         """,
         (f"{top.name} in {top.where}", verdict.severity, f"{source} {path}"[:120], top.technique),
     )

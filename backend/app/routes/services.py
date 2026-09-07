@@ -33,7 +33,7 @@ async def get_service(
 ):
     """Get a single service by its slug."""
     with get_connection() as conn:
-        row = conn.execute("SELECT * FROM services WHERE slug = ?", (slug,)).fetchone()
+        row = conn.execute("SELECT * FROM services WHERE slug = %s", (slug,)).fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Service not found")
         return _row_to_service(row)

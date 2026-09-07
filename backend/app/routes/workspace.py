@@ -54,7 +54,7 @@ def get_iocs(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, value, type, severity, source, created_at
               FROM ti_iocs
           ORDER BY created_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -70,7 +70,7 @@ def get_actors(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, name, aliases, origin, description
               FROM ti_actors
           ORDER BY name ASC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -108,7 +108,7 @@ def get_ti_alerts(
     params: tuple = ()
     if tailored_only:
         sql += " WHERE is_tailored = 1"
-    sql += " ORDER BY detected_at DESC LIMIT ?"
+    sql += " ORDER BY detected_at DESC LIMIT %s"
     params += (limit,)
 
     with get_connection() as conn:
@@ -254,7 +254,7 @@ def get_asm_assets(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
                    exposure_score, is_shadow_it, status, discovered_at
               FROM asm_assets
           ORDER BY exposure_score DESC, discovered_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -307,7 +307,7 @@ def get_bep_messages(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
                    verdict, has_payload, confidence, detected_at
               FROM bep_messages
           ORDER BY detected_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -371,7 +371,7 @@ def get_xdr_detections(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, rule, layer, severity, status, host, technique, detected_at
               FROM xdr_detections
           ORDER BY detected_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -482,7 +482,7 @@ def get_phishing_domains(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, domain, status, channel, risk, takedown_at, discovered_at
               FROM drp_phishing
           ORDER BY discovered_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -498,7 +498,7 @@ def get_fraud_cases(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, session_id, risk_score, status, signal, channel, country, detected_at
               FROM fraud_cases
           ORDER BY detected_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -514,7 +514,7 @@ def get_incidents(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, title, severity, status, reported_by, created_at
               FROM incidents
           ORDER BY created_at DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         )
@@ -637,7 +637,7 @@ def get_activity_trend(days: int = Query(14, ge=7, le=90)):
             )
             SELECT DATE(occurred_at) AS day, COUNT(*) AS count
               FROM events
-             WHERE DATE(occurred_at) >= DATE('now', ?)
+             WHERE DATE(occurred_at) >= DATE('now', %s)
           GROUP BY day
             """,
             (f"-{days - 1} days",),

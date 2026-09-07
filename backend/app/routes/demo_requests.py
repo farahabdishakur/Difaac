@@ -62,7 +62,7 @@ async def create_demo_request(payload: DemoRequestCreate, request: Request):
                 """
                 INSERT INTO demo_requests
                     (product_slug, name, company, email, role, context, ip_address)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     payload.product_slug,
@@ -95,7 +95,7 @@ def list_demo_requests(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
             SELECT id, product_slug, name, company, email, role, context, status, created_at
               FROM demo_requests
           ORDER BY created_at DESC, id DESC
-             LIMIT ?
+             LIMIT %s
             """,
             (limit,),
         ).fetchall()

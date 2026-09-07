@@ -73,7 +73,7 @@ def record_event(
         conn.execute(
             """
             INSERT INTO auth_events (user_id, email, event, detail, ip_address, user_agent)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (user_id, email, event, detail, ip_address, (user_agent or "")[:400] or None),
         )
@@ -97,20 +97,20 @@ def lockout_remaining(row: Any) -> int:
 def register_failed_login(conn: Any, user_id: int) -> bool:
     """Count a failed attempt. Returns True if the account is now locked."""
     row = conn.execute(
-        "SELECT failed_login_attempts FROM users WHERE id = ?", (user_id,)
+        "SELECT failed_login_attempts FROM users WHERE id = %s", (user_id,)
     ).fetchone()
     attempts = (row["failed_login_attempts"] if row else 0) + 1
 
     if attempts >= MAX_FAILED_LOGINS:
         locked_until = _to_text(_now() + timedelta(minutes=LOCKOUT_MINUTES))
         conn.execute(
-            "UPDATE users SET failed_login_attempts = ?, locked_until = ? WHERE id = ?",
+            "UPDATE users SET failed_login_attempts = %s, locked_until = %s WHERE id = %s",
             (attempts, locked_until, user_id),
         )
         return True
 
     conn.execute(
-        "UPDATE users SET failed_login_attempts = ? WHERE id = ?", (attempts, user_id)
+        "UPDATE users SET failed_login_attempts = %s WHERE id = %s", (attempts, user_id)
     )
     return False
 
@@ -120,8 +120,8 @@ def clear_failed_logins(conn: Any, user_id: int) -> None:
     conn.execute(
         """
         UPDATE users
-           SET failed_login_attempts = 0, locked_until = NULL, last_login_at = ?
-         WHERE id = ?
+           SET failed_login_attempts = 0, locked_until = NULL, last_login_at = %s
+         WHERE id = %s
         """,
         (_to_text(_now()), user_id),
     )
@@ -151,7 +151,7 @@ def issue_refresh_token(
         """
         INSERT INTO refresh_tokens
             (user_id, token_hash, family_id, issued_at, expires_at, ip_address, user_agent)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """,
         (
             user_id,
@@ -169,7 +169,7 @@ def issue_refresh_token(
 def revoke_family(conn: Any, family_id: str) -> int:
     """Revoke every unrevoked token in a rotation family."""
     cursor = conn.execute(
-        "UPDATE refresh_tokens SET revoked_at = ? WHERE family_id = ? AND revoked_at IS NULL",
+        "UPDATE refresh_tokens SET revoked_at = %s WHERE family_id = %s AND revoked_at IS NULL",
         (_to_text(_now()), family_id),
     )
     return cursor.rowcount
@@ -178,7 +178,7 @@ def revoke_family(conn: Any, family_id: str) -> int:
 def revoke_all_for_user(conn: Any, user_id: int) -> int:
     """Revoke every session belonging to a user."""
     cursor = conn.execute(
-        "UPDATE refresh_tokens SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
+        "UPDATE refresh_tokens SET revoked_at = %s WHERE user_id = %s AND revoked_at IS NULL",
         (_to_text(_now()), user_id),
     )
     return cursor.rowcount
@@ -216,7 +216,7 @@ def consume_refresh_token(conn: Any, token: str) -> RefreshOutcome:
         """
         SELECT id, user_id, family_id, expires_at, revoked_at, used_at
           FROM refresh_tokens
-         WHERE token_hash = ?
+         WHERE token_hash = %s
         """,
         (hash_refresh_token(token),),
     ).fetchone()
@@ -242,7 +242,7 @@ def consume_refresh_token(conn: Any, token: str) -> RefreshOutcome:
         return RefreshOutcome(status="expired", user_id=row["user_id"], family_id=family_id)
 
     conn.execute(
-        "UPDATE refresh_tokens SET used_at = ? WHERE id = ?",
+        "UPDATE refresh_tokens SET used_at = %s WHERE id = %s",
         (_to_text(_now()), row["id"]),
     )
     return RefreshOutcome(status="ok", user_id=row["user_id"], family_id=family_id)
@@ -251,7 +251,7 @@ def consume_refresh_token(conn: Any, token: str) -> RefreshOutcome:
 def revoke_token(conn: Any, token: str) -> bool:
     """Revoke a single refresh token. Returns False if it was not found."""
     cursor = conn.execute(
-        "UPDATE refresh_tokens SET revoked_at = ? WHERE token_hash = ? AND revoked_at IS NULL",
+        "UPDATE refresh_tokens SET revoked_at = %s WHERE token_hash = %s AND revoked_at IS NULL",
         (_to_text(_now()), hash_refresh_token(token)),
     )
     return cursor.rowcount > 0
@@ -267,8 +267,8 @@ def revoke_session_by_id(conn: Any, user_id: int, session_id: int) -> bool:
     cursor = conn.execute(
         """
         UPDATE refresh_tokens
-           SET revoked_at = ?
-         WHERE id = ? AND user_id = ? AND revoked_at IS NULL
+           SET revoked_at = %s
+         WHERE id = %s AND user_id = %s AND revoked_at IS NULL
         """,
         (_to_text(_now()), session_id, user_id),
     )
@@ -282,7 +282,7 @@ def list_sessions(conn: Any, user_id: int, current_token: str | None) -> list[di
         """
         SELECT id, token_hash, issued_at, expires_at, ip_address, user_agent
           FROM refresh_tokens
-         WHERE user_id = ? AND revoked_at IS NULL AND used_at IS NULL
+         WHERE user_id = %s AND revoked_at IS NULL AND used_at IS NULL
       ORDER BY issued_at DESC
         """,
         (user_id,),
@@ -304,7 +304,7 @@ def list_sessions(conn: Any, user_id: int, current_token: str | None) -> list[di
 def purge_expired_tokens(conn: Any) -> int:
     """Delete refresh tokens that expired more than a day ago."""
     cutoff = _to_text(_now() - timedelta(days=1))
-    cursor = conn.execute("DELETE FROM refresh_tokens WHERE expires_at < ?", (cutoff,))
+    cursor = conn.execute("DELETE FROM refresh_tokens WHERE expires_at < %s", (cutoff,))
     return cursor.rowcount
 
 
@@ -327,7 +327,7 @@ def issue_reset_token(
     conn.execute(
         """
         INSERT INTO password_reset_tokens (user_id, token_hash, expires_at, ip_address)
-        VALUES (?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s)
         """,
         (user_id, hash_refresh_token(token), _to_text(expires_at), ip_address),
     )
@@ -342,7 +342,7 @@ def consume_reset_token(conn: Any, token: str) -> int | None:
     guessed token from being usable twice.
     """
     row = conn.execute(
-        "SELECT id, user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash = ?",
+        "SELECT id, user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash = %s",
         (hash_refresh_token(token),),
     ).fetchone()
 
@@ -354,7 +354,7 @@ def consume_reset_token(conn: Any, token: str) -> int | None:
         return None
 
     conn.execute(
-        "UPDATE password_reset_tokens SET used_at = ? WHERE id = ?",
+        "UPDATE password_reset_tokens SET used_at = %s WHERE id = %s",
         (_to_text(_now()), row["id"]),
     )
     return row["user_id"]

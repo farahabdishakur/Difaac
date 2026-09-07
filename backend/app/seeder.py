@@ -67,7 +67,7 @@ def seed_workspace_demo(conn: Any) -> None:
 
 
 def _is_empty(conn: Any, table: str) -> bool:
-    return conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] == 0
+    return conn.execute(f"SELECT COUNT(*) AS n FROM {table}").fetchone()["n"] == 0
 
 
 def _hours_ago(hours: int) -> str:
@@ -82,7 +82,7 @@ def _seed_ti_alerts(conn: Any) -> None:
     conn.executemany(
         "INSERT INTO ti_alerts"
         " (title, category, severity, source, actor, is_tailored, detected_at)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s)",
         [
             (title, category, severity, source, actor, tailored, _hours_ago(hours))
             for title, category, severity, source, actor, tailored, hours in TI_ALERTS
@@ -100,9 +100,9 @@ def _seed_fraud_cases(conn: Any) -> None:
     the dashboard's breakdown and are demo data themselves.
     """
     unclassified = conn.execute(
-        "SELECT COUNT(*) FROM fraud_cases WHERE signal IS NULL"
-    ).fetchone()[0]
-    total = conn.execute("SELECT COUNT(*) FROM fraud_cases").fetchone()[0]
+        "SELECT COUNT(*) AS n FROM fraud_cases WHERE signal IS NULL"
+    ).fetchone()["n"]
+    total = conn.execute("SELECT COUNT(*) AS n FROM fraud_cases").fetchone()["n"]
 
     if total and unclassified != total:
         return
@@ -112,7 +112,7 @@ def _seed_fraud_cases(conn: Any) -> None:
     conn.executemany(
         "INSERT INTO fraud_cases"
         " (session_id, risk_score, status, signal, channel, country, detected_at)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s)",
         [
             (session, score, status, signal, channel, country, _hours_ago(hours))
             for session, score, status, signal, channel, country, hours in FRAUD_CASES
@@ -128,7 +128,7 @@ def _seed_asm_assets(conn: Any) -> None:
     conn.executemany(
         "INSERT INTO asm_assets"
         " (host, asset_type, service, port, issue, exposure_score, is_shadow_it, status, discovered_at)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
         [
             (host, kind, service, port, issue, score, shadow, status, _hours_ago(hours))
             for host, kind, service, port, issue, score, shadow, status, hours in ASM_ASSETS
@@ -144,7 +144,7 @@ def _seed_bep_messages(conn: Any) -> None:
     conn.executemany(
         "INSERT INTO bep_messages"
         " (subject, sender, recipient, threat_type, verdict, has_payload, confidence, detected_at)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
         [
             (subject, sender, to, kind, verdict, payload, confidence, _hours_ago(hours))
             for subject, sender, to, kind, verdict, payload, confidence, hours in BEP_MESSAGES
@@ -160,7 +160,7 @@ def _seed_xdr_detections(conn: Any) -> None:
     conn.executemany(
         "INSERT INTO xdr_detections"
         " (rule, layer, severity, status, host, technique, detected_at)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s)",
         [
             (rule, layer, severity, status, host, technique, _hours_ago(hours))
             for rule, layer, severity, status, host, technique, hours in XDR_DETECTIONS
@@ -177,10 +177,10 @@ def _seed_drp_items(conn: Any) -> None:
     before the widening — those cannot populate the channel or takedown
     figures and are demo data themselves.
     """
-    total = conn.execute("SELECT COUNT(*) FROM drp_phishing").fetchone()[0]
+    total = conn.execute("SELECT COUNT(*) AS n FROM drp_phishing").fetchone()["n"]
     unclassified = conn.execute(
-        "SELECT COUNT(*) FROM drp_phishing WHERE channel IS NULL"
-    ).fetchone()[0]
+        "SELECT COUNT(*) AS n FROM drp_phishing WHERE channel IS NULL"
+    ).fetchone()["n"]
 
     if total and unclassified != total:
         return
@@ -196,7 +196,7 @@ def _seed_drp_items(conn: Any) -> None:
 
     conn.executemany(
         "INSERT INTO drp_phishing (domain, status, channel, risk, takedown_at, discovered_at)"
-        " VALUES (?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s)",
         rows,
     )
     conn.commit()
@@ -213,7 +213,7 @@ def _seed_products(conn: Any) -> None:
             "INSERT INTO products"
             " (slug, name, tagline, description, icon,"
             "  bullets_json, capabilities_json, sort_order)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             (
                 p["slug"],
                 p["name"],
@@ -233,7 +233,7 @@ def _seed_industries(conn: Any) -> None:
         conn.execute(
             "INSERT INTO industries"
             " (slug, name, tagline, description, icon, sort_order)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s)",
             (
                 ind["slug"],
                 ind["name"],
@@ -253,7 +253,7 @@ def _seed_solutions(conn: Any) -> None:
             "INSERT INTO solutions"
             " (slug, name, grp, tagline, description, icon,"
             "  highlights_json, sort_order)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             (
                 s["slug"],
                 s["name"],
@@ -273,7 +273,7 @@ def _seed_services(conn: Any) -> None:
         conn.execute(
             "INSERT INTO services"
             " (slug, name, grp, tagline, description, icon, sort_order)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s, %s)",
             (
                 s["slug"],
                 s["name"],
@@ -292,7 +292,7 @@ def _seed_resources(conn: Any) -> None:
         conn.execute(
             "INSERT INTO resources"
             " (slug, title, type, excerpt, is_new, sort_order)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s)",
             (
                 r["slug"],
                 r["title"],
@@ -310,7 +310,7 @@ def _seed_blog_posts(conn: Any) -> None:
         conn.execute(
             "INSERT INTO blog_posts"
             " (slug, title, excerpt, date, category, sort_order)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s)",
             (
                 b["slug"],
                 b["title"],
@@ -328,7 +328,7 @@ def _seed_blog_posts(conn: Any) -> None:
 def _seed_site_content(conn: Any) -> None:
     for key, value in SITE_CONTENT.items():
         conn.execute(
-            "INSERT INTO site_content (key, value_json) VALUES (?, ?)",
+            "INSERT INTO site_content (key, value_json) VALUES (%s, %s)",
             (key, json.dumps(value)),
         )
     logger.info("  Seeded %d site content entries.", len(SITE_CONTENT))
@@ -352,7 +352,7 @@ def _seed_users(conn: Any) -> None:
 
     conn.execute(
         "INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)"
-        " VALUES (?, ?, ?, ?, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))",
+        " VALUES (%s, %s, %s, %s, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))",
         (analyst_email, hash_password(password), "Difaac Security Analyst", "analyst"),
     )
 

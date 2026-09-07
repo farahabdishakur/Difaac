@@ -33,6 +33,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import psycopg
+from psycopg.rows import dict_row
 
 from app.config import DATABASE_URL, DB_PATH
 from app.database import _Conn
@@ -100,7 +101,8 @@ def main() -> None:
     src = sqlite3.connect(sqlite_path)
     src.row_factory = sqlite3.Row
 
-    with psycopg.connect(DATABASE_URL) as pg:
+    # dict rows, matching the application: run_migrations reads columns by name.
+    with psycopg.connect(DATABASE_URL, row_factory=dict_row) as pg:
         conn = _Conn(pg)
 
         # 1. Schema + column migrations.
@@ -141,8 +143,8 @@ def main() -> None:
         # 3. Advance identity sequences past the copied ids.
         for table in IDENTITY_TABLES:
             with pg.cursor() as cur:
-                cur.execute(f"SELECT MAX(id) FROM {table}")
-                max_id = cur.fetchone()[0]
+                cur.execute(f"SELECT MAX(id) AS max_id FROM {table}")
+                max_id = cur.fetchone()["max_id"]
                 if max_id is not None:
                     cur.execute(
                         "SELECT setval(pg_get_serial_sequence(%s, 'id'), %s)",

@@ -154,7 +154,7 @@ async def get_current_user(
         row = conn.execute(
             """
             SELECT id, email, full_name, role, created_at, is_active
-              FROM users WHERE email = ?
+              FROM users WHERE email = %s
             """,
             (payload["sub"],),
         ).fetchone()
@@ -213,7 +213,7 @@ async def register(payload: UserRegisterRequest, request: Request):
     hashed = hash_password(payload.password)
 
     with get_connection() as conn:
-        exists = conn.execute("SELECT 1 FROM users WHERE email = ?", (email,)).fetchone()
+        exists = conn.execute("SELECT 1 FROM users WHERE email = %s", (email,)).fetchone()
         if exists:
             auth_service.record_event(
                 conn,
@@ -232,13 +232,13 @@ async def register(payload: UserRegisterRequest, request: Request):
             cursor = conn.execute(
                 """
                 INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)
-                VALUES (?, ?, ?, ?, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))
+                VALUES (%s, %s, %s, %s, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))
                 RETURNING id
                 """,
                 (email, hashed, payload.full_name, DEFAULT_USER_ROLE),
             )
             # Postgres has no lastrowid; RETURNING is how the new id comes back.
-            new_user_id = cursor.fetchone()[0]
+            new_user_id = cursor.fetchone()["id"]
             auth_service.record_event(
                 conn,
                 "register",
@@ -250,7 +250,7 @@ async def register(payload: UserRegisterRequest, request: Request):
             conn.commit()
 
             row = conn.execute(
-                "SELECT email, full_name, role, created_at FROM users WHERE email = ?",
+                "SELECT email, full_name, role, created_at FROM users WHERE email = %s",
                 (email,),
             ).fetchone()
         except psycopg.Error as exc:
@@ -281,7 +281,7 @@ async def login(payload: UserLoginRequest, request: Request, response: Response)
             """
             SELECT id, email, hashed_password, full_name, role, created_at,
                    is_active, failed_login_attempts, locked_until
-              FROM users WHERE email = ?
+              FROM users WHERE email = %s
             """,
             (email,),
         ).fetchone()
@@ -389,7 +389,7 @@ async def refresh(request: Request, response: Response):
         row = conn.execute(
             """
             SELECT id, email, full_name, role, created_at, is_active
-              FROM users WHERE id = ?
+              FROM users WHERE id = %s
             """,
             (outcome.user_id,),
         ).fetchone()
@@ -514,7 +514,7 @@ async def change_password(
     """
     with get_connection() as conn:
         row = conn.execute(
-            "SELECT id, email, hashed_password FROM users WHERE id = ?",
+            "SELECT id, email, hashed_password FROM users WHERE id = %s",
             (current_user["id"],),
         ).fetchone()
 
@@ -536,9 +536,9 @@ async def change_password(
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = ?, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
+               SET hashed_password = %s, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
                    failed_login_attempts = 0, locked_until = NULL
-             WHERE id = ?
+             WHERE id = %s
             """,
             (hash_password(payload.new_password), row["id"]),
         )
@@ -580,7 +580,7 @@ async def forgot_password(payload: ForgotPasswordRequest, request: Request):
 
     with get_connection() as conn:
         row = conn.execute(
-            "SELECT id, email FROM users WHERE email = ?", (payload.email,)
+            "SELECT id, email FROM users WHERE email = %s", (payload.email,)
         ).fetchone()
 
         if row is None:
@@ -635,15 +635,15 @@ async def reset_password(payload: ResetPasswordRequest, request: Request, respon
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = ?, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
+               SET hashed_password = %s, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
                    failed_login_attempts = 0, locked_until = NULL
-             WHERE id = ?
+             WHERE id = %s
             """,
             (hash_password(payload.new_password), user_id),
         )
         auth_service.revoke_all_for_user(conn, user_id)
 
-        row = conn.execute("SELECT email FROM users WHERE id = ?", (user_id,)).fetchone()
+        row = conn.execute("SELECT email FROM users WHERE id = %s", (user_id,)).fetchone()
         auth_service.record_event(
             conn, "password_reset_completed", email=row["email"] if row else None,
             user_id=user_id, ip_address=ip, user_agent=agent,

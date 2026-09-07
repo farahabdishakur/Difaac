@@ -45,10 +45,10 @@ def _existing_columns(conn: Any, table: str) -> set[str]:
     """The column names of `table`, or an empty set if it does not exist yet."""
     rows = conn.execute(
         "SELECT column_name FROM information_schema.columns"
-        " WHERE table_schema = 'public' AND table_name = ?",
+        " WHERE table_schema = 'public' AND table_name = %s",
         (table,),
     ).fetchall()
-    return {row[0] for row in rows}
+    return {row["column_name"] for row in rows}
 
 
 def run_migrations(conn: Any) -> None:
