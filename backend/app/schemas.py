@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS resources (
     title      TEXT NOT NULL,
     type       TEXT NOT NULL,
     excerpt    TEXT NOT NULL,
-    is_new     INTEGER NOT NULL,
+    is_new     BOOLEAN NOT NULL,
     sort_order INTEGER NOT NULL
 );
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     slug       TEXT PRIMARY KEY,
     title      TEXT NOT NULL,
     excerpt    TEXT NOT NULL,
-    date       TEXT NOT NULL,
+    date       DATE NOT NULL,
     category   TEXT NOT NULL,
     sort_order INTEGER NOT NULL
 );
@@ -83,8 +83,8 @@ CREATE TABLE IF NOT EXISTS users (
     hashed_password TEXT NOT NULL,
     full_name       TEXT,
     role            TEXT NOT NULL DEFAULT 'analyst',
-    is_active       INTEGER NOT NULL DEFAULT 1,
-    created_at      TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    is_active       BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- ==========================================
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS ti_iocs (
     type        TEXT NOT NULL,
     severity    TEXT NOT NULL,
     source      TEXT NOT NULL,
-    created_at  TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- Threat Intelligence: Threat Actors
@@ -128,8 +128,8 @@ CREATE TABLE IF NOT EXISTS ti_alerts (
     severity     TEXT    NOT NULL,
     source       TEXT    NOT NULL,
     actor        TEXT,
-    is_tailored  INTEGER NOT NULL DEFAULT 0,
-    detected_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    is_tailored  BOOLEAN NOT NULL DEFAULT FALSE,
+    detected_at  TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_ti_alerts_detected ON ti_alerts(detected_at);
@@ -150,8 +150,8 @@ CREATE TABLE IF NOT EXISTS drp_phishing (
     status        TEXT NOT NULL,
     channel       TEXT,
     risk          TEXT,
-    takedown_at   TEXT,
-    discovered_at TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    takedown_at   TIMESTAMPTZ,
+    discovered_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- Fraud Protection: scored sessions and transactions.
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS fraud_cases (
     signal         TEXT,
     channel        TEXT,
     country        TEXT,
-    detected_at    TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    detected_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_fraud_cases_detected ON fraud_cases(detected_at);
@@ -195,9 +195,9 @@ CREATE TABLE IF NOT EXISTS asm_assets (
     port           INTEGER,
     issue          TEXT,
     exposure_score INTEGER NOT NULL DEFAULT 0,
-    is_shadow_it   INTEGER NOT NULL DEFAULT 0,
+    is_shadow_it   BOOLEAN NOT NULL DEFAULT FALSE,
     status         TEXT    NOT NULL DEFAULT 'active',
-    discovered_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    discovered_at  TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_asm_assets_discovered ON asm_assets(discovered_at);
@@ -215,9 +215,9 @@ CREATE TABLE IF NOT EXISTS bep_messages (
     recipient         TEXT    NOT NULL,
     threat_type       TEXT    NOT NULL,
     verdict           TEXT    NOT NULL,
-    has_payload       INTEGER NOT NULL DEFAULT 1,
+    has_payload       BOOLEAN NOT NULL DEFAULT TRUE,
     confidence        INTEGER NOT NULL DEFAULT 0,
-    detected_at       TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    detected_at       TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_bep_messages_detected ON bep_messages(detected_at);
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS xdr_detections (
     status       TEXT    NOT NULL DEFAULT 'open',
     host         TEXT,
     technique    TEXT,
-    detected_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    detected_at  TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_xdr_detections_detected ON xdr_detections(detected_at);
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS incidents (
     severity    TEXT NOT NULL,
     status      TEXT NOT NULL,
     reported_by TEXT NOT NULL,
-    created_at  TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- ==========================================
@@ -267,10 +267,10 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash  TEXT    NOT NULL UNIQUE,
     family_id   TEXT    NOT NULL,
-    issued_at   TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
-    expires_at  TEXT    NOT NULL,
-    revoked_at  TEXT,
-    used_at     TEXT,
+    issued_at   TIMESTAMPTZ    NOT NULL DEFAULT now(),
+    expires_at  TIMESTAMPTZ    NOT NULL,
+    revoked_at  TIMESTAMPTZ,
+    used_at     TIMESTAMPTZ,
     ip_address  TEXT,
     user_agent  TEXT
 );
@@ -289,9 +289,9 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
     id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash  TEXT    NOT NULL UNIQUE,
-    expires_at  TEXT    NOT NULL,
-    used_at     TEXT,
-    created_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
+    expires_at  TIMESTAMPTZ    NOT NULL,
+    used_at     TIMESTAMPTZ,
+    created_at  TIMESTAMPTZ    NOT NULL DEFAULT now(),
     ip_address  TEXT
 );
 
@@ -311,7 +311,7 @@ CREATE TABLE IF NOT EXISTS auth_events (
     detail      TEXT,
     ip_address  TEXT,
     user_agent  TEXT,
-    created_at  TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_auth_events_email   ON auth_events(email);
@@ -340,7 +340,7 @@ CREATE TABLE IF NOT EXISTS demo_requests (
     context       TEXT,
     status        TEXT    NOT NULL DEFAULT 'new',
     ip_address    TEXT,
-    created_at    TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
+    created_at    TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_demo_requests_created ON demo_requests(created_at);

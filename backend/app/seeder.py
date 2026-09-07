@@ -70,10 +70,13 @@ def _is_empty(conn: Any, table: str) -> bool:
     return conn.execute(f"SELECT COUNT(*) AS n FROM {table}").fetchone()["n"] == 0
 
 
-def _hours_ago(hours: int) -> str:
-    """An ISO timestamp `hours` in the past, in the format SQLite writes."""
-    moment = datetime.now(timezone.utc) - timedelta(hours=hours)
-    return moment.strftime("%Y-%m-%d %H:%M:%S")
+def _hours_ago(hours: int) -> datetime:
+    """A timezone-aware moment `hours` in the past.
+
+    Returned as a datetime, not a string: the timestamp columns are
+    `timestamptz`, and psycopg adapts a datetime to them directly.
+    """
+    return datetime.now(timezone.utc) - timedelta(hours=hours)
 
 
 def _seed_ti_alerts(conn: Any) -> None:
@@ -84,7 +87,7 @@ def _seed_ti_alerts(conn: Any) -> None:
         " (title, category, severity, source, actor, is_tailored, detected_at)"
         " VALUES (%s, %s, %s, %s, %s, %s, %s)",
         [
-            (title, category, severity, source, actor, tailored, _hours_ago(hours))
+            (title, category, severity, source, actor, bool(tailored), _hours_ago(hours))
             for title, category, severity, source, actor, tailored, hours in TI_ALERTS
         ],
     )
@@ -130,7 +133,7 @@ def _seed_asm_assets(conn: Any) -> None:
         " (host, asset_type, service, port, issue, exposure_score, is_shadow_it, status, discovered_at)"
         " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
         [
-            (host, kind, service, port, issue, score, shadow, status, _hours_ago(hours))
+            (host, kind, service, port, issue, score, bool(shadow), status, _hours_ago(hours))
             for host, kind, service, port, issue, score, shadow, status, hours in ASM_ASSETS
         ],
     )
@@ -146,7 +149,7 @@ def _seed_bep_messages(conn: Any) -> None:
         " (subject, sender, recipient, threat_type, verdict, has_payload, confidence, detected_at)"
         " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
         [
-            (subject, sender, to, kind, verdict, payload, confidence, _hours_ago(hours))
+            (subject, sender, to, kind, verdict, bool(payload), confidence, _hours_ago(hours))
             for subject, sender, to, kind, verdict, payload, confidence, hours in BEP_MESSAGES
         ],
     )
@@ -298,7 +301,7 @@ def _seed_resources(conn: Any) -> None:
                 r["title"],
                 r["type"],
                 r["excerpt"],
-                1 if r["isNew"] else 0,
+                bool(r["isNew"]),
                 i,
             ),
         )
@@ -352,7 +355,7 @@ def _seed_users(conn: Any) -> None:
 
     conn.execute(
         "INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)"
-        " VALUES (%s, %s, %s, %s, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))",
+        " VALUES (%s, %s, %s, %s, now())",
         (analyst_email, hash_password(password), "Difaac Security Analyst", "analyst"),
     )
 

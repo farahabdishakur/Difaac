@@ -6,6 +6,8 @@ They also appear automatically in the interactive API docs at /docs.
 
 import re
 
+from datetime import date, datetime
+
 from pydantic import BaseModel, Field, field_validator
 
 # Password bounds. The upper bound matters as well as the lower: bcrypt only
@@ -97,7 +99,7 @@ class BlogPostResponse(BaseModel):
     slug: str
     title: str
     excerpt: str
-    date: str
+    date: date
     category: str
 
 
@@ -137,7 +139,7 @@ class UserProfileResponse(BaseModel):
     email: str
     full_name: str | None = None
     role: str
-    created_at: str
+    created_at: datetime
     # What this account may actually do. The client renders from this rather
     # than from `role`, so a permission moving between roles needs no client
     # release. Enforcement is still server-side on every endpoint.
@@ -224,14 +226,14 @@ class DemoRequestResponse(BaseModel):
     role: str
     context: str | None = None
     status: str
-    created_at: str
+    created_at: datetime
 
 
 class SessionResponse(BaseModel):
     """One active refresh-token session belonging to the current user."""
     id: int
-    issued_at: str
-    expires_at: str
+    issued_at: datetime
+    expires_at: datetime
     ip_address: str | None = None
     user_agent: str | None = None
     current: bool = False

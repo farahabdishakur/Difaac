@@ -23,9 +23,9 @@ _ADD_COLUMNS: list[tuple[str, str, str]] = [
     # Per-account lockout. IP rate limiting cannot protect one targeted account
     # against an attacker spreading attempts across many addresses.
     ("users", "failed_login_attempts", "INTEGER NOT NULL DEFAULT 0"),
-    ("users", "locked_until", "TEXT"),
-    ("users", "last_login_at", "TEXT"),
-    ("users", "password_changed_at", "TEXT"),
+    ("users", "locked_until", "TIMESTAMPTZ"),
+    ("users", "last_login_at", "TIMESTAMPTZ"),
+    ("users", "password_changed_at", "TIMESTAMPTZ"),
     # Fraud case context, added when the fraud dashboard began breaking cases
     # down by detector, channel, and region. Nullable because rows written
     # before this existed genuinely do not know their values — backfilling a
@@ -37,7 +37,7 @@ _ADD_COLUMNS: list[tuple[str, str, str]] = [
     # channel, and to tracking how long a takedown actually took.
     ("drp_phishing", "channel", "TEXT"),
     ("drp_phishing", "risk", "TEXT"),
-    ("drp_phishing", "takedown_at", "TEXT"),
+    ("drp_phishing", "takedown_at", "TIMESTAMPTZ"),
 ]
 
 

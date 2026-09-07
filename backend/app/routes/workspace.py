@@ -107,7 +107,7 @@ def get_ti_alerts(
     """
     params: tuple = ()
     if tailored_only:
-        sql += " WHERE is_tailored = 1"
+        sql += " WHERE is_tailored"
     sql += " ORDER BY detected_at DESC LIMIT %s"
     params += (limit,)
 
@@ -146,7 +146,7 @@ def get_ti_summary():
             """
             SELECT
                 (SELECT COUNT(*) FROM ti_alerts)                  AS alerts,
-                (SELECT COUNT(*) FROM ti_alerts WHERE is_tailored = 1) AS tailored,
+                (SELECT COUNT(*) FROM ti_alerts WHERE is_tailored) AS tailored,
                 (SELECT COUNT(*) FROM ti_iocs)                    AS iocs,
                 (SELECT COUNT(*) FROM ti_actors)                  AS actors
             """
@@ -267,7 +267,7 @@ def get_asm_summary():
         totals = conn.execute(
             """
             SELECT COUNT(*)                                   AS total,
-                   COALESCE(SUM(is_shadow_it), 0)             AS shadow_it,
+                   COALESCE(SUM(is_shadow_it::int), 0)             AS shadow_it,
                    COALESCE(SUM((exposure_score >= 70)::int), 0)     AS critical,
                    COALESCE(SUM((issue IS NOT NULL)::int), 0)        AS with_issues,
                    COALESCE(AVG(exposure_score), 0)           AS average_exposure
@@ -326,7 +326,7 @@ def get_bep_summary():
             SELECT COUNT(*)                                                AS total,
                    COALESCE(SUM((verdict IN ('blocked', 'detonated'))::int), 0)   AS stopped,
                    COALESCE(SUM((verdict = 'quarantined')::int), 0)               AS quarantined,
-                   COALESCE(SUM((has_payload = 0)::int), 0)                       AS payload_free,
+                   COALESCE(SUM((NOT has_payload)::int), 0)                       AS payload_free,
                    COALESCE(SUM((threat_type = 'bec')::int), 0)                   AS bec
               FROM bep_messages
             """

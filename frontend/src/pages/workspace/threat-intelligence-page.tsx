@@ -141,7 +141,7 @@ export default function ThreatIntelligencePage() {
                 severity={alert.severity}
                 source={alert.source}
                 actor={alert.actor}
-                tailored={alert.is_tailored === 1}
+                tailored={alert.is_tailored}
                 detectedAt={alert.detected_at}
               />
             ))}

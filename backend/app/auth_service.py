@@ -22,32 +22,15 @@ from app.config import (
 
 logger = logging.getLogger(__name__)
 
-# Stored as ISO-8601 UTC. SQLite has no native datetime type, and a consistent
-# sortable text format keeps comparisons correct in SQL as well as in Python.
-_TS_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
-
 
 def _now() -> datetime:
+    """The current moment, timezone-aware.
+
+    Timestamp columns are `timestamptz` and psycopg adapts a datetime straight
+    into them, so nothing here formats a time as text on the way to the
+    database or parses one on the way back.
+    """
     return datetime.now(timezone.utc)
-
-
-def _to_text(value: datetime) -> str:
-    return value.strftime(_TS_FORMAT)
-
-
-def _from_text(value: str | None) -> datetime | None:
-    if not value:
-        return None
-    try:
-        parsed = datetime.strptime(value, _TS_FORMAT)
-    except ValueError:
-        # Rows written before this format was settled, or by hand.
-        try:
-            parsed = datetime.fromisoformat(value)
-        except ValueError:
-            logger.warning("Unparseable timestamp in database: %r", value)
-            return None
-    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +70,7 @@ def record_event(
 
 def lockout_remaining(row: Any) -> int:
     """Seconds until the account unlocks, or 0 if it is not locked."""
-    locked_until = _from_text(_get(row, "locked_until"))
+    locked_until = _get(row, "locked_until")
     if not locked_until:
         return 0
     remaining = (locked_until - _now()).total_seconds()
@@ -102,7 +85,7 @@ def register_failed_login(conn: Any, user_id: int) -> bool:
     attempts = (row["failed_login_attempts"] if row else 0) + 1
 
     if attempts >= MAX_FAILED_LOGINS:
-        locked_until = _to_text(_now() + timedelta(minutes=LOCKOUT_MINUTES))
+        locked_until = _now() + timedelta(minutes=LOCKOUT_MINUTES)
         conn.execute(
             "UPDATE users SET failed_login_attempts = %s, locked_until = %s WHERE id = %s",
             (attempts, locked_until, user_id),
@@ -123,7 +106,7 @@ def clear_failed_logins(conn: Any, user_id: int) -> None:
            SET failed_login_attempts = 0, locked_until = NULL, last_login_at = %s
          WHERE id = %s
         """,
-        (_to_text(_now()), user_id),
+        (_now(), user_id),
     )
 
 
@@ -157,8 +140,8 @@ def issue_refresh_token(
             user_id,
             hash_refresh_token(token),
             family_id or new_family_id(),
-            _to_text(_now()),
-            _to_text(expires_at),
+            _now(),
+            expires_at,
             ip_address,
             (user_agent or "")[:400] or None,
         ),
@@ -170,7 +153,7 @@ def revoke_family(conn: Any, family_id: str) -> int:
     """Revoke every unrevoked token in a rotation family."""
     cursor = conn.execute(
         "UPDATE refresh_tokens SET revoked_at = %s WHERE family_id = %s AND revoked_at IS NULL",
-        (_to_text(_now()), family_id),
+        (_now(), family_id),
     )
     return cursor.rowcount
 
@@ -179,7 +162,7 @@ def revoke_all_for_user(conn: Any, user_id: int) -> int:
     """Revoke every session belonging to a user."""
     cursor = conn.execute(
         "UPDATE refresh_tokens SET revoked_at = %s WHERE user_id = %s AND revoked_at IS NULL",
-        (_to_text(_now()), user_id),
+        (_now(), user_id),
     )
     return cursor.rowcount
 
@@ -237,13 +220,13 @@ def consume_refresh_token(conn: Any, token: str) -> RefreshOutcome:
     if row["revoked_at"] is not None:
         return RefreshOutcome(status="revoked", user_id=row["user_id"], family_id=family_id)
 
-    expires_at = _from_text(row["expires_at"])
+    expires_at = row["expires_at"]
     if expires_at is None or expires_at <= _now():
         return RefreshOutcome(status="expired", user_id=row["user_id"], family_id=family_id)
 
     conn.execute(
         "UPDATE refresh_tokens SET used_at = %s WHERE id = %s",
-        (_to_text(_now()), row["id"]),
+        (_now(), row["id"]),
     )
     return RefreshOutcome(status="ok", user_id=row["user_id"], family_id=family_id)
 
@@ -252,7 +235,7 @@ def revoke_token(conn: Any, token: str) -> bool:
     """Revoke a single refresh token. Returns False if it was not found."""
     cursor = conn.execute(
         "UPDATE refresh_tokens SET revoked_at = %s WHERE token_hash = %s AND revoked_at IS NULL",
-        (_to_text(_now()), hash_refresh_token(token)),
+        (_now(), hash_refresh_token(token)),
     )
     return cursor.rowcount > 0
 
@@ -270,7 +253,7 @@ def revoke_session_by_id(conn: Any, user_id: int, session_id: int) -> bool:
            SET revoked_at = %s
          WHERE id = %s AND user_id = %s AND revoked_at IS NULL
         """,
-        (_to_text(_now()), session_id, user_id),
+        (_now(), session_id, user_id),
     )
     return cursor.rowcount > 0
 
@@ -303,7 +286,7 @@ def list_sessions(conn: Any, user_id: int, current_token: str | None) -> list[di
 
 def purge_expired_tokens(conn: Any) -> int:
     """Delete refresh tokens that expired more than a day ago."""
-    cutoff = _to_text(_now() - timedelta(days=1))
+    cutoff = _now() - timedelta(days=1)
     cursor = conn.execute("DELETE FROM refresh_tokens WHERE expires_at < %s", (cutoff,))
     return cursor.rowcount
 
@@ -329,7 +312,7 @@ def issue_reset_token(
         INSERT INTO password_reset_tokens (user_id, token_hash, expires_at, ip_address)
         VALUES (%s, %s, %s, %s)
         """,
-        (user_id, hash_refresh_token(token), _to_text(expires_at), ip_address),
+        (user_id, hash_refresh_token(token), expires_at, ip_address),
     )
     return token, expires_at
 
@@ -349,13 +332,13 @@ def consume_reset_token(conn: Any, token: str) -> int | None:
     if row is None or row["used_at"] is not None:
         return None
 
-    expires_at = _from_text(row["expires_at"])
+    expires_at = row["expires_at"]
     if expires_at is None or expires_at <= _now():
         return None
 
     conn.execute(
         "UPDATE password_reset_tokens SET used_at = %s WHERE id = %s",
-        (_to_text(_now()), row["id"]),
+        (_now(), row["id"]),
     )
     return row["user_id"]
 

@@ -232,7 +232,7 @@ async def register(payload: UserRegisterRequest, request: Request):
             cursor = conn.execute(
                 """
                 INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)
-                VALUES (%s, %s, %s, %s, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))
+                VALUES (%s, %s, %s, %s, now())
                 RETURNING id
                 """,
                 (email, hashed, payload.full_name, DEFAULT_USER_ROLE),
@@ -536,7 +536,7 @@ async def change_password(
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = %s, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
+               SET hashed_password = %s, password_changed_at = now(),
                    failed_login_attempts = 0, locked_until = NULL
              WHERE id = %s
             """,
@@ -635,7 +635,7 @@ async def reset_password(payload: ResetPasswordRequest, request: Request, respon
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = %s, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
+               SET hashed_password = %s, password_changed_at = now(),
                    failed_login_attempts = 0, locked_until = NULL
              WHERE id = %s
             """,

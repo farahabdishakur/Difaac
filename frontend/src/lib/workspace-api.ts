@@ -60,7 +60,7 @@ export type AsmAsset = {
   port: number | null
   issue: string | null
   exposure_score: number
-  is_shadow_it: number
+  is_shadow_it: boolean
   status: string
   discovered_at: string
 }
@@ -81,7 +81,7 @@ export type BepMessage = {
   recipient: string
   threat_type: string
   verdict: string
-  has_payload: number
+  has_payload: boolean
   confidence: number
   detected_at: string
 }
@@ -123,7 +123,7 @@ export type TiAlert = {
   severity: string
   source: string
   actor: string | null
-  is_tailored: number
+  is_tailored: boolean
   detected_at: string
 }
 

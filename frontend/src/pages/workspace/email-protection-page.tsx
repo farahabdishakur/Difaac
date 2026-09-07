@@ -103,7 +103,7 @@ export default function EmailProtectionPage() {
             { header: 'Type', cell: (r) => threatLabel(r.threat_type) },
             {
               header: 'Payload',
-              cell: (r) => (r.has_payload === 1 ? 'Attachment / link' : 'None'),
+              cell: (r) => (r.has_payload ? 'Attachment / link' : 'None'),
             },
             { header: 'Confidence', cell: (r) => `${r.confidence}%` },
             { header: 'Verdict', cell: (r) => <SeverityBadge value={r.verdict} /> },

@@ -81,7 +81,7 @@ export default function AttackSurfacePage() {
               cell: (r) => (
                 <span className="flex items-center gap-2">
                   <span className="font-mono text-text">{r.host}</span>
-                  {r.is_shadow_it === 1 ? (
+                  {r.is_shadow_it ? (
                     <span className="rounded-[3px] border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-warning">
                       Shadow
                     </span>

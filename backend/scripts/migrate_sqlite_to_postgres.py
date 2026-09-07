@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import sqlite3
 import sys
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 # Make the app package importable when run as `python -m scripts.…` or directly.
@@ -86,6 +87,40 @@ IDENTITY_TABLES = {
 }
 
 
+def _pg_column_types(conn: psycopg.Connection, table: str) -> dict[str, str]:
+    """The target column types, so values can be converted to match them."""
+    rows = conn.execute(
+        "SELECT column_name, data_type FROM information_schema.columns"
+        " WHERE table_schema = 'public' AND table_name = %s",
+        (table,),
+    ).fetchall()
+    return {r["column_name"]: r["data_type"] for r in rows}
+
+
+def _convert(value: object, pg_type: str) -> object:
+    """Convert one SQLite value to what its PostgreSQL column expects.
+
+    SQLite has neither a boolean nor a timestamp type: it stored booleans as
+    0/1 and timestamps as text. Postgres will not coerce either — an integer
+    into a boolean column is an error, and a bare timestamp string would be
+    read in the server's timezone rather than the UTC it was written in.
+    """
+    if value is None:
+        return None
+    if pg_type == "boolean":
+        return bool(value)
+    if pg_type in ("timestamp with time zone", "timestamp without time zone"):
+        if isinstance(value, datetime):
+            moment = value
+        else:
+            # Accept both "YYYY-MM-DD HH:MM:SS" and full ISO-8601.
+            moment = datetime.fromisoformat(str(value).replace(" ", "T"))
+        return moment if moment.tzinfo else moment.replace(tzinfo=timezone.utc)
+    if pg_type == "date" and not isinstance(value, date):
+        return date.fromisoformat(str(value)[:10])
+    return value
+
+
 def _sqlite_columns(src: sqlite3.Connection, table: str) -> list[str]:
     return [row[1] for row in src.execute(f"PRAGMA table_info({table})").fetchall()]
 
@@ -131,10 +166,15 @@ def main() -> None:
                 if table in IDENTITY_TABLES and "id" in columns
                 else ""
             )
+            types = _pg_column_types(pg, table)
+            converted = [
+                tuple(_convert(v, types.get(c, "")) for c, v in zip(columns, row))
+                for row in rows
+            ]
             with pg.cursor() as cur:
                 cur.executemany(
                     f"INSERT INTO {table} ({col_list}) {overriding}VALUES ({placeholders})",
-                    [tuple(row) for row in rows],
+                    converted,
                 )
             pg.commit()
             total += len(rows)

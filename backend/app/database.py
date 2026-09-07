@@ -153,16 +153,15 @@ def prune_spent_tokens(conn: _Conn) -> None:
     without this it stays in the table forever: every sign-in writes a row and
     nothing ever removes one.
 
-    `expires_at` is stored as an ISO-8601 string, so it is cast to a timestamp
-    for the comparison rather than compared as text.
+    `expires_at` is a `timestamptz`, so it compares against `now()` directly.
     """
     refresh = conn.execute(
         "DELETE FROM refresh_tokens"
-        " WHERE revoked_at IS NOT NULL OR expires_at::timestamptz < now()"
+        " WHERE revoked_at IS NOT NULL OR expires_at < now()"
     ).rowcount
     reset = conn.execute(
         "DELETE FROM password_reset_tokens"
-        " WHERE used_at IS NOT NULL OR expires_at::timestamptz < now()"
+        " WHERE used_at IS NOT NULL OR expires_at < now()"
     ).rowcount
     conn.commit()
 
