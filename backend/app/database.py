@@ -103,11 +103,16 @@ class _Conn:
             cur.executemany(_to_pg(sql), seq_of_params)
 
     def executescript(self, script: str) -> None:
-        """Run a multi-statement DDL script (psycopg executes one statement per
-        call, so the script is split on the statement terminator)."""
-        for statement in script.split(";"):
-            if statement.strip():
-                self._raw.execute(statement)
+        """Run a multi-statement DDL script, as sqlite3's executescript did.
+
+        Sent as one parameterless query: psycopg then uses the simple query
+        protocol, which accepts several statements separated by semicolons.
+
+        Splitting the script on ``;`` here instead would be wrong — the schema
+        carries comments that contain semicolons, and a naive split cuts one in
+        half and hands the tail to the server as though it were SQL.
+        """
+        self._raw.execute(script)
 
     def commit(self) -> None:
         self._raw.commit()
