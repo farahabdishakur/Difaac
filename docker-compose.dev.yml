@@ -1,0 +1,28 @@
+# Local development overlay.
+#
+# Production keeps Postgres unreachable from outside the compose network: the
+# `db` service only `expose`s 5432, so nothing on the host — and nothing on the
+# internet — can open a connection to it. That is the right default on a VPS,
+# and this file does not change it there.
+#
+# Running the backend or the test suite from the host does need a route to the
+# database. This overlay publishes the port, and is opt-in: compose only loads
+# it when you name it, so a deployment running `docker compose up -d` is
+# unaffected.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db
+#
+# The database is then reachable at:
+#
+#   postgresql://difaac:difaac@localhost:5432/difaac
+#
+# which is exactly the default DATABASE_URL in app/config.py, so the backend
+# and the tests run from the host with no extra configuration.
+
+services:
+  db:
+    ports:
+      # Bound to the loopback interface rather than 0.0.0.0: reachable from
+      # this machine and from nowhere else, even if the overlay is used on a
+      # host with a public address.
+      - "127.0.0.1:5432:5432"

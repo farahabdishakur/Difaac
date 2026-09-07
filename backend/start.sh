@@ -16,18 +16,19 @@ python -c "from app.database import init_db; init_db()"
 
 # One worker, deliberately.
 #
-# Two things in this service keep state in process memory: the rate limiter's
-# counters, and SQLite's single-writer lock. With four workers each process
-# would hold its own rate-limit counters, so the configured limit of 10 auth
-# requests per minute would in practice allow 40 — four times weaker than
-# intended, and silently so.
+# The rate limiter keeps its counters in this process's memory. With four
+# workers each process would hold its own counters, so the configured limit of
+# 10 auth requests per minute would in practice allow 40 — four times weaker
+# than intended, and silently so.
 #
-# Concurrency does not suffer: a Uvicorn worker is async and handles many
-# simultaneous connections in one process. SQLite is the write bottleneck here,
-# not the Python process.
+# Concurrency does not suffer: a Uvicorn worker is async and serves many
+# simultaneous connections in one process, and Postgres handles concurrent
+# writes from the connection pool — it is no longer the single-writer
+# bottleneck SQLite was.
 #
-# Before raising this, move the rate limiter to shared storage and move the
-# database off SQLite. Until then, one worker is the correct configuration.
+# So the database no longer caps this. Before raising the worker count, move
+# the rate limiter to shared storage (Redis, or a table); that is now the only
+# thing keeping it at one.
 exec gunicorn app.main:app \
     -w 1 \
     -k uvicorn.workers.UvicornWorker \
