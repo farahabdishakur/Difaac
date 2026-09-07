@@ -38,9 +38,21 @@ export function LinkButton({
   children,
   ...props
 }: LinkButtonProps) {
+  // A same-page anchor (`#methodology`, `#capabilities`) has to be a real
+  // <a>, not a router <Link>: react-router treats the hash as a route and
+  // changes the URL without scrolling, so the button silently does nothing.
+  // A native anchor scrolls to the element, and the target's `scroll-mt`
+  // clears the sticky header.
+  const isHash = href.startsWith('#')
   return (
     <Button
-      render={<Link to={href} {...props} />}
+      render={
+        isHash ? (
+          <a href={href} {...(props as ComponentProps<'a'>)} />
+        ) : (
+          <Link to={href} {...props} />
+        )
+      }
       nativeButton={false}
       className={cn(
         'rounded-[50px] font-medium tracking-normal transition-all duration-200 inline-flex items-center gap-2',
