@@ -36,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import psycopg
 from psycopg.rows import dict_row
 
-from app.config import DATABASE_URL, DB_PATH
+from app.config import DATABASE_URL
 from app.database import _Conn
 from app.migrations import run_migrations
 from app.schemas import SCHEMA_SQL
@@ -126,7 +126,12 @@ def _sqlite_columns(src: sqlite3.Connection, table: str) -> list[str]:
 
 
 def main() -> None:
-    sqlite_path = sys.argv[1] if len(sys.argv) > 1 else DB_PATH
+    if len(sys.argv) < 2:
+        raise SystemExit(
+            "Usage: python -m scripts.migrate_sqlite_to_postgres <path-to-difaac.db>\n"
+            "The old database is no longer kept in the tree — pass the backup you kept."
+        )
+    sqlite_path = sys.argv[1]
     if not Path(sqlite_path).exists():
         raise SystemExit(f"SQLite database not found: {sqlite_path}")
 

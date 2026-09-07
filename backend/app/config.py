@@ -35,11 +35,6 @@ DATABASE_URL: str = os.getenv(
     "DATABASE_URL", "postgresql://difaac:difaac@localhost:5432/difaac"
 )
 
-# Legacy SQLite path, kept only so the one-off migration script can read the
-# old database. The application itself no longer uses it.
-_DEFAULT_DB_PATH = str(Path(__file__).parent / "difaac.db")
-DB_PATH: str = os.getenv("DIFAAC_DB_PATH", _DEFAULT_DB_PATH)
-
 # ---------------------------------------------------------------------------
 # Server
 # ---------------------------------------------------------------------------
