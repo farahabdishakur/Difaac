@@ -1,0 +1,22 @@
+# What must not be copied into the build stage.
+#
+# The Dockerfile runs `COPY . .` before `npm ci`. Without this, the host's
+# node_modules is copied in and then shadows the one the image installs — and
+# on a Windows host those are the wrong platform's binaries, so the Linux
+# build fails or, worse, succeeds against native modules that cannot run.
+node_modules/
+dist/
+.vite/
+
+# Local environment overrides. Vite inlines every VITE_ variable into the
+# bundle it produces, so a stray .env.local would ship its values to every
+# visitor. The image gets its values from the build arg instead.
+.env
+.env.*
+!.env.example
+
+# Build noise and things that never affect the output.
+.git/
+*.log
+coverage/
+*.md

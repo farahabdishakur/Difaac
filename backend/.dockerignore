@@ -1,0 +1,38 @@
+# What must never reach the production image.
+#
+# The Dockerfile ends with `COPY . .`, so anything not excluded here is baked
+# into a layer — and a layer is readable by anyone who can pull the image.
+
+# --- Secrets ---------------------------------------------------------------
+# docker-compose supplies these at runtime through `env_file`. Copying them in
+# as well would publish the signing key with the image, and a leaked
+# DIFAAC_SECRET_KEY forges any session token it likes.
+.env
+.env.*
+!.env.example
+
+# --- The pre-migration database --------------------------------------------
+# app/difaac.db still holds every user's bcrypt hash. The application has not
+# read it since the move to PostgreSQL; it exists only as the source for the
+# one-off migration, and it belongs on the developer's machine, not in a
+# published artefact.
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# --- Build noise -----------------------------------------------------------
+# The virtualenv is built for the developer's OS and would shadow the wheels
+# the image installs for Linux.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Not needed to serve requests ------------------------------------------
+tests/
+*.md
