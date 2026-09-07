@@ -1,28 +1,53 @@
 # Production stack for a single VPS (e.g. a Hostinger VPS).
 #
-# Three services on one host: the FastAPI backend, the built frontend served
-# by nginx, and Caddy in front terminating TLS and routing everything from a
-# single domain. The database is SQLite on a named volume — a real file that
-# survives redeploys, which the ephemeral filesystem of a PaaS would not
-# provide. See DEPLOY.md for the Litestream backup add-on.
+# Four services on one host: PostgreSQL, the FastAPI backend, the built
+# frontend served by nginx, and Caddy in front terminating TLS and routing
+# everything from a single domain. Postgres data lives on a named volume — a
+# real store that survives redeploys. See DEPLOY.md for the backup add-on.
+#
+# Set a strong POSTGRES_PASSWORD in a root .env file before the first start;
+# it is used both by the database and by the backend's DATABASE_URL.
 #
 # Start:   docker compose up -d --build
 # Update:  git pull && docker compose up -d --build
 # Logs:    docker compose logs -f
 
 services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=difaac
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-difaac}
+      - POSTGRES_DB=difaac
+    volumes:
+      - difaac_pgdata:/var/lib/postgresql/data
+    # The backend waits on this: it will not start until the database is
+    # actually accepting connections, not merely running.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U difaac -d difaac"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    # Not published to the host — only the backend reaches it over the internal
+    # network.
+    expose:
+      - "5432"
+
   backend:
     build:
       context: ./backend
     restart: unless-stopped
-    volumes:
-      - difaac_data:/data
     env_file:
       - ./backend/.env
     environment:
       - DIFAAC_DEBUG=false
+      - DATABASE_URL=postgresql://difaac:${POSTGRES_PASSWORD:-difaac}@db:5432/difaac
+    depends_on:
+      db:
+        condition: service_healthy
     # Not published to the host: only Caddy reaches it, over the internal
-    # network. The database and API are never exposed directly.
+    # network. The API is never exposed directly.
     expose:
       - "8000"
 
@@ -53,6 +78,6 @@ services:
       - caddy_config:/config
 
 volumes:
-  difaac_data:
+  difaac_pgdata:
   caddy_data:
   caddy_config:

@@ -18,7 +18,8 @@ Two decisions shape everything here:
 from __future__ import annotations
 
 import logging
-import sqlite3
+import psycopg
+from typing import Any
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -72,7 +73,7 @@ _INVALID_CREDENTIALS = "Incorrect email or password"
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _row_to_profile(row: sqlite3.Row) -> dict:
+def _row_to_profile(row: Any) -> dict:
     return {
         "email": row["email"],
         "full_name": row["full_name"],
@@ -115,7 +116,7 @@ def _clear_refresh_cookie(response: Response) -> None:
     response.delete_cookie(key=REFRESH_COOKIE_NAME, path="/auth")
 
 
-def _token_response(user_row: sqlite3.Row) -> dict:
+def _token_response(user_row: Any) -> dict:
     expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         subject=user_row["email"], role=user_row["role"], expires_delta=expires_delta
@@ -231,15 +232,18 @@ async def register(payload: UserRegisterRequest, request: Request):
             cursor = conn.execute(
                 """
                 INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)
-                VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+                VALUES (?, ?, ?, ?, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))
+                RETURNING id
                 """,
                 (email, hashed, payload.full_name, DEFAULT_USER_ROLE),
             )
+            # Postgres has no lastrowid; RETURNING is how the new id comes back.
+            new_user_id = cursor.fetchone()[0]
             auth_service.record_event(
                 conn,
                 "register",
                 email=email,
-                user_id=cursor.lastrowid,
+                user_id=new_user_id,
                 ip_address=_client_ip(request),
                 user_agent=_user_agent(request),
             )
@@ -249,7 +253,7 @@ async def register(payload: UserRegisterRequest, request: Request):
                 "SELECT email, full_name, role, created_at FROM users WHERE email = ?",
                 (email,),
             ).fetchone()
-        except sqlite3.Error as exc:
+        except psycopg.Error as exc:
             conn.rollback()
             logger.error("Failed to register user %s: %s", email, exc)
             raise HTTPException(
@@ -532,7 +536,7 @@ async def change_password(
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = ?, password_changed_at = CURRENT_TIMESTAMP,
+               SET hashed_password = ?, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
                    failed_login_attempts = 0, locked_until = NULL
              WHERE id = ?
             """,
@@ -631,7 +635,7 @@ async def reset_password(payload: ResetPasswordRequest, request: Request, respon
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = ?, password_changed_at = CURRENT_TIMESTAMP,
+               SET hashed_password = ?, password_changed_at = to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
                    failed_login_attempts = 0, locked_until = NULL
              WHERE id = ?
             """,

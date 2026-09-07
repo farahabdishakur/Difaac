@@ -17,7 +17,7 @@ Three rules apply to every handler below:
 from __future__ import annotations
 
 import logging
-import sqlite3
+from typing import Any
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, Query
@@ -40,7 +40,7 @@ DEFAULT_LIMIT = 100
 MAX_LIMIT = 500
 
 
-def _rows(conn: sqlite3.Connection, sql: str, params: tuple) -> list[dict]:
+def _rows(conn: Any, sql: str, params: tuple) -> list[dict]:
     return [dict(row) for row in conn.execute(sql, params).fetchall()]
 
 
@@ -193,8 +193,8 @@ def get_fraud_summary():
             SELECT
                 COUNT(*)                                              AS total,
                 COALESCE(AVG(risk_score), 0)                          AS average_risk,
-                COALESCE(SUM(status = 'blocked'), 0)                  AS blocked,
-                COALESCE(SUM(risk_score >= 70), 0)                    AS high_risk
+                COALESCE(SUM((status = 'blocked')::int), 0)                  AS blocked,
+                COALESCE(SUM((risk_score >= 70)::int), 0)                    AS high_risk
               FROM fraud_cases
             """
         ).fetchone()
@@ -268,8 +268,8 @@ def get_asm_summary():
             """
             SELECT COUNT(*)                                   AS total,
                    COALESCE(SUM(is_shadow_it), 0)             AS shadow_it,
-                   COALESCE(SUM(exposure_score >= 70), 0)     AS critical,
-                   COALESCE(SUM(issue IS NOT NULL), 0)        AS with_issues,
+                   COALESCE(SUM((exposure_score >= 70)::int), 0)     AS critical,
+                   COALESCE(SUM((issue IS NOT NULL)::int), 0)        AS with_issues,
                    COALESCE(AVG(exposure_score), 0)           AS average_exposure
               FROM asm_assets
              WHERE status = 'active'
@@ -324,10 +324,10 @@ def get_bep_summary():
         totals = conn.execute(
             """
             SELECT COUNT(*)                                                AS total,
-                   COALESCE(SUM(verdict IN ('blocked', 'detonated')), 0)   AS stopped,
-                   COALESCE(SUM(verdict = 'quarantined'), 0)               AS quarantined,
-                   COALESCE(SUM(has_payload = 0), 0)                       AS payload_free,
-                   COALESCE(SUM(threat_type = 'bec'), 0)                   AS bec
+                   COALESCE(SUM((verdict IN ('blocked', 'detonated'))::int), 0)   AS stopped,
+                   COALESCE(SUM((verdict = 'quarantined')::int), 0)               AS quarantined,
+                   COALESCE(SUM((has_payload = 0)::int), 0)                       AS payload_free,
+                   COALESCE(SUM((threat_type = 'bec')::int), 0)                   AS bec
               FROM bep_messages
             """
         ).fetchone()
@@ -384,9 +384,9 @@ def get_xdr_summary():
         totals = conn.execute(
             """
             SELECT COUNT(*)                                        AS total,
-                   COALESCE(SUM(status = 'open'), 0)               AS open,
-                   COALESCE(SUM(status = 'contained'), 0)          AS contained,
-                   COALESCE(SUM(severity IN ('critical','high')), 0) AS high_severity
+                   COALESCE(SUM((status = 'open')::int), 0)               AS open,
+                   COALESCE(SUM((status = 'contained')::int), 0)          AS contained,
+                   COALESCE(SUM((severity IN ('critical','high'))::int), 0) AS high_severity
               FROM xdr_detections
             """
         ).fetchone()
@@ -431,9 +431,9 @@ def get_drp_summary():
         totals = conn.execute(
             """
             SELECT COUNT(*)                                        AS total,
-                   COALESCE(SUM(takedown_at IS NOT NULL), 0)       AS taken_down,
-                   COALESCE(SUM(status = 'active'), 0)             AS active,
-                   COALESCE(SUM(risk IN ('critical','high')), 0)   AS high_risk
+                   COALESCE(SUM((takedown_at IS NOT NULL)::int), 0)       AS taken_down,
+                   COALESCE(SUM((status = 'active')::int), 0)             AS active,
+                   COALESCE(SUM((risk IN ('critical','high'))::int), 0)   AS high_risk
               FROM drp_phishing
             """
         ).fetchone()
@@ -443,7 +443,7 @@ def get_drp_summary():
             for row in _rows(
                 conn,
                 """
-                SELECT (julianday(takedown_at) - julianday(discovered_at)) * 24 AS hours
+                SELECT EXTRACT(EPOCH FROM (takedown_at::timestamp - discovered_at::timestamp)) / 3600.0 AS hours
                   FROM drp_phishing
                  WHERE takedown_at IS NOT NULL
               ORDER BY hours

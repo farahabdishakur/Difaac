@@ -8,7 +8,8 @@ be read without wading through HTTP concerns.
 from __future__ import annotations
 
 import logging
-import sqlite3
+import psycopg
+from typing import Any
 from datetime import datetime, timedelta, timezone
 
 from app.auth_utils import generate_refresh_token, hash_refresh_token, new_family_id
@@ -54,7 +55,7 @@ def _from_text(value: str | None) -> datetime | None:
 # ---------------------------------------------------------------------------
 
 def record_event(
-    conn: sqlite3.Connection,
+    conn: Any,
     event: str,
     *,
     email: str | None = None,
@@ -76,7 +77,7 @@ def record_event(
             """,
             (user_id, email, event, detail, ip_address, (user_agent or "")[:400] or None),
         )
-    except sqlite3.Error as exc:
+    except psycopg.Error as exc:
         logger.error("Failed to record auth event %r: %s", event, exc)
 
 
@@ -84,7 +85,7 @@ def record_event(
 # Account lockout
 # ---------------------------------------------------------------------------
 
-def lockout_remaining(row: sqlite3.Row) -> int:
+def lockout_remaining(row: Any) -> int:
     """Seconds until the account unlocks, or 0 if it is not locked."""
     locked_until = _from_text(_get(row, "locked_until"))
     if not locked_until:
@@ -93,7 +94,7 @@ def lockout_remaining(row: sqlite3.Row) -> int:
     return max(0, int(remaining))
 
 
-def register_failed_login(conn: sqlite3.Connection, user_id: int) -> bool:
+def register_failed_login(conn: Any, user_id: int) -> bool:
     """Count a failed attempt. Returns True if the account is now locked."""
     row = conn.execute(
         "SELECT failed_login_attempts FROM users WHERE id = ?", (user_id,)
@@ -114,7 +115,7 @@ def register_failed_login(conn: sqlite3.Connection, user_id: int) -> bool:
     return False
 
 
-def clear_failed_logins(conn: sqlite3.Connection, user_id: int) -> None:
+def clear_failed_logins(conn: Any, user_id: int) -> None:
     """Reset the failure counter after a successful authentication."""
     conn.execute(
         """
@@ -131,7 +132,7 @@ def clear_failed_logins(conn: sqlite3.Connection, user_id: int) -> None:
 # ---------------------------------------------------------------------------
 
 def issue_refresh_token(
-    conn: sqlite3.Connection,
+    conn: Any,
     user_id: int,
     *,
     family_id: str | None = None,
@@ -165,7 +166,7 @@ def issue_refresh_token(
     return token, expires_at
 
 
-def revoke_family(conn: sqlite3.Connection, family_id: str) -> int:
+def revoke_family(conn: Any, family_id: str) -> int:
     """Revoke every unrevoked token in a rotation family."""
     cursor = conn.execute(
         "UPDATE refresh_tokens SET revoked_at = ? WHERE family_id = ? AND revoked_at IS NULL",
@@ -174,7 +175,7 @@ def revoke_family(conn: sqlite3.Connection, family_id: str) -> int:
     return cursor.rowcount
 
 
-def revoke_all_for_user(conn: sqlite3.Connection, user_id: int) -> int:
+def revoke_all_for_user(conn: Any, user_id: int) -> int:
     """Revoke every session belonging to a user."""
     cursor = conn.execute(
         "UPDATE refresh_tokens SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
@@ -202,7 +203,7 @@ class RefreshOutcome:
         return self.status == "ok"
 
 
-def consume_refresh_token(conn: sqlite3.Connection, token: str) -> RefreshOutcome:
+def consume_refresh_token(conn: Any, token: str) -> RefreshOutcome:
     """Validate a refresh token and mark it used.
 
     A token that has already been used is the important case. The legitimate
@@ -247,7 +248,7 @@ def consume_refresh_token(conn: sqlite3.Connection, token: str) -> RefreshOutcom
     return RefreshOutcome(status="ok", user_id=row["user_id"], family_id=family_id)
 
 
-def revoke_token(conn: sqlite3.Connection, token: str) -> bool:
+def revoke_token(conn: Any, token: str) -> bool:
     """Revoke a single refresh token. Returns False if it was not found."""
     cursor = conn.execute(
         "UPDATE refresh_tokens SET revoked_at = ? WHERE token_hash = ? AND revoked_at IS NULL",
@@ -256,7 +257,7 @@ def revoke_token(conn: sqlite3.Connection, token: str) -> bool:
     return cursor.rowcount > 0
 
 
-def revoke_session_by_id(conn: sqlite3.Connection, user_id: int, session_id: int) -> bool:
+def revoke_session_by_id(conn: Any, user_id: int, session_id: int) -> bool:
     """Revoke one session by its row id, scoped to its owner.
 
     The `user_id` filter is what stops one account from revoking another's
@@ -274,7 +275,7 @@ def revoke_session_by_id(conn: sqlite3.Connection, user_id: int, session_id: int
     return cursor.rowcount > 0
 
 
-def list_sessions(conn: sqlite3.Connection, user_id: int, current_token: str | None) -> list[dict]:
+def list_sessions(conn: Any, user_id: int, current_token: str | None) -> list[dict]:
     """Active sessions for a user, newest first."""
     current_hash = hash_refresh_token(current_token) if current_token else None
     rows = conn.execute(
@@ -300,7 +301,7 @@ def list_sessions(conn: sqlite3.Connection, user_id: int, current_token: str | N
     ]
 
 
-def purge_expired_tokens(conn: sqlite3.Connection) -> int:
+def purge_expired_tokens(conn: Any) -> int:
     """Delete refresh tokens that expired more than a day ago."""
     cutoff = _to_text(_now() - timedelta(days=1))
     cursor = conn.execute("DELETE FROM refresh_tokens WHERE expires_at < ?", (cutoff,))
@@ -317,7 +318,7 @@ def purge_expired_tokens(conn: sqlite3.Connection) -> int:
 # belong mixed in with session tokens.
 
 def issue_reset_token(
-    conn: sqlite3.Connection, user_id: int, *, ip_address: str | None = None
+    conn: Any, user_id: int, *, ip_address: str | None = None
 ) -> tuple[str, datetime]:
     """Create a password reset token and store only its hash."""
     token = generate_refresh_token()
@@ -333,7 +334,7 @@ def issue_reset_token(
     return token, expires_at
 
 
-def consume_reset_token(conn: sqlite3.Connection, token: str) -> int | None:
+def consume_reset_token(conn: Any, token: str) -> int | None:
     """Validate a reset token and mark it used. Returns the user id, or None.
 
     A used or expired token is rejected the same way an unknown one is — the
@@ -359,7 +360,7 @@ def consume_reset_token(conn: sqlite3.Connection, token: str) -> int | None:
     return row["user_id"]
 
 
-def _get(row: sqlite3.Row, key: str):
+def _get(row: Any, key: str):
     """Read a column that may not exist on an un-migrated row."""
     try:
         return row[key]

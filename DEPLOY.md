@@ -106,19 +106,24 @@ The database volume is untouched by a rebuild, so accounts and data survive.
 
 ## Backups
 
-The database is one file on the `difaac_data` volume. The simplest backup is a
-scheduled copy off the box:
+The database is PostgreSQL, running as the `db` service with its data on the
+`difaac_pgdata` volume. Take a logical dump off the box on a schedule:
 
 ```bash
-docker compose exec backend sh -c 'sqlite3 /data/difaac.db ".backup /data/backup.db"'
-docker compose cp backend:/data/backup.db ./difaac-$(date +%F).db
+docker compose exec -T db pg_dump -U difaac difaac | gzip > difaac-$(date +%F).sql.gz
 ```
 
-For continuous, point-in-time backup to object storage, add
-[Litestream](https://litestream.io) as a sidecar mounting the same volume and
-streaming to an S3-compatible bucket (Hostinger object storage, Backblaze B2,
-or AWS S3). It replicates every write, so a lost VPS costs seconds of data
-rather than a day. This is worth adding before you hold real customer data.
+Restore into an empty database with:
+
+```bash
+gunzip -c difaac-2026-09-05.sql.gz | docker compose exec -T db psql -U difaac -d difaac
+```
+
+A nightly dump loses at most a day. For point-in-time recovery, archive the
+write-ahead log to an S3-compatible bucket (Hostinger object storage, Backblaze
+B2, AWS S3) with [pgBackRest](https://pgbackrest.org) or
+[WAL-G](https://github.com/wal-g/wal-g), or move to a managed Postgres that
+does it for you. Worth having in place before you hold real customer data.
 
 ## Testing without a domain first
 
@@ -133,6 +138,8 @@ cookie is marked secure and needs HTTPS to be sent.
 The platform is **single-tenant**: every account sees the same organisation's
 data. That is correct for Difaac running its own SOC. Before onboarding a
 second, separate customer, every workspace table needs a `tenant_id` and every
-query needs to filter on it — ideally enforced in the database with row-level
-security, which is a reason to move to PostgreSQL at that point. Until then,
-keep all accounts inside one organisation.
+query needs to filter on it. Now that the database is PostgreSQL, that filter
+should be enforced by row-level security rather than left to the application —
+a missed `WHERE tenant_id = …` then fails closed instead of leaking another
+customer's data. Until that work is done, keep all accounts inside one
+organisation.

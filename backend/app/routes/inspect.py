@@ -20,7 +20,7 @@ Nothing new had to be built on the frontend for these to appear.
 from __future__ import annotations
 
 import logging
-import sqlite3
+from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
@@ -67,7 +67,7 @@ class InspectResponse(BaseModel):
 
 
 def record_detection(
-    conn: sqlite3.Connection, verdict: Verdict, *, path: str, source: str
+    conn: Any, verdict: Verdict, *, path: str, source: str
 ) -> None:
     """Write a flagged request into the table the XDR console reads.
 

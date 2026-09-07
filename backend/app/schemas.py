@@ -1,4 +1,4 @@
-"""SQLite schema definitions for the Difaac platform.
+"""PostgreSQL schema definitions for the Difaac platform.
 
 Each CREATE TABLE statement uses IF NOT EXISTS so the script is safe
 to run on every application startup.
@@ -78,13 +78,13 @@ CREATE TABLE IF NOT EXISTS site_content (
 
 -- Users table for platform authentication
 CREATE TABLE IF NOT EXISTS users (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email           TEXT UNIQUE NOT NULL,
     hashed_password TEXT NOT NULL,
     full_name       TEXT,
     role            TEXT NOT NULL DEFAULT 'analyst',
     is_active       INTEGER NOT NULL DEFAULT 1,
-    created_at      TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at      TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 -- ==========================================
@@ -93,17 +93,17 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Threat Intelligence: Indicators of Compromise (IOCs)
 CREATE TABLE IF NOT EXISTS ti_iocs (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     value       TEXT UNIQUE NOT NULL,
     type        TEXT NOT NULL,
     severity    TEXT NOT NULL,
     source      TEXT NOT NULL,
-    created_at  TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at  TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 -- Threat Intelligence: Threat Actors
 CREATE TABLE IF NOT EXISTS ti_actors (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name        TEXT UNIQUE NOT NULL,
     aliases     TEXT,
     origin      TEXT,
@@ -122,14 +122,14 @@ CREATE TABLE IF NOT EXISTS ti_actors (
 -- assets, brand, or sector, as opposed to general intelligence. It is the
 -- first thing an analyst filters on, so it is stored rather than derived.
 CREATE TABLE IF NOT EXISTS ti_alerts (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    id           INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title        TEXT    NOT NULL,
     category     TEXT    NOT NULL,
     severity     TEXT    NOT NULL,
     source       TEXT    NOT NULL,
     actor        TEXT,
     is_tailored  INTEGER NOT NULL DEFAULT 0,
-    detected_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    detected_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_ti_alerts_detected ON ti_alerts(detected_at);
@@ -145,13 +145,13 @@ CREATE INDEX IF NOT EXISTS idx_ti_alerts_severity ON ti_alerts(severity);
 -- `takedown_at` being nullable is the point of the table — the gap between
 -- `discovered_at` and it is the number the team is measured on.
 CREATE TABLE IF NOT EXISTS drp_phishing (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     domain        TEXT UNIQUE NOT NULL,
     status        TEXT NOT NULL,
     channel       TEXT,
     risk          TEXT,
     takedown_at   TEXT,
-    discovered_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    discovered_at TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 -- Fraud Protection: scored sessions and transactions.
@@ -165,14 +165,14 @@ CREATE TABLE IF NOT EXISTS drp_phishing (
 -- sharply between web and mobile and between regions, and an analyst's first
 -- question about a spike is always where it came from.
 CREATE TABLE IF NOT EXISTS fraud_cases (
-    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    id             INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     session_id     TEXT NOT NULL,
     risk_score     INTEGER NOT NULL,
     status         TEXT NOT NULL,
     signal         TEXT,
     channel        TEXT,
     country        TEXT,
-    detected_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    detected_at    TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_fraud_cases_detected ON fraud_cases(detected_at);
@@ -188,7 +188,7 @@ CREATE INDEX IF NOT EXISTS idx_fraud_cases_detected ON fraud_cases(detected_at);
 -- `exposure_score` is per-asset and set by the scanner; the dashboard
 -- aggregates it rather than recomputing what the scanner already decided.
 CREATE TABLE IF NOT EXISTS asm_assets (
-    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    id             INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     host           TEXT    NOT NULL,
     asset_type     TEXT    NOT NULL,
     service        TEXT,
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS asm_assets (
     exposure_score INTEGER NOT NULL DEFAULT 0,
     is_shadow_it   INTEGER NOT NULL DEFAULT 0,
     status         TEXT    NOT NULL DEFAULT 'active',
-    discovered_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    discovered_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_asm_assets_discovered ON asm_assets(discovered_at);
@@ -209,7 +209,7 @@ CREATE INDEX IF NOT EXISTS idx_asm_assets_discovered ON asm_assets(discovered_at
 -- to detonate and is caught on language and context instead. A dashboard that
 -- did not distinguish them would hide which half is actually working.
 CREATE TABLE IF NOT EXISTS bep_messages (
-    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     subject           TEXT    NOT NULL,
     sender            TEXT    NOT NULL,
     recipient         TEXT    NOT NULL,
@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS bep_messages (
     verdict           TEXT    NOT NULL,
     has_payload       INTEGER NOT NULL DEFAULT 1,
     confidence        INTEGER NOT NULL DEFAULT 0,
-    detected_at       TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    detected_at       TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_bep_messages_detected ON bep_messages(detected_at);
@@ -228,26 +228,26 @@ CREATE INDEX IF NOT EXISTS idx_bep_messages_detected ON bep_messages(detected_at
 -- is what an analyst opened after confirming one or correlating several. The
 -- ratio between the two tables is the number the SOC is actually judged on.
 CREATE TABLE IF NOT EXISTS xdr_detections (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    id           INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     rule         TEXT    NOT NULL,
     layer        TEXT    NOT NULL,
     severity     TEXT    NOT NULL,
     status       TEXT    NOT NULL DEFAULT 'open',
     host         TEXT,
     technique    TEXT,
-    detected_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    detected_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_xdr_detections_detected ON xdr_detections(detected_at);
 
 -- Incident Response: Cases
 CREATE TABLE IF NOT EXISTS incidents (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title       TEXT NOT NULL,
     severity    TEXT NOT NULL,
     status      TEXT NOT NULL,
     reported_by TEXT NOT NULL,
-    created_at  TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at  TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 -- ==========================================
@@ -263,11 +263,11 @@ CREATE TABLE IF NOT EXISTS incidents (
 -- that has already been rotated is presented again, the original was captured
 -- by someone, so the whole family is revoked rather than just that token.
 CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash  TEXT    NOT NULL UNIQUE,
     family_id   TEXT    NOT NULL,
-    issued_at   TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    issued_at   TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
     expires_at  TEXT    NOT NULL,
     revoked_at  TEXT,
     used_at     TEXT,
@@ -286,12 +286,12 @@ CREATE INDEX IF NOT EXISTS idx_refresh_family     ON refresh_tokens(family_id);
 -- one action (set a new password) and expires in minutes, not days, so
 -- mixing the two would mean every query needs to filter by purpose.
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash  TEXT    NOT NULL UNIQUE,
     expires_at  TEXT    NOT NULL,
     used_at     TEXT,
-    created_at  TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at  TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'),
     ip_address  TEXT
 );
 
@@ -304,14 +304,14 @@ CREATE INDEX IF NOT EXISTS idx_reset_user       ON password_reset_tokens(user_id
 -- against addresses which do not exist are still captured — those are usually
 -- the most interesting entries.
 CREATE TABLE IF NOT EXISTS auth_events (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id     INTEGER REFERENCES users(id) ON DELETE SET NULL,
     email       TEXT,
     event       TEXT NOT NULL,
     detail      TEXT,
     ip_address  TEXT,
     user_agent  TEXT,
-    created_at  TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at  TEXT NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_auth_events_email   ON auth_events(email);
@@ -331,7 +331,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
 -- new -> contacted -> closed and is the only column the platform itself
 -- writes after insert.
 CREATE TABLE IF NOT EXISTS demo_requests (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     product_slug  TEXT    NOT NULL,
     name          TEXT    NOT NULL,
     company       TEXT    NOT NULL,
@@ -340,7 +340,7 @@ CREATE TABLE IF NOT EXISTS demo_requests (
     context       TEXT,
     status        TEXT    NOT NULL DEFAULT 'new',
     ip_address    TEXT,
-    created_at    TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at    TEXT    NOT NULL DEFAULT to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE INDEX IF NOT EXISTS idx_demo_requests_created ON demo_requests(created_at);

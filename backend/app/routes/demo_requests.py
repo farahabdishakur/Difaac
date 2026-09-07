@@ -16,7 +16,7 @@ Two endpoints with deliberately opposite exposure:
 from __future__ import annotations
 
 import logging
-import sqlite3
+import psycopg
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 
@@ -75,7 +75,7 @@ async def create_demo_request(payload: DemoRequestCreate, request: Request):
                 ),
             )
             conn.commit()
-    except sqlite3.Error as exc:
+    except psycopg.Error as exc:
         logger.error("Failed to store demo request from %s: %s", payload.email, exc)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

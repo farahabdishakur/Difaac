@@ -20,6 +20,12 @@ pydantic==2.13.5
 # Required by pydantic's EmailStr, used on the demo-request and auth payloads.
 email-validator==2.3.0
 
+# --- Database (PostgreSQL) -------------------------------------------------
+# psycopg 3 with the binary driver (no system libpq needed) and its connection
+# pool, which the app borrows a live connection from on every request.
+psycopg[binary]==3.3.5
+psycopg-pool==3.3.1
+
 # --- Authentication --------------------------------------------------------
 bcrypt==5.0.0
 PyJWT==2.13.0

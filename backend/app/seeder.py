@@ -8,7 +8,7 @@ import json
 import logging
 import os
 import secrets
-import sqlite3
+from typing import Any
 from datetime import datetime, timedelta, timezone
 
 from app.seed_data.products import PRODUCTS
@@ -31,7 +31,7 @@ from app.auth_utils import hash_password
 logger = logging.getLogger(__name__)
 
 
-def seed_all(conn: sqlite3.Connection) -> None:
+def seed_all(conn: Any) -> None:
     """Insert every seed dataset into the database.
 
     The caller is responsible for calling ``conn.commit()`` after this
@@ -47,7 +47,7 @@ def seed_all(conn: sqlite3.Connection) -> None:
     _seed_users(conn)
 
 
-def seed_workspace_demo(conn: sqlite3.Connection) -> None:
+def seed_workspace_demo(conn: Any) -> None:
     """Fill empty SOC workspace tables with demonstration data.
 
     Called on every start rather than only on a fresh database, because these
@@ -66,7 +66,7 @@ def seed_workspace_demo(conn: sqlite3.Connection) -> None:
     _seed_drp_items(conn)
 
 
-def _is_empty(conn: sqlite3.Connection, table: str) -> bool:
+def _is_empty(conn: Any, table: str) -> bool:
     return conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] == 0
 
 
@@ -76,7 +76,7 @@ def _hours_ago(hours: int) -> str:
     return moment.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _seed_ti_alerts(conn: sqlite3.Connection) -> None:
+def _seed_ti_alerts(conn: Any) -> None:
     if not _is_empty(conn, "ti_alerts"):
         return
     conn.executemany(
@@ -92,7 +92,7 @@ def _seed_ti_alerts(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d threat intelligence alerts.", len(TI_ALERTS))
 
 
-def _seed_fraud_cases(conn: sqlite3.Connection) -> None:
+def _seed_fraud_cases(conn: Any) -> None:
     """Replace the placeholder fraud rows with cases carrying full context.
 
     Unlike the other seeds this one also runs when the table is non-empty but
@@ -122,7 +122,7 @@ def _seed_fraud_cases(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d fraud cases.", len(FRAUD_CASES))
 
 
-def _seed_asm_assets(conn: sqlite3.Connection) -> None:
+def _seed_asm_assets(conn: Any) -> None:
     if not _is_empty(conn, "asm_assets"):
         return
     conn.executemany(
@@ -138,7 +138,7 @@ def _seed_asm_assets(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d attack surface assets.", len(ASM_ASSETS))
 
 
-def _seed_bep_messages(conn: sqlite3.Connection) -> None:
+def _seed_bep_messages(conn: Any) -> None:
     if not _is_empty(conn, "bep_messages"):
         return
     conn.executemany(
@@ -154,7 +154,7 @@ def _seed_bep_messages(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d email messages.", len(BEP_MESSAGES))
 
 
-def _seed_xdr_detections(conn: sqlite3.Connection) -> None:
+def _seed_xdr_detections(conn: Any) -> None:
     if not _is_empty(conn, "xdr_detections"):
         return
     conn.executemany(
@@ -170,7 +170,7 @@ def _seed_xdr_detections(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d XDR detections.", len(XDR_DETECTIONS))
 
 
-def _seed_drp_items(conn: sqlite3.Connection) -> None:
+def _seed_drp_items(conn: Any) -> None:
     """Seed brand-abuse items, replacing rows that predate the channel column.
 
     Like the fraud seed, this also runs when the table holds only rows written
@@ -207,7 +207,7 @@ def _seed_drp_items(conn: sqlite3.Connection) -> None:
 # Private helpers — one per table
 # ---------------------------------------------------------------------------
 
-def _seed_products(conn: sqlite3.Connection) -> None:
+def _seed_products(conn: Any) -> None:
     for i, p in enumerate(PRODUCTS):
         conn.execute(
             "INSERT INTO products"
@@ -228,7 +228,7 @@ def _seed_products(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d products.", len(PRODUCTS))
 
 
-def _seed_industries(conn: sqlite3.Connection) -> None:
+def _seed_industries(conn: Any) -> None:
     for i, ind in enumerate(INDUSTRIES):
         conn.execute(
             "INSERT INTO industries"
@@ -246,7 +246,7 @@ def _seed_industries(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d industries.", len(INDUSTRIES))
 
 
-def _seed_solutions(conn: sqlite3.Connection) -> None:
+def _seed_solutions(conn: Any) -> None:
     for i, s in enumerate(SOLUTIONS):
         highlights = s["highlights"]
         conn.execute(
@@ -268,7 +268,7 @@ def _seed_solutions(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d solutions.", len(SOLUTIONS))
 
 
-def _seed_services(conn: sqlite3.Connection) -> None:
+def _seed_services(conn: Any) -> None:
     for i, s in enumerate(SERVICES):
         conn.execute(
             "INSERT INTO services"
@@ -287,7 +287,7 @@ def _seed_services(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d services.", len(SERVICES))
 
 
-def _seed_resources(conn: sqlite3.Connection) -> None:
+def _seed_resources(conn: Any) -> None:
     for i, r in enumerate(RESOURCES):
         conn.execute(
             "INSERT INTO resources"
@@ -305,7 +305,7 @@ def _seed_resources(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d resources.", len(RESOURCES))
 
 
-def _seed_blog_posts(conn: sqlite3.Connection) -> None:
+def _seed_blog_posts(conn: Any) -> None:
     for i, b in enumerate(BLOG_POSTS):
         conn.execute(
             "INSERT INTO blog_posts"
@@ -325,7 +325,7 @@ def _seed_blog_posts(conn: sqlite3.Connection) -> None:
 
 
 
-def _seed_site_content(conn: sqlite3.Connection) -> None:
+def _seed_site_content(conn: Any) -> None:
     for key, value in SITE_CONTENT.items():
         conn.execute(
             "INSERT INTO site_content (key, value_json) VALUES (?, ?)",
@@ -334,7 +334,7 @@ def _seed_site_content(conn: sqlite3.Connection) -> None:
     logger.info("  Seeded %d site content entries.", len(SITE_CONTENT))
 
 
-def _seed_users(conn: sqlite3.Connection) -> None:
+def _seed_users(conn: Any) -> None:
     """Create the initial account on an empty database.
 
     The password is taken from DIFAAC_SEED_PASSWORD, or generated randomly when
@@ -352,7 +352,7 @@ def _seed_users(conn: sqlite3.Connection) -> None:
 
     conn.execute(
         "INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)"
-        " VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)",
+        " VALUES (?, ?, ?, ?, to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS'))",
         (analyst_email, hash_password(password), "Difaac Security Analyst", "analyst"),
     )
 
