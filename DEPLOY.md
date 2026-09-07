@@ -40,7 +40,22 @@ cp backend/.env.example backend/.env
 nano backend/.env
 ```
 
-Two values must be set, and the rest have sensible defaults:
+Three values must be set, and the rest have sensible defaults.
+
+The first goes in a `.env` file at the repository root, next to
+`docker-compose.yml`, because it is read by compose rather than by the app:
+
+- **`POSTGRES_PASSWORD`** — the database password. Generate one:
+
+  ```bash
+  echo "POSTGRES_PASSWORD=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')" > .env
+  ```
+
+  `docker compose up` refuses to start without it rather than falling back to
+  a default, because a known password on a database is a known password
+  whether or not the port is published.
+
+The other two go in `backend/.env`:
 
 - **`DIFAAC_SECRET_KEY`** — the token-signing key. Generate one and paste it:
 

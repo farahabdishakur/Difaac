@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
     environment:
       - POSTGRES_USER=difaac
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-difaac}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set it in a root .env file before the first start}
       - POSTGRES_DB=difaac
     volumes:
       - difaac_pgdata:/var/lib/postgresql/data
@@ -42,7 +42,7 @@ services:
       - ./backend/.env
     environment:
       - DIFAAC_DEBUG=false
-      - DATABASE_URL=postgresql://difaac:${POSTGRES_PASSWORD:-difaac}@db:5432/difaac
+      - DATABASE_URL=postgresql://difaac:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set it in a root .env file before the first start}@db:5432/difaac
     depends_on:
       db:
         condition: service_healthy
