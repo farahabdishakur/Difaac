@@ -154,6 +154,9 @@ CREATE TABLE IF NOT EXISTS drp_phishing (
     discovered_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE INDEX IF NOT EXISTS idx_drp_phishing_discovered ON drp_phishing(discovered_at);
+CREATE INDEX IF NOT EXISTS idx_drp_phishing_status     ON drp_phishing(status);
+
 -- Fraud Protection: scored sessions and transactions.
 --
 -- `signal` records which detector fired (device spoofing, bot automation,
@@ -176,6 +179,7 @@ CREATE TABLE IF NOT EXISTS fraud_cases (
 );
 
 CREATE INDEX IF NOT EXISTS idx_fraud_cases_detected ON fraud_cases(detected_at);
+CREATE INDEX IF NOT EXISTS idx_fraud_cases_status   ON fraud_cases(status);
 
 -- Attack Surface Management: externally reachable assets.
 --
@@ -201,6 +205,7 @@ CREATE TABLE IF NOT EXISTS asm_assets (
 );
 
 CREATE INDEX IF NOT EXISTS idx_asm_assets_discovered ON asm_assets(discovered_at);
+CREATE INDEX IF NOT EXISTS idx_asm_assets_status     ON asm_assets(status);
 
 -- Business Email Protection: messages the gateway acted on.
 --
@@ -221,6 +226,7 @@ CREATE TABLE IF NOT EXISTS bep_messages (
 );
 
 CREATE INDEX IF NOT EXISTS idx_bep_messages_detected ON bep_messages(detected_at);
+CREATE INDEX IF NOT EXISTS idx_bep_messages_verdict  ON bep_messages(verdict);
 
 -- Managed XDR: detections across the monitored layers.
 --
@@ -239,6 +245,8 @@ CREATE TABLE IF NOT EXISTS xdr_detections (
 );
 
 CREATE INDEX IF NOT EXISTS idx_xdr_detections_detected ON xdr_detections(detected_at);
+CREATE INDEX IF NOT EXISTS idx_xdr_detections_status   ON xdr_detections(status);
+CREATE INDEX IF NOT EXISTS idx_xdr_detections_severity ON xdr_detections(severity);
 
 -- Incident Response: Cases
 CREATE TABLE IF NOT EXISTS incidents (

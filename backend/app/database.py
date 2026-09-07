@@ -76,14 +76,27 @@ _pool: ConnectionPool | None = None
 def _get_pool() -> ConnectionPool:
     global _pool
     if _pool is None:
-        # `row_factory` is set per connection so every cursor returns dicts
-        # without each call having to ask for them.
         _pool = ConnectionPool(
             conninfo=DATABASE_URL,
             min_size=1,
             max_size=10,
             max_idle=300,
-            kwargs={"row_factory": dict_row},
+            # `row_factory` is set per connection so every cursor returns dicts
+            # without each call having to ask for them. The session runs in UTC
+            # so a stored moment reads back the same way on a developer's
+            # machine and on a server in another zone — the values are the same
+            # instants either way, but the text in logs and API responses is
+            # not, and that difference is the kind that wastes an afternoon.
+            kwargs={"row_factory": dict_row, "options": "-c timezone=UTC"},
+            # Without this the pool hands out whatever it is holding. A
+            # connection killed by a database restart, a failover or an idle
+            # timeout in between requests is dead, and the request that borrows
+            # it is the one that discovers this. `check_connection` tests a
+            # connection on the way out and replaces it if it has gone.
+            check=ConnectionPool.check_connection,
+            # A request should fail fast and say so rather than hang for the
+            # 30-second default while the caller waits on an exhausted pool.
+            timeout=10,
             open=True,
         )
     return _pool
