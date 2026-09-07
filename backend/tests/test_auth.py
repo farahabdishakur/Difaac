@@ -9,13 +9,12 @@ Run with:  python -m pytest tests/ -v
 from __future__ import annotations
 
 import os
-import tempfile
 
 import pytest
 
 # Must be set before importing the app: config reads the environment at import.
+# conftest.py has already pointed DATABASE_URL at a throwaway test database.
 os.environ.setdefault("DIFAAC_DEBUG", "true")
-os.environ.setdefault("DIFAAC_DB_PATH", os.path.join(tempfile.mkdtemp(), "test.db"))
 os.environ.setdefault("DIFAAC_SEED_PASSWORD", "seeded-password-for-tests")
 
 from fastapi.testclient import TestClient  # noqa: E402
