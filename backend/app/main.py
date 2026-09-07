@@ -13,7 +13,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from app.config import CORS_ORIGINS, DEBUG, RATE_LIMIT_AUTH_RPM, RATE_LIMIT_RPM, SENTRY_DSN
-from app.database import init_db
+from app.database import close_pool, init_db
 from app.rate_limit import rate_limit_middleware
 from app.routes import (
     auth,
@@ -79,6 +79,7 @@ async def lifespan(_: fastapi.FastAPI):
     )
     yield
     logger.info("Difaac API shutting down.")
+    close_pool()
 
 
 app = fastapi.FastAPI(

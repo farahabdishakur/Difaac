@@ -102,6 +102,21 @@ def _get_pool() -> ConnectionPool:
     return _pool
 
 
+def close_pool() -> None:
+    """Close the pool and its background threads.
+
+    Nothing reclaims them otherwise: at interpreter shutdown psycopg_pool's
+    finaliser tries to join threads Python is already tearing down, which
+    raises PythonFinalizationError on stderr after the work has succeeded. A
+    short-lived command then looks like it failed when it did not. Calling this
+    on the way out closes the connections deliberately instead.
+    """
+    global _pool
+    if _pool is not None:
+        _pool.close()
+        _pool = None
+
+
 @contextmanager
 def get_connection() -> Generator[_Conn, None, None]:
     """Yield a pooled connection.

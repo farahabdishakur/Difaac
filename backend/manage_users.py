@@ -25,12 +25,12 @@ from __future__ import annotations
 
 import argparse
 import secrets
-import sqlite3
 import sys
+from typing import Any
 
 from app.auth_utils import hash_password
 from app.permissions import Role, permissions_for
-from app.database import get_connection
+from app.database import _Conn, close_pool, get_connection
 from app.models import MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH
 
 # Read from the permission model rather than restated here, so a role added
@@ -44,9 +44,9 @@ def _normalise(email: str) -> str:
     return email.strip().lower()
 
 
-def _find(conn: sqlite3.Connection, email: str) -> sqlite3.Row | None:
+def _find(conn: _Conn, email: str) -> dict[str, Any] | None:
     return conn.execute(
-        "SELECT id, email, full_name, role, is_active FROM users WHERE email = ?",
+        "SELECT id, email, full_name, role, is_active FROM users WHERE email = %s",
         (email,),
     ).fetchone()
 
@@ -116,7 +116,7 @@ def cmd_create(args: argparse.Namespace) -> None:
         conn.execute(
             """
             INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+            VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
             """,
             (email, hash_password(password), args.name, args.role),
         )
@@ -132,7 +132,7 @@ def cmd_set_role(args: argparse.Namespace) -> None:
         row = _find(conn, email)
         if not row:
             sys.exit(f"No account for {email}.")
-        conn.execute("UPDATE users SET role = ? WHERE id = ?", (args.role, row["id"]))
+        conn.execute("UPDATE users SET role = %s WHERE id = %s", (args.role, row["id"]))
         conn.commit()
     print(f"{email}: role {row['role']} -> {args.role}")
 
@@ -151,9 +151,9 @@ def cmd_set_password(args: argparse.Namespace) -> None:
         conn.execute(
             """
             UPDATE users
-               SET hashed_password = ?, password_changed_at = CURRENT_TIMESTAMP,
+               SET hashed_password = %s, password_changed_at = CURRENT_TIMESTAMP,
                    failed_login_attempts = 0, locked_until = NULL
-             WHERE id = ?
+             WHERE id = %s
             """,
             (hash_password(password), row["id"]),
         )
@@ -162,7 +162,7 @@ def cmd_set_password(args: argparse.Namespace) -> None:
         # was most likely being performed to end.
         conn.execute(
             "UPDATE refresh_tokens SET revoked_at = CURRENT_TIMESTAMP"
-            " WHERE user_id = ? AND revoked_at IS NULL",
+            " WHERE user_id = %s AND revoked_at IS NULL",
             (row["id"],),
         )
         conn.commit()
@@ -178,7 +178,7 @@ def cmd_unlock(args: argparse.Namespace) -> None:
         if not row:
             sys.exit(f"No account for {email}.")
         conn.execute(
-            "UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = ?",
+            "UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = %s",
             (row["id"],),
         )
         conn.commit()
@@ -191,12 +191,12 @@ def _set_active(email: str, active: bool) -> None:
         if not row:
             sys.exit(f"No account for {email}.")
         conn.execute(
-            "UPDATE users SET is_active = ? WHERE id = ?", (1 if active else 0, row["id"])
+            "UPDATE users SET is_active = %s WHERE id = %s", (active, row["id"])
         )
         if not active:
             conn.execute(
                 "UPDATE refresh_tokens SET revoked_at = CURRENT_TIMESTAMP"
-                " WHERE user_id = ? AND revoked_at IS NULL",
+                " WHERE user_id = %s AND revoked_at IS NULL",
                 (row["id"],),
             )
         conn.commit()
@@ -239,7 +239,13 @@ def main() -> None:
     activate.set_defaults(func=lambda a: _set_active(_normalise(a.email), True))
 
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    finally:
+        # The commands are short-lived, so the pool has to be shut down
+        # explicitly; left to the interpreter's finaliser it prints a thread
+        # error after the command has already done its work.
+        close_pool()
 
 
 if __name__ == "__main__":
