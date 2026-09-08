@@ -98,8 +98,8 @@ export function ProductHero({
               headline. */}
           <p className={`text-sm font-medium ${toneText[tone]}`}>{hero.badge}</p>
 
-          {/* Weight 400; the accent is a colour, not a bold. */}
-          <h1 className="mt-8 text-balance font-display t-h1 font-normal leading-[1.12] tracking-[-0.02em]">
+          {/* The accent is a colour on the operative phrase, not a second weight. */}
+          <h1 className="mt-8 text-balance font-display t-h1 font-bold text-text">
             <span className="text-text">{hero.headlineLead}</span>
             <span className={toneText[tone]}>{hero.headlineAccent}</span>
           </h1>

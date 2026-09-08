@@ -68,7 +68,7 @@ export function CompanyHero({
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">{eyebrow}</span>
         ) : null}
 
-        <h1 className="t-h1 text-balance font-display text-text">
+        <h1 className="t-h1 text-balance font-display font-bold text-text">
           <TwoTone {...heading} />
         </h1>
 

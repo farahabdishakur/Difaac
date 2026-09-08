@@ -108,7 +108,7 @@ export default function SubscriptionsPage() {
       {/* ─────────────────────────── Hero ─────────────────────────── */}
       <section className="pt-24 pb-16 lg:pt-32">
         <div className={COLUMN}>
-          <h1 className="t-h1 text-center font-display">
+          <h1 className="t-h1 text-center font-display font-bold">
             <span className="block text-text">Compare Difaac plans</span>
             <span className="block text-brand-ultra">capability by capability</span>
           </h1>

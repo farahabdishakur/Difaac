@@ -59,13 +59,13 @@ export default function ProductDetailPage() {
         <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
           <ProductEmblem icon={Icon} tone={tone} slug={product.slug} size="hero" />
 
-          <h1 className={`text-sm font-medium uppercase tracking-[0.18em] ${toneText[tone]}`}>
+          <p className={`text-sm font-medium uppercase tracking-[0.18em] ${toneText[tone]}`}>
             {product.name}
-          </h1>
-
-          <p className="t-display text-balance font-display text-text">
-            {product.tagline}
           </p>
+
+          <h1 className="t-display text-balance font-display font-bold text-text">
+            {product.tagline}
+          </h1>
 
           <p className="max-w-2xl text-pretty text-lg leading-relaxed text-body">
             {product.description}
