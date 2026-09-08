@@ -3,7 +3,7 @@
 Runs on every start and does nothing once applied. The order matters and each
 step is safe to repeat:
 
-  1. Create the `tenants` table and the organisation Difaac itself operates as.
+  1. Create the organisation Difaac itself operates as.
   2. Add a nullable `tenant_id` to every scoped table.
   3. Backfill existing rows to the default tenant. They were written when there
      was only one, so that is genuinely whose they are.
@@ -49,17 +49,6 @@ LANGUAGE sql STABLE AS $$
 $$
 """
 
-TENANTS_TABLE = """
-CREATE TABLE IF NOT EXISTS tenants (
-    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    slug        TEXT UNIQUE NOT NULL,
-    name        TEXT NOT NULL,
-    is_active   BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-)
-"""
-
-
 def _has_column(conn: Any, table: str, column: str) -> bool:
     return bool(
         conn.execute(
@@ -82,9 +71,9 @@ def _table_exists(conn: Any, table: str) -> bool:
 
 def run_tenancy_migration(conn: Any) -> int:
     """Apply tenant isolation. Idempotent. Returns the default tenant's id."""
-    conn.execute(TENANTS_TABLE)
-
-    # The default tenant has to exist before anything can reference it.
+    # The table itself is declared in schemas.py with every other one, and
+    # init_db creates the schema before calling this. The default tenant has to
+    # exist before anything can reference it.
     conn.execute(
         "INSERT INTO tenants (slug, name) VALUES (%s, %s) ON CONFLICT (slug) DO NOTHING",
         (DEFAULT_TENANT_SLUG, "Difaac"),

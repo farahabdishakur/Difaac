@@ -1,15 +1,24 @@
-import { ShieldCheck, Award, Lock, Server } from 'lucide-react'
+import { ShieldCheck, FileCheck, Lock, MapPin } from 'lucide-react'
 import { PageHero } from '@/components/shared/page-hero'
 import { ProductCard } from '@/components/cards/product-card'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { SectionHeading } from '@/components/shared/section-heading'
 import { useProducts } from '@/lib/api'
 
+// Four things a buyer can check, rather than four certifications. Difaac
+// holds none of SOC 2, ISO 27001 or a GDPR attestation, and with eight people
+// it does not staff a desk around the clock either — claiming any of that on a
+// live domain is a claim a customer can disprove, and it contradicted the
+// privacy policy, which says plainly that nobody has audited us.
+//
+// Each of these is true today and stays true: the isolation is enforced by
+// PostgreSQL row-level security, the rules of engagement are written into the
+// subscription terms, and the team is where it says it is.
 const trustBadges = [
-  { icon: ShieldCheck, label: 'SOC 2 Type II' },
-  { icon: Award, label: 'ISO 27001' },
-  { icon: Lock, label: 'GDPR compliant' },
-  { icon: Server, label: '24/7 SOC coverage' },
+  { icon: ShieldCheck, label: 'Tenant-isolated data' },
+  { icon: FileCheck, label: 'Rules of engagement agreed first' },
+  { icon: Lock, label: 'Encrypted in transit' },
+  { icon: MapPin, label: 'Built in Borama, Somaliland' },
 ]
 
 export default function ProductsPage() {

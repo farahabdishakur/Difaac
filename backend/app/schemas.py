@@ -77,6 +77,14 @@ CREATE TABLE IF NOT EXISTS site_content (
 );
 
 -- Users table for platform authentication
+CREATE TABLE IF NOT EXISTS tenants (
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    slug        TEXT UNIQUE NOT NULL,
+    name        TEXT NOT NULL,
+    is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS users (
     id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email           TEXT UNIQUE NOT NULL,
