@@ -4,7 +4,11 @@ import { industries as staticIndustries, type Industry } from '@/lib/data/indust
 import { solutions as staticSolutions, type Solution } from '@/lib/data/solutions'
 import { services as staticServices, type Service } from '@/lib/data/services'
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'https://localhost:8000'
+// Empty by default, so every call is relative and lands on whatever origin
+// served the page: Vite's proxy in development, Caddy in production. Set
+// VITE_API_URL only to point a build at an API on a different host — and know
+// that doing so makes the refresh cookie cross-origin.
+export const API_BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 async function fetcher<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`)

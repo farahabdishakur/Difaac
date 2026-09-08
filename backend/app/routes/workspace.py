@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any
-from datetime import date, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Query
 
@@ -635,21 +635,26 @@ def get_activity_trend(days: int = Query(14, ge=7, le=90)):
                  UNION ALL
                 SELECT created_at  FROM incidents
             )
-            SELECT DATE(occurred_at) AS day, COUNT(*) AS count
+            SELECT occurred_at::date AS day, COUNT(*) AS count
               FROM events
-             WHERE DATE(occurred_at) >= DATE('now', %s)
+             WHERE occurred_at >= current_date - make_interval(days => %s)
           GROUP BY day
             """,
-            (f"-{days - 1} days",),
+            (days - 1,),
         )
 
+    # The rows come back with a real date in `day`, so the series is built from
+    # dates and formatted once at the end. Keying the lookup by the formatted
+    # string instead would miss every row and return a chart of zeros — which
+    # looks like a quiet fortnight rather than a bug.
     counted = {row["day"]: row["count"] for row in rows}
-    today = date.today()
-    series = [
-        {
-            "day": (day := (today - timedelta(days=offset)).isoformat()),
-            "count": counted.get(day, 0),
-        }
-        for offset in range(days - 1, -1, -1)
-    ]
+    # The database session runs in UTC, so the series has to be counted in UTC
+    # too. `date.today()` is the machine's local day, and on a server three
+    # hours ahead of UTC that is a different day for three hours out of every
+    # twenty-four.
+    today = datetime.now(timezone.utc).date()
+    series = []
+    for offset in range(days - 1, -1, -1):
+        day = today - timedelta(days=offset)
+        series.append({"day": day.isoformat(), "count": counted.get(day, 0)})
     return {"days": days, "series": series, "total": sum(p["count"] for p in series)}

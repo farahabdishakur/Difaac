@@ -48,9 +48,21 @@ DEBUG: bool = os.getenv("DIFAAC_DEBUG", "false").lower() in ("1", "true", "yes")
 
 _DEFAULT_ORIGINS = (
     "http://localhost:5173,"
+    "http://localhost:5174,"
+    "http://localhost:5175,"
+    "http://localhost:5176,"
     "http://127.0.0.1:5173,"
+    "http://127.0.0.1:5174,"
+    "http://127.0.0.1:5175,"
+    "http://127.0.0.1:5176,"
     "https://localhost:5173,"
-    "https://127.0.0.1:5173"
+    "https://localhost:5174,"
+    "https://localhost:5175,"
+    "https://localhost:5176,"
+    "https://127.0.0.1:5173,"
+    "https://127.0.0.1:5174,"
+    "https://127.0.0.1:5175,"
+    "https://127.0.0.1:5176"
 )
 
 CORS_ORIGINS: list[str] = [
