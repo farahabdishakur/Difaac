@@ -254,11 +254,28 @@ html {
    * flat colour stop the large empty areas of a hero reading as dead space. */
   .hero-ground {
     background-color: var(--color-ink);
-    /* Refined brand-green gradients: visible but not overwhelming */
+    /* Every wash here is the brand colour and nothing else. It is mixed from
+       the token rather than written out as rgba(), so the ground can never
+       drift away from the brand the way the cyan counterpoint that used to sit
+       on the right had: that was a second colour, and on a page whose whole
+       palette is one green it read as a stain rather than a highlight. */
     background-image:
-      linear-gradient(180deg, rgba(0, 201, 121, 0.08) 0%, rgba(0, 201, 121, 0.02) 50%, transparent 100%),
-      radial-gradient(140% 100% at 8% 0%, rgba(0, 201, 121, 0.20) 0%, transparent 70%),
-      radial-gradient(100% 90% at 100% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-brand) 8%, transparent) 0%,
+        color-mix(in srgb, var(--color-brand) 2%, transparent) 50%,
+        transparent 100%
+      ),
+      radial-gradient(
+        140% 100% at 8% 0%,
+        color-mix(in srgb, var(--color-brand) 20%, transparent) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        100% 90% at 100% 15%,
+        color-mix(in srgb, var(--color-brand) 8%, transparent) 0%,
+        transparent 60%
+      );
   }
 
   .glass-header {

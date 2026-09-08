@@ -3,13 +3,18 @@ import { LinkButton } from '@/components/shared/link-button'
 
 export function HeroSection() {
   return (
-    <section className="hero-ground -mt-14 pt-14 lg:-mt-16 lg:pt-16 relative overflow-hidden">
+    // The vertical rhythm is stated once, here, and top equals bottom so the
+    // content sits exactly in the middle of the section box. Each figure
+    // carries the header's height because the section runs up underneath it:
+    // 4rem of header plus 3rem of air. Splitting this across the section and
+    // the inner div, as it was, left 144px above the content and 80px below.
+    <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+2.5rem)] pb-[calc(3.5rem+2.5rem)] lg:-mt-16 lg:pt-[calc(4rem+3rem)] lg:pb-[calc(4rem+3rem)]">
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-20">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left: Headline & CTAs */}
           <div className="max-w-2xl">
