@@ -76,17 +76,25 @@ The other two go in `backend/.env`:
   every session token is signed with; if it leaks, rotate it and every
   session is invalidated.
 
-- **`DIFAAC_FRONTEND_URL`** — your real URL, e.g. `https://difaac.example.com`.
-  It is used in the password-reset links the API sends.
+- **`DIFAAC_FRONTEND_URL`** — your real URL, `https://difaac.com`. It is used
+  in the password-reset links the API sends, and a wrong value does not fail
+  loudly: the mail is sent and the link in it points at the wrong host.
+
+- **`DIFAAC_CORS_ORIGINS`** — the origins allowed to call the API, which in
+  production is the site itself and nothing else:
+  `https://difaac.com,https://www.difaac.com`. Leaving the localhost entries
+  from the template in place means a page served from a developer's machine can
+  call the live API with a live session.
 
 Leave `DIFAAC_DEBUG=false`. Leave `DIFAAC_SEED_DEMO` unset — it defaults to
 false in production, so the sample threat data is **not** loaded on a live
 server. Your platform starts empty except for the admin account.
 
-## 3. Set your domain
+## 3. Check the domain
 
-Edit `Caddyfile` and replace `difaac.example.com` with your domain, in the
-one place it appears at the top.
+`Caddyfile` is already set to `difaac.com` and `www.difaac.com`. If you are
+deploying somewhere else, change the site line at the top. Both names need an
+`A` record pointing at this server before Caddy can get a certificate.
 
 ## 4. Start it
 
@@ -165,8 +173,8 @@ does it for you. Worth having in place before you hold real customer data.
 
 ## Testing without a domain first
 
-To check the stack before DNS is ready, change the first line of `Caddyfile`
-from `difaac.example.com {` to `:80 {`, set `DIFAAC_FRONTEND_URL` to
+To check the stack before DNS is ready, change the site line of `Caddyfile`
+from `difaac.com, www.difaac.com {` to `:80 {`, set `DIFAAC_FRONTEND_URL` to
 `http://<your-vps-ip>`, and run the same `docker compose up`. Caddy then serves
 plain HTTP on the IP. Switch back to the domain line for real use — the auth
 cookie is marked secure and needs HTTPS to be sent.
