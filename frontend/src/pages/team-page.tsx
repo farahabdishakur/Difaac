@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
-import { PersonGrid } from '@/components/company/person-grid'
-import { founders, teamNote } from '@/lib/data/company'
+import { OrgChart } from '@/components/company/org-chart'
+import { leadershipTiers, teamNote } from '@/lib/data/company'
 
 export default function TeamPage() {
   return (
@@ -23,7 +23,7 @@ export default function TeamPage() {
             heading={{ lead: 'The leadership', accent: 'building the platform' }}
             description="Meet the practice leads and engineers building sovereign cyber defence at Difaac."
           />
-          <PersonGrid people={founders} />
+          <OrgChart tiers={leadershipTiers} />
         </div>
       </Band>
 
