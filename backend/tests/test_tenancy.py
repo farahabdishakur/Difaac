@@ -175,3 +175,66 @@ class TestTheConfiguration:
         nullable = [t for t, n in found.items() if n == "YES"]
         assert not missing, f"tenant_id missing from {sorted(missing)}"
         assert not nullable, f"tenant_id is nullable on {nullable} — a row could escape the policy"
+
+
+class TestUniqueness:
+    """Uniqueness has to be per tenant, not global.
+
+    A globally unique indicator means one customer recording a phishing domain
+    stops every other customer recording it, and attackers reuse infrastructure
+    across victims — so that is the ordinary case. The constraint error also
+    told the second customer that the first had already seen that exact domain.
+    """
+
+    def test_two_tenants_can_record_the_same_domain(self, two_tenants):
+        with psycopg.connect(DATABASE_URL, autocommit=True) as conn:
+            for tenant_id in two_tenants.values():
+                conn.execute(
+                    "SELECT set_config(%s, %s, false)", (TENANT_SETTING, str(tenant_id))
+                )
+                conn.execute(
+                    "INSERT INTO drp_phishing (tenant_id, domain, status, risk)"
+                    " VALUES (%s, 'TEST-shared.example', 'active', 'high')",
+                    (tenant_id,),
+                )
+            for tenant_id in two_tenants.values():
+                conn.execute(
+                    "SELECT set_config(%s, %s, false)", (TENANT_SETTING, str(tenant_id))
+                )
+                conn.execute("DELETE FROM drp_phishing WHERE domain = 'TEST-shared.example'")
+            conn.execute("SELECT set_config(%s, '', false)", (TENANT_SETTING,))
+
+    def test_a_duplicate_within_one_tenant_is_still_refused(self, two_tenants):
+        tenant_id = two_tenants["difaac"]
+        with psycopg.connect(DATABASE_URL, autocommit=True) as conn:
+            conn.execute("SELECT set_config(%s, %s, false)", (TENANT_SETTING, str(tenant_id)))
+            conn.execute(
+                "INSERT INTO drp_phishing (tenant_id, domain, status, risk)"
+                " VALUES (%s, 'TEST-dupe.example', 'active', 'high')",
+                (tenant_id,),
+            )
+            with pytest.raises(psycopg.errors.UniqueViolation):
+                conn.execute(
+                    "INSERT INTO drp_phishing (tenant_id, domain, status, risk)"
+                    " VALUES (%s, 'TEST-dupe.example', 'active', 'low')",
+                    (tenant_id,),
+                )
+            conn.execute("DELETE FROM drp_phishing WHERE domain = 'TEST-dupe.example'")
+            conn.execute("SELECT set_config(%s, '', false)", (TENANT_SETTING,))
+
+    def test_no_global_unique_constraint_remains(self):
+        """A tenant-blind unique index anywhere would reintroduce the problem."""
+        with psycopg.connect(DATABASE_URL, row_factory=dict_row) as conn:
+            rows = conn.execute(
+                "SELECT tablename, indexname, indexdef FROM pg_indexes"
+                " WHERE schemaname = 'public' AND tablename = ANY(%s)"
+                "   AND indexdef LIKE 'CREATE UNIQUE%%'",
+                (list(TENANT_TABLES),),
+            ).fetchall()
+
+        blind = [
+            f"{r['tablename']}.{r['indexname']}"
+            for r in rows
+            if "tenant_id" not in r["indexdef"] and not r["indexname"].endswith("_pkey")
+        ]
+        assert not blind, f"these unique indexes ignore the tenant: {blind}"

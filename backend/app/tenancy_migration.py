@@ -69,6 +69,84 @@ def _table_exists(conn: Any, table: str) -> bool:
     )
 
 
+# Uniqueness that was global and has to become per-tenant. A globally unique
+# indicator means one customer recording a phishing domain stops every other
+# customer recording it — and attackers reuse infrastructure across victims, so
+# that is the ordinary case. The constraint error also leaked: the second
+# customer learned the first had already seen that exact domain.
+_PER_TENANT_UNIQUE: list[tuple[str, str, str]] = [
+    ("ti_iocs", "value", "ti_iocs_value_key"),
+    ("ti_actors", "name", "ti_actors_name_key"),
+    ("drp_phishing", "domain", "drp_phishing_domain_key"),
+]
+
+# Every query now carries `tenant_id = …` from the policy, so an index that
+# does not lead with it can serve the filter or the ordering but not both.
+# These replace the single-column ones the queries used to rely on.
+_TENANT_INDEXES: list[tuple[str, str]] = [
+    ("ti_alerts", "detected_at DESC"),
+    ("ti_alerts", "severity"),
+    ("drp_phishing", "discovered_at DESC"),
+    ("drp_phishing", "status"),
+    ("fraud_cases", "detected_at DESC"),
+    ("fraud_cases", "status"),
+    ("asm_assets", "discovered_at DESC"),
+    ("asm_assets", "status"),
+    ("bep_messages", "detected_at DESC"),
+    ("bep_messages", "verdict"),
+    ("xdr_detections", "detected_at DESC"),
+    ("xdr_detections", "severity"),
+    ("xdr_detections", "status"),
+    ("demo_requests", "created_at DESC"),
+    ("demo_requests", "status"),
+    ("incidents", "created_at DESC"),
+    # The highest-write table on the platform, and the console orders by this.
+    ("app_events", "occurred_at DESC"),
+]
+
+# The single-column indexes these replace. Each one is now either strictly
+# superseded — a composite leading with tenant_id covers the same ordering —
+# or tenant-blind, which after row-level security means scanning every
+# customer's matching rows and discarding all but one customer's. Keeping them
+# would cost a write on every insert and earn nothing.
+_SUPERSEDED_INDEXES: list[str] = [
+    "idx_ti_alerts_detected", "idx_ti_alerts_severity",
+    "idx_drp_phishing_discovered", "idx_drp_phishing_status",
+    "idx_fraud_cases_detected", "idx_fraud_cases_status",
+    "idx_asm_assets_discovered", "idx_asm_assets_status",
+    "idx_bep_messages_detected", "idx_bep_messages_verdict",
+    "idx_xdr_detections_detected", "idx_xdr_detections_severity",
+    "idx_xdr_detections_status",
+    "idx_demo_requests_created", "idx_demo_requests_status",
+]
+
+
+def _rescope_uniqueness(conn: Any) -> None:
+    for table, column, old_constraint in _PER_TENANT_UNIQUE:
+        conn.execute(
+            f"CREATE UNIQUE INDEX IF NOT EXISTS uq_{table}_tenant_{column}"
+            f" ON {table} (tenant_id, {column})"
+        )
+        # Dropped only after the replacement exists, so the column is never
+        # unprotected in between.
+        conn.execute(f"ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {old_constraint}")
+
+
+def _tenant_indexes(conn: Any) -> None:
+    for table, ordering in _TENANT_INDEXES:
+        column = ordering.split()[0]
+        conn.execute(
+            f"CREATE INDEX IF NOT EXISTS idx_{table}_tenant_{column}"
+            f" ON {table} (tenant_id, {ordering})"
+        )
+        # The plain tenant_id index is a prefix of the one above and earns
+        # nothing on a table this is written to constantly.
+        conn.execute(f"DROP INDEX IF EXISTS idx_{table}_tenant")
+
+    for name in _SUPERSEDED_INDEXES:
+        conn.execute(f"DROP INDEX IF EXISTS {name}")
+
+
 def run_tenancy_migration(conn: Any) -> int:
     """Apply tenant isolation. Idempotent. Returns the default tenant's id."""
     # The table itself is declared in schemas.py with every other one, and
@@ -109,6 +187,9 @@ def run_tenancy_migration(conn: Any) -> int:
         conn.execute(f"CREATE INDEX IF NOT EXISTS idx_{table}_tenant ON {table} (tenant_id)")
         added += 1
         logger.info("Tenancy: added tenant_id to %s", table)
+
+    _rescope_uniqueness(conn)
+    _tenant_indexes(conn)
 
     # Safe to re-run: each statement either drops and recreates the policy or
     # sets a flag that is already set.

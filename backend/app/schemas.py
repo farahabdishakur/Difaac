@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS app_events (
 
 CREATE TABLE IF NOT EXISTS ti_iocs (
     id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    value       TEXT UNIQUE NOT NULL,
+    value       TEXT NOT NULL,
     type        TEXT NOT NULL,
     severity    TEXT NOT NULL,
     source      TEXT NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS ti_iocs (
 -- Threat Intelligence: Threat Actors
 CREATE TABLE IF NOT EXISTS ti_actors (
     id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name        TEXT UNIQUE NOT NULL,
+    name        TEXT NOT NULL,
     aliases     TEXT,
     origin      TEXT,
     description TEXT NOT NULL
@@ -181,7 +181,7 @@ CREATE INDEX IF NOT EXISTS idx_ti_alerts_severity ON ti_alerts(severity);
 -- `discovered_at` and it is the number the team is measured on.
 CREATE TABLE IF NOT EXISTS drp_phishing (
     id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    domain        TEXT UNIQUE NOT NULL,
+    domain        TEXT NOT NULL,
     status        TEXT NOT NULL,
     channel       TEXT,
     risk          TEXT,
