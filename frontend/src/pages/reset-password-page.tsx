@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen bg-ink flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center gap-4 text-center">
         <LogoMark />
-        <h2 className="font-display text-2xl font-bold text-text">Choose a new password</h2>
+        <h2 className="font-display text-2xl font-medium text-text">Choose a new password</h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -52,20 +52,20 @@ export default function ResetPasswordPage() {
               <p className="text-sm text-body">
                 This link is missing its reset token. Request a new one from the sign-in page.
               </p>
-              <Link to="/forgot-password" className="text-xs font-semibold text-brand hover:underline">
+              <Link to="/forgot-password" className="text-xs font-medium text-brand hover:underline">
                 Request a new link &rarr;
               </Link>
             </div>
           ) : done ? (
             <div className="flex flex-col items-center text-center gap-4 py-6">
               <ShieldCheck className="size-14 text-brand" />
-              <h3 className="font-display text-xl font-bold text-text">Password updated</h3>
+              <h3 className="font-display text-xl font-medium text-text">Password updated</h3>
               <p className="text-sm text-body">Redirecting you to sign in...</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="password" className="text-xs font-semibold text-text uppercase tracking-wider">
+                <label htmlFor="password" className="text-xs font-medium text-text uppercase tracking-wider">
                   New Password
                 </label>
                 <div className="relative">
@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="confirm" className="text-xs font-semibold text-text uppercase tracking-wider">
+                <label htmlFor="confirm" className="text-xs font-medium text-text uppercase tracking-wider">
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-semibold mt-2"
+                className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-medium mt-2"
               >
                 {loading ? 'Updating...' : 'Update password'}
                 {!loading && <ArrowRight className="size-4 ml-1" />}

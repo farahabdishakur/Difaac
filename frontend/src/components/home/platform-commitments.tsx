@@ -28,7 +28,7 @@ export function PlatformCommitments() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div>
-            <h2 className="text-balance font-display t-h2 font-semibold leading-[1.15] text-text">
+            <h2 className="text-balance font-display t-h2 font-medium leading-[1.15] text-text">
               What we will hold ourselves to
             </h2>
             <p className="mt-6 max-w-lg text-pretty leading-relaxed text-body">
@@ -53,7 +53,7 @@ export function PlatformCommitments() {
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               {commitments.map((commitment) => (
                 <div key={commitment.label} className="flex flex-col gap-1.5 border-l-2 border-brand/40 pl-4">
-                  <span className="font-display text-xl font-semibold tracking-tight text-brand">
+                  <span className="font-display text-xl font-medium tracking-tight text-brand">
                     {commitment.value}
                   </span>
                   <span className="text-sm font-medium text-text">{commitment.label}</span>
@@ -68,7 +68,7 @@ export function PlatformCommitments() {
                 return (
                   <div key={principle.title} className="flex flex-col gap-2.5">
                     <Icon className="size-5 text-brand" aria-hidden="true" strokeWidth={1.6} />
-                    <span className="text-sm font-semibold text-text">{principle.title}</span>
+                    <span className="text-sm font-medium text-text">{principle.title}</span>
                     <span className="text-xs leading-relaxed text-muted-2">{principle.description}</span>
                   </div>
                 )

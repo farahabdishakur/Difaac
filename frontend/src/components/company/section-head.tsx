@@ -68,7 +68,7 @@ export function CompanyHero({
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">{eyebrow}</span>
         ) : null}
 
-        <h1 className="text-balance font-display text-[clamp(34px,6vw,64px)] font-normal leading-[1.08] tracking-[-0.03em] text-text">
+        <h1 className="t-h1 text-balance font-display text-text">
           <TwoTone {...heading} />
         </h1>
 
@@ -110,7 +110,7 @@ export function SectionHead({
   return (
     <div className={`flex max-w-2xl flex-col gap-4 ${centered ? 'mx-auto items-center text-center' : ''}`}>
       <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">{eyebrow}</span>
-      <h2 className="text-balance font-display text-[clamp(26px,4vw,44px)] font-normal leading-[1.14] tracking-[-0.02em] text-text">
+      <h2 className="t-h1 text-balance font-display text-text">
         <TwoTone {...heading} />
       </h2>
       {description ? (

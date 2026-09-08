@@ -40,7 +40,7 @@ function ChangePasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="flex max-w-md flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="current" className="text-xs font-semibold text-text uppercase tracking-wider">
+        <label htmlFor="current" className="text-xs font-medium text-text uppercase tracking-wider">
           Current Password
         </label>
         <div className="relative">
@@ -57,7 +57,7 @@ function ChangePasswordForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="next" className="text-xs font-semibold text-text uppercase tracking-wider">
+        <label htmlFor="next" className="text-xs font-medium text-text uppercase tracking-wider">
           New Password
         </label>
         <div className="relative">
@@ -75,7 +75,7 @@ function ChangePasswordForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="confirm" className="text-xs font-semibold text-text uppercase tracking-wider">
+        <label htmlFor="confirm" className="text-xs font-medium text-text uppercase tracking-wider">
           Confirm New Password
         </label>
         <div className="relative">
@@ -187,12 +187,12 @@ export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Account Settings</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Account Settings</h1>
         <p className="mt-1 text-sm text-body">Manage your password and see where you&apos;re signed in.</p>
       </div>
 
       <section className="flat-card p-6 lg:p-7">
-        <h2 className="mb-5 font-display text-lg font-semibold text-text">Change Password</h2>
+        <h2 className="mb-5 font-display text-lg font-medium text-text">Change Password</h2>
         <ChangePasswordForm />
       </section>
 

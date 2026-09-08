@@ -284,7 +284,7 @@ export default function SolutionDetailPage() {
             <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[tone]}`}>
               Capabilities
             </span>
-            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-medium text-text">
               What {solution.name} puts in place
             </h2>
           </div>
@@ -309,7 +309,7 @@ export default function SolutionDetailPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               Where it applies
             </span>
-            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-medium text-text">
               Teams that come to us with this
             </h2>
           </div>
@@ -336,7 +336,7 @@ export default function SolutionDetailPage() {
               <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
                 Delivered by
               </span>
-              <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
+              <h2 className="mt-4 text-balance font-display t-h2 font-medium text-text">
                 The products that do this work
               </h2>
             </div>
@@ -359,7 +359,7 @@ export default function SolutionDetailPage() {
                       size="card"
                     />
                     <div className="flex flex-col gap-2">
-                      <h3 className="font-display text-base font-semibold text-text">{product.name}</h3>
+                      <h3 className="font-display text-base font-medium text-text">{product.name}</h3>
                       <p className="text-sm leading-relaxed text-body">{product.tagline}</p>
                     </div>
                     <span className="mt-auto flex items-center gap-2 text-xs font-medium text-brand">

@@ -72,7 +72,7 @@ export function IndustryHeroEnhanced({
       <div className="relative z-10 mx-auto flex min-h-[75vh] max-w-4xl flex-col items-center justify-center px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <div className="text-center">
           {/* Heading — balanced and refined, not overly large */}
-          <h1 className="mx-auto mt-6 max-w-3xl font-display t-h1 font-bold leading-[1.18] text-text">
+          <h1 className="mx-auto mt-6 max-w-3xl font-display t-h1 font-medium leading-[1.18] text-text">
             {highlight}
           </h1>
 

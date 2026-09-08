@@ -40,7 +40,7 @@ const serviceGroups: { title: string; group: (typeof services)[number]['group'] 
 function LinkColumn({ title, items }: { title: string; items: { name: string; href: string }[] }) {
   return (
     <div className="flex flex-col gap-4">
-      <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-2">{title}</span>
+      <span className="text-xs font-medium uppercase tracking-[0.14em] text-muted-2">{title}</span>
       <ul className="flex flex-col gap-3">
         {items.map((item) => (
           <li key={item.href}>
@@ -68,7 +68,7 @@ function ProductsPanel() {
           >
             <ProductEmblem icon={Icon} tone={tone} slug={product.slug} size="card" />
             <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-text">{product.tagline}</span>
+              <span className="text-sm font-medium text-text">{product.tagline}</span>
               <span className="text-xs text-muted-2">{product.name}</span>
             </div>
           </Link>
@@ -127,7 +127,7 @@ export function PlatformTabsSection() {
     <section className="bg-ink-2 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-balance font-display font-semibold leading-[1.15] text-text t-h2">
+          <h2 className="text-balance font-display font-medium leading-[1.15] text-text t-h2">
             Powering cybersecurity intelligence with the{' '}
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               Difaac Unified Risk Platform
@@ -149,7 +149,7 @@ export function PlatformTabsSection() {
               type="button"
               onClick={() => setActive(tab.key)}
               aria-pressed={active === tab.key}
-              className={`rounded-xl border px-4 py-4 text-sm font-semibold transition-colors sm:text-base ${
+              className={`rounded-xl border px-4 py-4 text-sm font-medium transition-colors sm:text-base ${
                 active === tab.key
                   ? 'border-brand/50 bg-ink-3 text-text'
                   : 'border-line bg-ink/60 text-muted-2 hover:border-line-soft hover:text-body'

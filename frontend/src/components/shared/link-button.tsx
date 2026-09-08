@@ -12,9 +12,9 @@ type LinkButtonProps = Omit<ComponentProps<typeof Link>, 'to'> & {
 
 const variantClasses: Record<string, string> = {
   primary:
-    'bg-gradient-to-br from-brand to-brand text-brand-ink font-semibold border border-brand/80 shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 hover:border-brand hover:from-brand-bright hover:to-brand-bright transition-all duration-300',
+    'bg-gradient-to-br from-brand to-brand text-brand-ink font-medium border border-brand/80 shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 hover:border-brand hover:from-brand-bright hover:to-brand-bright transition-all duration-300',
   cyber:
-    'bg-gradient-to-br from-brand to-brand text-brand-ink font-bold border border-brand/80 shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 hover:from-brand-bright hover:to-brand-bright transition-all duration-300',
+    'bg-gradient-to-br from-brand to-brand text-brand-ink font-medium border border-brand/80 shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 hover:from-brand-bright hover:to-brand-bright transition-all duration-300',
   secondary:
     'border border-brand/30 bg-gradient-to-br from-white/[0.08] to-white/[0.04] backdrop-blur-md text-text hover:border-brand/50 hover:from-brand/10 hover:to-white/[0.06] hover:shadow-lg hover:shadow-brand/10 transition-all duration-300',
   outline:
@@ -25,7 +25,7 @@ const variantClasses: Record<string, string> = {
 
 const sizeClasses: Record<string, string> = {
   default: 'h-9 px-4 text-sm',
-  lg: 'h-10 px-5 text-sm font-semibold',
+  lg: 'h-10 px-5 text-sm font-medium',
   sm: 'h-8 px-3.5 text-xs',
   xs: 'h-6 px-2.5 text-xs',
 }

@@ -15,8 +15,8 @@ import { useFraudCases, useFraudSummary } from '@/lib/workspace-api'
  * platform already made rather than being a second, unrelated opinion.
  */
 function riskClass(score: number): string {
-  if (score >= 70) return 'font-semibold text-error'
-  if (score >= 40) return 'font-semibold text-warning'
+  if (score >= 70) return 'font-medium text-error'
+  if (score >= 40) return 'font-medium text-warning'
   return 'text-body'
 }
 
@@ -29,7 +29,7 @@ export default function FraudPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Fraud Protection</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Fraud Protection</h1>
         <p className="mt-1 text-sm text-body">
           Sessions and transactions scored in real time, and the signals behind each decision.
         </p>
@@ -68,7 +68,7 @@ export default function FraudPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Average risk</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Average risk</h2>
           <ScoreDial
             score={Math.round(summary?.average_risk ?? 0)}
             loading={summaryLoading}
@@ -77,7 +77,7 @@ export default function FraudPage() {
         </section>
 
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Detection signals</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Detection signals</h2>
           {summary ? (
             <BreakdownBars
               tone="blue"
@@ -89,7 +89,7 @@ export default function FraudPage() {
         </section>
 
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Case outcomes</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Case outcomes</h2>
           {summary ? (
             <BreakdownBars
               tone="blue"

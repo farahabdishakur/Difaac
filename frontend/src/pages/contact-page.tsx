@@ -53,7 +53,7 @@ function SelectRow({
         {/* Sized so the longest product name ("Attack Surface Management")
             still sits on one line in a half-width cell — a single wrapped
             label would make its row taller than every other row. */}
-        <span className="font-display text-sm font-semibold leading-snug text-text">{label}</span>
+        <span className="font-display text-sm font-medium leading-snug text-text">{label}</span>
       </span>
       <span
         className={`flex size-5 shrink-0 items-center justify-center rounded-[4px] border transition-colors ${
@@ -141,7 +141,7 @@ function SalesPage() {
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 text-center sm:px-6 lg:px-8 lg:pt-28">
-          <h1 className="font-display t-display font-semibold leading-[1.15] text-text">
+          <h1 className="font-display t-display font-medium leading-[1.15] text-text">
             Let&apos;s Talk
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-body">
@@ -157,7 +157,7 @@ function SalesPage() {
           {submitted ? (
             <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-line-soft bg-ink-2/60 py-16 text-center backdrop-blur-sm">
               <CheckCircle2 className="size-16 text-brand" />
-              <h3 className="font-display text-2xl font-bold text-text">Request received</h3>
+              <h3 className="font-display text-2xl font-medium text-text">Request received</h3>
               <p className="max-w-md text-sm leading-relaxed text-body">
                 Your request is in the queue and a Difaac specialist will be in touch soon.
               </p>
@@ -168,7 +168,7 @@ function SalesPage() {
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-10">
               <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
-                <h2 className="font-display text-lg font-semibold text-text">Please select a product</h2>
+                <h2 className="font-display text-lg font-medium text-text">Please select a product</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {products.map((product) => {
                     const Icon = getIcon(product.icon)
@@ -195,7 +195,7 @@ function SalesPage() {
               </div>
 
               <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
-                <h2 className="font-display text-lg font-semibold text-text">or a service</h2>
+                <h2 className="font-display text-lg font-medium text-text">or a service</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {SERVICE_GROUPS.map((group) => (
                     <SelectRow
@@ -209,7 +209,7 @@ function SalesPage() {
               </div>
 
               <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
-                <h2 className="font-display text-lg font-semibold text-text">Fill out the form below</h2>
+                <h2 className="font-display text-lg font-medium text-text">Fill out the form below</h2>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
@@ -488,7 +488,7 @@ function GeneralContactPage() {
             {submitted ? (
               <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
                 <CheckCircle2 className="size-16 text-brand" />
-                <h3 className="font-display text-2xl font-bold text-text">Message Received</h3>
+                <h3 className="font-display text-2xl font-medium text-text">Message Received</h3>
                 <p className="max-w-md text-sm text-body leading-relaxed">
                   Thank you for reaching out to Difaac. Your request is in the queue and a
                   specialist will review it shortly.
@@ -499,11 +499,11 @@ function GeneralContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                <h3 className="font-display text-xl font-bold text-text mb-1">Send us a message</h3>
+                <h3 className="font-display text-xl font-medium text-text mb-1">Send us a message</h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="firstName" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    <label htmlFor="firstName" className="text-xs font-medium text-text uppercase tracking-wider">
                       First Name *
                     </label>
                     <Input
@@ -516,7 +516,7 @@ function GeneralContactPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="lastName" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    <label htmlFor="lastName" className="text-xs font-medium text-text uppercase tracking-wider">
                       Last Name *
                     </label>
                     <Input
@@ -532,7 +532,7 @@ function GeneralContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="workEmail" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    <label htmlFor="workEmail" className="text-xs font-medium text-text uppercase tracking-wider">
                       Work Email *
                     </label>
                     <Input
@@ -546,7 +546,7 @@ function GeneralContactPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="company" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    <label htmlFor="company" className="text-xs font-medium text-text uppercase tracking-wider">
                       Company Name *
                     </label>
                     <Input
@@ -562,7 +562,7 @@ function GeneralContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="jobTitle" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    <label htmlFor="jobTitle" className="text-xs font-medium text-text uppercase tracking-wider">
                       Job Title
                     </label>
                     <select
@@ -579,7 +579,7 @@ function GeneralContactPage() {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="country" className="text-xs font-semibold text-text uppercase tracking-wider">
+                    <label htmlFor="country" className="text-xs font-medium text-text uppercase tracking-wider">
                       Region
                     </label>
                     <select
@@ -598,7 +598,7 @@ function GeneralContactPage() {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="message" className="text-xs font-semibold text-text uppercase tracking-wider">
+                  <label htmlFor="message" className="text-xs font-medium text-text uppercase tracking-wider">
                     How can we help?
                   </label>
                   <Textarea
@@ -621,7 +621,7 @@ function GeneralContactPage() {
                   type="submit"
                   size="lg"
                   disabled={submitting}
-                  className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-semibold"
+                  className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-medium"
                 >
                   {submitting ? 'Submitting…' : 'Submit Request'}
                 </Button>

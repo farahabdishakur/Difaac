@@ -128,7 +128,7 @@ export default function LegalPage({ type }: LegalPageProps) {
             <span className="text-body">{doc.title}</span>
           </nav>
 
-          <h1 className="mt-6 font-display text-3xl font-normal tracking-tight text-text sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+          <h1 className="t-h1 mt-6 font-display text-text">
             {doc.title}
           </h1>
           <p className="mt-3 text-sm text-muted-2">Version: {doc.version}</p>

@@ -129,7 +129,7 @@ export function SiteFooter() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {columns.map((column) => (
               <div key={column.title} className="flex flex-col gap-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-text">{column.title}</h3>
+                <h3 className="text-xs font-medium uppercase tracking-wider text-text">{column.title}</h3>
                 <ul className="flex flex-col gap-2.5">
                   {column.links.map((link) => (
                     <li key={link.href}>

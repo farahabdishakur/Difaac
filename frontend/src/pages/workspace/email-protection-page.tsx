@@ -41,7 +41,7 @@ export default function EmailProtectionPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Business Email Protection</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Business Email Protection</h1>
         <p className="mt-1 text-sm text-body">
           What the gateway acted on before it reached a mailbox, and why.
         </p>
@@ -56,7 +56,7 @@ export default function EmailProtectionPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">By threat type</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">By threat type</h2>
           {summary ? (
             <BreakdownBars
               items={summary.by_threat_type.map((r) => ({
@@ -70,7 +70,7 @@ export default function EmailProtectionPage() {
         </section>
 
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Verdicts</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Verdicts</h2>
           {summary ? (
             <BreakdownBars items={summary.by_verdict.map((r) => ({ label: r.verdict, count: r.count }))} />
           ) : (

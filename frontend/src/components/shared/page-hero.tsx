@@ -55,7 +55,7 @@ export function PageHero({
             </span>
           ) : null}
 
-          <h1 className="text-balance font-display t-h1 font-semibold leading-[1.15] text-text">
+          <h1 className="text-balance font-display t-h1 font-medium leading-[1.15] text-text">
             {title}
           </h1>
 

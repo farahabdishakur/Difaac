@@ -69,7 +69,7 @@ export default function ServicesPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               How we work
             </span>
-            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-medium text-text">
               Every engagement runs the same way
             </h2>
             <p className="mt-4 text-pretty leading-relaxed text-body">
@@ -82,7 +82,7 @@ export default function ServicesPage() {
             {engagementSteps.map((step, index) => (
               <li key={step.title} className="flex flex-col gap-3 border-t-2 border-brand/40 pt-5">
                 <span className="font-mono text-xs text-brand">{String(index + 1).padStart(2, '0')}</span>
-                <h3 className="font-display text-base font-semibold text-text">{step.title}</h3>
+                <h3 className="font-display text-base font-medium text-text">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-2">{step.description}</p>
               </li>
             ))}
@@ -103,7 +103,7 @@ export default function ServicesPage() {
                 <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[tone]}`}>
                   {group.key}
                 </span>
-                <h2 className="mt-3 font-display t-h3 font-semibold text-text">
+                <h2 className="mt-3 font-display t-h3 font-medium text-text">
                   {group.title}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-body">{group.description}</p>
@@ -121,7 +121,7 @@ export default function ServicesPage() {
                       <div className="flex flex-col gap-4">
                         <GlassIcon icon={Icon} tone={tone} size="sm" />
                         <div className="flex flex-col gap-2">
-                          <h3 className="font-display text-base font-semibold text-text">{item.name}</h3>
+                          <h3 className="font-display text-base font-medium text-text">{item.name}</h3>
                           <p className="text-sm leading-relaxed text-body">{item.description}</p>
                         </div>
                       </div>
@@ -148,7 +148,7 @@ export default function ServicesPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               Engagement models
             </span>
-            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-medium text-text">
               Two ways to work with us
             </h2>
           </div>
@@ -157,7 +157,7 @@ export default function ServicesPage() {
             {engagementModels.map((model) => (
               <div key={model.name} className="flex flex-col gap-5 rounded-lg border border-line bg-ink/60 p-7">
                 <div className="flex flex-col gap-2">
-                  <h3 className="font-display text-lg font-semibold text-text">{model.name}</h3>
+                  <h3 className="font-display text-lg font-medium text-text">{model.name}</h3>
                   <p className="text-sm leading-relaxed text-body">{model.summary}</p>
                 </div>
                 <ul className="flex flex-col gap-3 border-t border-line-soft pt-5">

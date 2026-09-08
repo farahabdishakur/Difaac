@@ -62,7 +62,7 @@ function ProductShowcasePanel() {
       </div>
 
       <div className="relative max-w-lg">
-        <h1 className="font-display t-display font-semibold text-text">Products</h1>
+        <h1 className="font-display t-display font-medium text-text">Products</h1>
         <p className="mt-4 text-pretty leading-relaxed text-body">
           Difaac&apos;s platform protects your infrastructure, your customers, and your name — built
           on adversary intelligence, correlated detection, and analyst-led response.
@@ -96,7 +96,7 @@ function ProductShowcasePanel() {
                       size="menu"
                       className="-my-1"
                     />
-                    <span className="font-display text-lg font-semibold text-text">
+                    <span className="font-display text-lg font-medium text-text">
                       {product.name}
                     </span>
                   </span>
@@ -108,7 +108,7 @@ function ProductShowcasePanel() {
                       </span>
                       <Link
                         to={`/products/${product.slug}`}
-                        className="inline-flex w-fit items-center gap-2 rounded-[50px] bg-brand px-4 py-2 text-xs font-semibold text-brand-ink transition-colors hover:bg-brand-bright"
+                        className="inline-flex w-fit items-center gap-2 rounded-[50px] bg-brand px-4 py-2 text-xs font-medium text-brand-ink transition-colors hover:bg-brand-bright"
                       >
                         See the console
                         <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -171,7 +171,7 @@ export default function AuthPage() {
             <LogoMark />
           </div>
 
-          <h2 className="font-display t-h2 font-semibold text-text">Sign in</h2>
+          <h2 className="font-display t-h2 font-medium text-text">Sign in</h2>
           <p className="mt-3 text-sm leading-relaxed text-body">
             Use the account your organisation was issued. Access is scoped to your role.
           </p>
@@ -235,7 +235,7 @@ export default function AuthPage() {
             <Button
               type="submit"
               disabled={loading || signedIn}
-              className="mt-2 h-12 w-full rounded-[50px] bg-brand font-semibold text-brand-ink hover:bg-brand-bright disabled:opacity-60"
+              className="mt-2 h-12 w-full rounded-[50px] bg-brand font-medium text-brand-ink hover:bg-brand-bright disabled:opacity-60"
             >
               {signedIn ? 'Signed in — opening workspace…' : loading ? 'Signing in…' : 'Sign in'}
             </Button>

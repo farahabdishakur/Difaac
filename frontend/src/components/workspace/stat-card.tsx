@@ -21,7 +21,7 @@ export function StatCard({
         <Icon className="size-5" aria-hidden="true" strokeWidth={1.8} />
       </span>
       <div className="flex flex-col gap-0.5">
-        <span className="font-display text-2xl font-semibold tracking-tight text-text">
+        <span className="font-display text-2xl font-medium tracking-tight text-text">
           {loading ? '—' : value}
         </span>
         <span className="text-xs uppercase tracking-wide text-muted-2">{label}</span>

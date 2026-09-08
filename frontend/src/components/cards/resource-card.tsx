@@ -10,18 +10,18 @@ export function ResourceCard({ resource }: { resource: Resource }) {
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <span className="rounded-[2px] border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-brand">
+          <span className="rounded-[2px] border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-mono font-medium uppercase tracking-wider text-brand">
             {resource.type}
           </span>
           {resource.isNew ? (
-            <span className="rounded-[2px] bg-brand px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wide text-brand-ink">
+            <span className="rounded-[2px] bg-brand px-2 py-0.5 text-[10px] font-mono font-medium uppercase tracking-wide text-brand-ink">
               NEW
             </span>
           ) : null}
         </div>
 
         <div className="flex flex-1 flex-col gap-2">
-          <h3 className="font-display text-base sm:text-lg font-bold leading-snug text-text group-hover:text-brand transition-colors">
+          <h3 className="font-display text-base sm:text-lg font-medium leading-snug text-text group-hover:text-brand transition-colors">
             {resource.title}
           </h3>
           <p className="line-clamp-3 text-xs sm:text-sm leading-relaxed text-body">{resource.excerpt}</p>

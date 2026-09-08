@@ -58,7 +58,7 @@ export function ServiceHero({
             are, so a badge repeating the service only pushes the headline down
             the page. */}
         <div className="text-center">
-          <h1 className="font-display t-h1 font-semibold leading-[1.15]">
+          <h1 className="font-display t-h1 font-medium leading-[1.15]">
             <span className="text-text">{hero.headlineLead}</span>
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
               {hero.headlineAccent}
@@ -95,7 +95,7 @@ export function ServiceFacts({ facts, group }: { facts: ServicePageContent['fact
               <GlassIcon icon={Icon} tone={tone} size="sm" />
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs uppercase tracking-wider text-muted-2">{fact.label}</span>
-                <span className="font-display text-base font-semibold text-text">{fact.value}</span>
+                <span className="font-display text-base font-medium text-text">{fact.value}</span>
               </div>
             </div>
           )
@@ -111,7 +111,7 @@ export function ServiceOverview({ overview }: { overview: ServicePageContent['ov
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.35fr] lg:items-start lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h2 className="font-display t-h3 font-semibold text-text">
+            <h2 className="font-display t-h3 font-medium text-text">
               {overview.title}
             </h2>
             <p className="text-sm leading-relaxed text-body">{overview.body}</p>
@@ -133,7 +133,7 @@ export function ServiceOverview({ overview }: { overview: ServicePageContent['ov
                   key={item.title}
                   className="flex flex-col gap-2.5 border border-line-soft bg-ink-2 p-4 transition-colors duration-200 hover:border-brand/40"
                 >
-                  <h4 className="text-sm font-semibold text-text">{item.title}</h4>
+                  <h4 className="text-sm font-medium text-text">{item.title}</h4>
                   <p className="text-xs leading-relaxed text-body">{item.description}</p>
                 </div>
               ))}
@@ -152,7 +152,7 @@ export function ServicePhases({ phases }: { phases: ServicePageContent['phases']
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <Eyebrow>Methodology</Eyebrow>
-          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
+          <h2 className="mt-6 font-display t-h3 font-medium text-text">
             {phases.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{phases.description}</p>
@@ -164,12 +164,12 @@ export function ServicePhases({ phases }: { phases: ServicePageContent['phases']
               key={phase.title}
               className="group grid grid-cols-[auto_1fr] gap-5 border-l-2 border-line-soft bg-ink-2 p-6 transition-colors duration-200 hover:border-l-brand sm:grid-cols-[auto_1fr_auto] sm:items-start sm:gap-8 lg:p-8"
             >
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-brand/40 bg-brand-ink font-display text-sm font-semibold text-brand">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-brand/40 bg-brand-ink font-display text-sm font-medium text-brand">
                 {String(index + 1).padStart(2, '0')}
               </span>
 
               <div className="flex flex-col gap-2">
-                <h3 className="font-display text-lg font-semibold text-text">{phase.title}</h3>
+                <h3 className="font-display text-lg font-medium text-text">{phase.title}</h3>
                 <p className="text-sm leading-relaxed text-body">{phase.description}</p>
               </div>
 
@@ -201,7 +201,7 @@ export function ServiceDeliverables({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <Eyebrow>Deliverables</Eyebrow>
-          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
+          <h2 className="mt-6 font-display t-h3 font-medium text-text">
             {deliverables.heading}
           </h2>
           <p className="mt-4 text-pretty text-body">{deliverables.description}</p>
@@ -222,7 +222,7 @@ export function ServiceDeliverables({
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-semibold text-text">{item.title}</h3>
+                  <h3 className="font-display text-sm font-medium text-text">{item.title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-body">{item.description}</p>
                 </div>
               </div>
@@ -246,7 +246,7 @@ export function ServiceAudience({ audience, group }: { audience: ServicePageCont
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <Eyebrow>Who it is for</Eyebrow>
-          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
+          <h2 className="mt-6 font-display t-h3 font-medium text-text">
             {audience.heading}
           </h2>
         </div>
@@ -260,7 +260,7 @@ export function ServiceAudience({ audience, group }: { audience: ServicePageCont
                 className="flex flex-col gap-4 rounded-lg border border-line bg-ink-2/60 p-8 transition-colors duration-200 hover:border-brand/40"
               >
                 <GlassIcon icon={Icon} tone={tone} />
-                <h3 className={`font-display text-lg font-semibold ${toneText[tone]}`}>{item.title}</h3>
+                <h3 className={`font-display text-lg font-medium ${toneText[tone]}`}>{item.title}</h3>
                 <p className="text-sm leading-relaxed text-body">{item.description}</p>
               </div>
             )
@@ -278,7 +278,7 @@ export function ServiceFAQ({ faqs }: { faqs: ServicePageContent['faqs'] }) {
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-display t-h3 font-semibold text-text">
+          <h2 className="font-display t-h3 font-medium text-text">
             Frequently asked questions
           </h2>
         </div>

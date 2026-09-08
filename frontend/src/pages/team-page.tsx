@@ -5,16 +5,6 @@ import { CompanyHero, SectionHead, Band } from '@/components/company/section-hea
 import { PersonGrid } from '@/components/company/person-grid'
 import { founders, teamNote } from '@/lib/data/company'
 
-/**
- * The Team page.
- *
- * group-ib.com's team page is one component repeated: a portrait grid of the
- * leadership. Difaac's honest version of that is three founders, shown as
- * three cards — with monograms rather than invented headshots, because a
- * fabricated face is exactly the kind of thing the company's own principles
- * say it will not put in front of anyone. The page says plainly that three is
- * the whole team today.
- */
 export default function TeamPage() {
   return (
     <>
@@ -26,20 +16,19 @@ export default function TeamPage() {
         bgImage="/company-hero-3d.jpg"
       />
 
-      {/* The Leadership — the portrait grid, built the way Group-IB's team
-          page builds it. */}
+      {/* The Leadership — the portrait grid */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
             eyebrow="The Leadership"
-            heading={{ lead: 'Three people,', accent: 'one platform' }}
-            description="Difaac was built by three computer-science students at Borama University. They still build it."
+            heading={{ lead: 'The leadership', accent: 'building the platform' }}
+            description="Meet the practice leads and engineers building sovereign cyber defence at Difaac."
           />
           <PersonGrid people={founders} />
         </div>
       </Band>
 
-      {/* How the team grows — honest: no advisory board yet, an open door. */}
+      {/* How the team grows */}
       <Band muted>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
           <SectionHead

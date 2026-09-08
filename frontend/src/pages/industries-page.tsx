@@ -56,7 +56,7 @@ export default function IndustriesPage() {
                   <div className="relative z-10 flex flex-col gap-6">
                     <IndustryEmblem slug={industry.slug} icon={Icon} size="card" />
                     <div className="flex flex-col gap-2">
-                      <h3 className="font-display text-xl font-bold text-text">{industry.name}</h3>
+                      <h3 className="font-display text-xl font-medium text-text">{industry.name}</h3>
                       <p className="text-body text-sm leading-relaxed">{industry.tagline}</p>
                     </div>
                   </div>

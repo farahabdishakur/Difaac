@@ -26,7 +26,7 @@ export default function DigitalRiskPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Digital Risk Protection</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Digital Risk Protection</h1>
         <p className="mt-1 text-sm text-body">
           Impersonation of your brand across the open, deep, and dark web — and what has been removed.
         </p>
@@ -46,7 +46,7 @@ export default function DigitalRiskPage() {
       </div>
 
       <section className="flat-card p-6 lg:p-7">
-        <h2 className="mb-5 font-display text-lg font-semibold text-text">Where it was found</h2>
+        <h2 className="mb-5 font-display text-lg font-medium text-text">Where it was found</h2>
         {summary ? (
           <BreakdownBars
             items={summary.by_channel.map((r) => ({ label: r.channel.replace(/-/g, ' '), count: r.count }))}

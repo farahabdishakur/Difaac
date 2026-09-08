@@ -61,13 +61,13 @@ function ShowcaseBand({ entry, index }: { entry: ShowcaseEntry; index: number })
               <ProductEmblem icon={Icon} tone={tone} slug={entry.slug} size="card" className="-m-1" />
               <Link
                 to={`/products/${entry.slug}`}
-                className={`text-sm font-semibold transition-opacity hover:opacity-80 ${toneText[tone]}`}
+                className={`text-sm font-medium transition-opacity hover:opacity-80 ${toneText[tone]}`}
               >
                 {product.name}
               </Link>
             </div>
 
-            <h2 className="mt-6 text-balance font-display t-h2 font-semibold leading-[1.15] text-text">
+            <h2 className="mt-6 text-balance font-display t-h2 font-medium leading-[1.15] text-text">
               {entry.headline}
             </h2>
 

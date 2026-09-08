@@ -78,7 +78,7 @@ export function ProductDemoForm({
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h2 className="text-balance font-display t-h2 font-semibold text-text">
+            <h2 className="text-balance font-display t-h2 font-medium text-text">
               Request your demo of {productName}
             </h2>
             <p className="max-w-lg leading-relaxed text-body">
@@ -107,7 +107,7 @@ export function ProductDemoForm({
             {submitted ? (
               <div className="flex flex-col items-center gap-4 py-10 text-center">
                 <GlassIcon icon={CheckCircle2} tone={tone} size="lg" />
-                <h3 className="font-display text-xl font-semibold text-text">Request received</h3>
+                <h3 className="font-display text-xl font-medium text-text">Request received</h3>
                 <p className="max-w-sm text-sm leading-relaxed text-body">
                   Your request is in the queue and a Difaac specialist will be in touch to schedule
                   the session.
@@ -212,7 +212,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-semibold uppercase tracking-wider text-text">
+      <label htmlFor={id} className="text-xs font-medium uppercase tracking-wider text-text">
         {label}
         {optional ? <span className="ml-1.5 font-normal normal-case text-muted-2">(optional)</span> : null}
       </label>

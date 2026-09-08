@@ -61,7 +61,7 @@ export default function SolutionsPage() {
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-2">
               The challenges
             </span>
-            <h2 className="mt-4 text-balance font-display t-h2 font-semibold text-text">
+            <h2 className="mt-4 text-balance font-display t-h2 font-medium text-text">
               Three problems every one of these solutions is answering
             </h2>
           </div>
@@ -73,7 +73,7 @@ export default function SolutionsPage() {
                 className="grid grid-cols-1 gap-6 bg-ink px-6 py-8 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:px-8"
               >
                 <div className="flex flex-col gap-3">
-                  <h3 className="font-display text-lg font-semibold leading-snug text-text">
+                  <h3 className="font-display text-lg font-medium leading-snug text-text">
                     {challenge.problem}
                   </h3>
                   <p className="text-sm leading-relaxed text-muted-2">{challenge.detail}</p>
@@ -101,7 +101,7 @@ export default function SolutionsPage() {
                 <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[tone]}`}>
                   {group.eyebrow}
                 </span>
-                <h2 className="mt-3 font-display t-h3 font-semibold text-text">
+                <h2 className="mt-3 font-display t-h3 font-medium text-text">
                   {group.title}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-body">{group.description}</p>
@@ -119,7 +119,7 @@ export default function SolutionsPage() {
                       <div className="flex flex-col gap-4">
                         <GlassIcon icon={Icon} tone={tone} size="sm" />
                         <div className="flex flex-col gap-2">
-                          <h3 className="font-display text-base font-semibold text-text">{item.name}</h3>
+                          <h3 className="font-display text-base font-medium text-text">{item.name}</h3>
                           <p className="text-sm leading-relaxed text-body">{item.tagline}</p>
                         </div>
                       </div>
@@ -146,7 +146,7 @@ export default function SolutionsPage() {
             <span className={`text-xs font-medium uppercase tracking-[0.16em] ${toneText[INDUSTRY_ACCENT]}`}>
               By sector
             </span>
-            <h2 className="mt-3 font-display t-h3 font-semibold text-text">
+            <h2 className="mt-3 font-display t-h3 font-medium text-text">
               Start from where you operate
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-body">
@@ -166,7 +166,7 @@ export default function SolutionsPage() {
                 >
                   <IndustryEmblem slug={industry.slug} icon={Icon} size="menu" />
                   <span className="flex min-w-0 flex-col gap-1">
-                    <span className="text-sm font-semibold text-text">{industry.name}</span>
+                    <span className="text-sm font-medium text-text">{industry.name}</span>
                     <span className="truncate text-xs text-muted-2">{industry.tagline}</span>
                   </span>
                   <ArrowRight

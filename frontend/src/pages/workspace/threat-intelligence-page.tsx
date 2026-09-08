@@ -64,7 +64,7 @@ export default function ThreatIntelligencePage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Threat Intelligence</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Threat Intelligence</h1>
         <p className="mt-1 text-sm text-body">
           Adversary activity tracked against your organisation, its brand, and its sector.
         </p>
@@ -150,7 +150,7 @@ export default function ThreatIntelligencePage() {
 
         <div className="flex flex-col gap-6">
           <section className="flat-card p-6 lg:p-7">
-            <h2 className="mb-5 font-display text-lg font-semibold text-text">Your exposure</h2>
+            <h2 className="mb-5 font-display text-lg font-medium text-text">Your exposure</h2>
             <ScoreDial
               score={summary?.exposure_score ?? 0}
               loading={summaryLoading}
@@ -171,7 +171,7 @@ export default function ThreatIntelligencePage() {
 
           {summary && summary.category_counts.length > 0 ? (
             <section className="flat-card p-6 lg:p-7">
-              <h2 className="mb-5 font-display text-lg font-semibold text-text">Alerts by category</h2>
+              <h2 className="mb-5 font-display text-lg font-medium text-text">Alerts by category</h2>
               <BreakdownBars
                 tone="violet"
                 items={summary.category_counts.map((row) => ({

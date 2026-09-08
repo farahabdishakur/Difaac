@@ -20,7 +20,7 @@ export function IndustrySolutions({ solutions, industryName }: IndustrySolutions
           <span className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-xs font-medium text-brand">
             How Difaac Helps
           </span>
-          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
+          <h2 className="mt-6 font-display t-h3 font-medium text-text">
             Solutions built for {industryName}
           </h2>
         </div>
@@ -34,11 +34,11 @@ export function IndustrySolutions({ solutions, industryName }: IndustrySolutions
               <div className="flex items-start gap-4">
                 <GlassIcon icon={CheckCircle2} tone={INDUSTRY_ACCENT} />
                 <div className="flex-1">
-                  <h3 className="font-display text-lg font-bold text-text">{solution.product}</h3>
+                  <h3 className="font-display text-lg font-medium text-text">{solution.product}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-body">{solution.benefit}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-brand text-sm font-semibold transition-all group-hover:gap-3">
+              <div className="flex items-center gap-2 text-brand text-sm font-medium transition-all group-hover:gap-3">
                 Learn more
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </div>

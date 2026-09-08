@@ -24,7 +24,7 @@ export default function ManagedXdrPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Managed XDR</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Managed XDR</h1>
         <p className="mt-1 text-sm text-body">
           Endpoint, network, email, and cloud in one timeline, triaged by the analysts who run it.
         </p>
@@ -39,7 +39,7 @@ export default function ManagedXdrPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Detections by layer</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Detections by layer</h2>
           {summary ? (
             <BreakdownBars items={summary.by_layer.map((r) => ({ label: r.layer, count: r.count }))} />
           ) : (
@@ -48,7 +48,7 @@ export default function ManagedXdrPage() {
         </section>
 
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">By severity</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">By severity</h2>
           {summary ? (
             <BreakdownBars items={summary.by_severity.map((r) => ({ label: r.severity, count: r.count }))} />
           ) : (

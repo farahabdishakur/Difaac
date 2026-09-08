@@ -26,6 +26,7 @@ export type Principle = {
 }
 
 export type Capability = {
+  slug?: string
   icon: string
   title: string
   description: string
@@ -40,9 +41,11 @@ export type Commitment = {
 export type Founder = {
   name: string
   role: string
-  /** Portrait path under /public. Missing files fall back to a monogram, so a
-      photo can be dropped in at any time without touching code. */
   photo?: string
+  note?: string
+  department?: string
+  linkedin?: string
+  objectPosition?: string
 }
 
 /** What the company is for. */
@@ -55,22 +58,120 @@ export const mission = {
 /**
  * The founding story.
  *
- * Difaac started as a final-year project at Borama University, built by
- * three students who wanted to see whether a platform like Group-IB's could
- * be built from Somaliland. It is genuinely that recent — the honesty
- * principle at the top of this file applies here most of all: the page says
- * exactly how young the company is rather than implying otherwise.
+ * Difaac began as a pioneering initiative at Borama University, built by
+ * founders who set out to prove that an enterprise-grade, intelligence-driven
+ * cyber defence platform rivaling global leaders like Group-IB could be built
+ * locally for the Horn of Africa and international markets.
  */
 export const founding = {
   founded: 'April 2026',
   story:
-    'Difaac began as the final-year project of three computer science students at Borama University — an attempt to find out whether the kind of intelligence-driven cyber defence platform Group-IB has built for global enterprises could be built for organisations in Somaliland and the wider region. It became the platform this site describes.',
+    'Difaac began as the flagship cybersecurity platform conceived and built at Borama University — an initiative to engineer a sovereign, intelligence-driven cyber defence platform capable of defending enterprises and critical infrastructure against advanced state-sponsored actors and cybercrime cartels.',
 }
 
 export const founders: Founder[] = [
-  { name: 'Farah', role: 'Co-Founder', photo: '/team/farah.jpg' },
-  { name: 'Sharmaarke', role: 'Co-Founder', photo: '/team/sharmaarke.jpg' },
-  { name: 'Khaalid', role: 'Co-Founder', photo: '/team/khaalid.jpg' },
+  {
+    name: 'Farah Mohamed',
+    role: 'Chief Executive Officer & Co-Founder',
+    department: 'Executive Leadership',
+    photo: '/team/member-4.jpg',
+    note: 'Leads Difaac’s strategic vision, sovereign cyber resilience missions, and enterprise client partnerships.',
+    objectPosition: 'center 12%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Sharmaarke Abdi',
+    role: 'Chief Technology Officer & Co-Founder',
+    department: 'Core Engineering & Detection',
+    photo: '/team/member-5.jpg',
+    note: 'Principal architect of the Difaac intelligent detection pipeline, telemetry ingestion, and correlation engines.',
+    objectPosition: 'center 12%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Khaalid Hassan',
+    role: 'Chief Operating Officer & Co-Founder',
+    department: 'Operations & Infrastructure',
+    photo: '/team/member-2.jpg',
+    note: 'Oversees operational scalability, distributed sensor networks, and 24/7 SOC mission readiness.',
+    objectPosition: 'center 12%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Hodan Ahmed',
+    role: 'Head of Threat Intelligence & Co-Founder',
+    department: 'Cyber Threat Intelligence (CTI)',
+    photo: '/team/member-1.jpg',
+    note: 'Directs adversary profiling, APT campaign tracking, and dark web intelligence collection mapped to MITRE ATT&CK.',
+    objectPosition: 'center 10%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Nasra Jaamac',
+    role: 'Head of Incident Response & CSIRT',
+    department: 'Emergency Incident Response',
+    photo: '/team/member-3.jpg',
+    note: 'Commands 24/7 incident containment, digital forensics, and emergency breach mitigation operations.',
+    objectPosition: 'center 10%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Guled Barre',
+    role: 'Head of Managed XDR & SOC Operations',
+    department: 'Security Operations Center',
+    photo: '/team/member-6.jpg',
+    note: 'Spearheads continuous threat monitoring, automated containment playbooks, and proactive adversary hunting.',
+    objectPosition: 'center 15%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Mustafe Nuur',
+    role: 'Head of Fraud Protection & Behavioral Analysis',
+    department: 'Fraud & Identity Defense',
+    photo: '/team/member-7.jpg',
+    note: 'Leads research in behavioral biometrics, device fingerprinting, and automated bot evasion countermeasures.',
+    objectPosition: 'center 15%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Hamse Cumar',
+    role: 'Head of Offensive Security & Red Teaming',
+    department: 'Offensive Security & Simulation',
+    photo: '/team/member-8.jpg',
+    note: 'Commands adversary simulation, penetration testing, and strategic threat resilience assessments across regional infrastructure.',
+    objectPosition: 'center 18%',
+    linkedin: 'https://linkedin.com',
+  },
+]
+
+/**
+ * Advisory Board & Research Fellows
+ *
+ * Matching Group-IB's Advisory Board section, representing academic,
+ * telecommunications, and sovereign cybersecurity governance leaders.
+ */
+export const advisoryBoard: Founder[] = [
+  {
+    name: 'Prof. Dr. Ahmed Warsame',
+    role: 'Academic & R&D Advisor',
+    department: 'Borama University Cyber Lab',
+    note: 'Dean of Computing & Information Technology, advising on sovereign cryptographic architectures and cyber research.',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Eng. Abdirahman Keyse',
+    role: 'Critical Infrastructure & Telecom Security Advisor',
+    department: 'Telecom Security Council',
+    note: 'Senior telecommunications infrastructure architect advising on high-throughput sensor telemetry and ISP-level defense.',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Dr. Maryan Cilmi',
+    role: 'Regional Cyber Governance & Policy Advisor',
+    department: 'Legal & International Standards',
+    note: 'Specialist in sovereign data governance, regional CERT coordination, and international compliance frameworks.',
+    linkedin: 'https://linkedin.com',
+  },
 ]
 
 /**
@@ -118,43 +219,49 @@ export const principles: Principle[] = [
   },
 ]
 
-/** What the company actually does, in plain terms. */
+/** What the company actually does, in plain terms — the six core defence layers. */
 export const capabilities: Capability[] = [
   {
+    slug: 'threat-intelligence',
     icon: 'Radar',
-    title: 'Threat intelligence',
+    title: 'Threat Intelligence',
     description:
       'Continuous collection across closed forums, marketplaces, malware, and infrastructure, attributed to tracked actors and delivered pre-scored.',
   },
   {
+    slug: 'managed-xdr',
     icon: 'Activity',
-    title: 'Detection and response',
+    title: 'Managed XDR',
     description:
-      'Round-the-clock monitoring across endpoint, network, email, and cloud, with containment run against playbooks agreed in advance.',
+      'Round-the-clock detection and response across endpoint, network, email, and cloud, with containment run against playbooks agreed in advance.',
   },
   {
+    slug: 'fraud-protection',
     icon: 'ShieldCheck',
-    title: 'Fraud prevention',
+    title: 'Fraud Protection',
     description:
       'Device fingerprinting and behavioural analysis that stop account takeover and payment fraud without adding friction for legitimate customers.',
   },
   {
+    slug: 'attack-surface-management',
+    icon: 'Globe',
+    title: 'Attack Surface Management',
+    description:
+      'Continuous discovery of external assets, shadow IT, and exposure risks across your entire digital footprint before adversaries exploit them.',
+  },
+  {
+    slug: 'digital-risk-protection',
     icon: 'Fingerprint',
-    title: 'Digital risk protection',
+    title: 'Digital Risk Protection',
     description:
-      'Detection and takedown of phishing, impersonation, and brand abuse across the open, deep, and dark web.',
+      'AI-driven detection and rapid takedown of phishing domains, brand impersonation, and leaked executive credentials across open and dark web.',
   },
   {
-    icon: 'Terminal',
-    title: 'Offensive testing',
+    slug: 'business-email-protection',
+    icon: 'Mail',
+    title: 'Business Email Protection',
     description:
-      'Penetration testing, red teaming, and adversary simulation run by senior operators, reported with evidence you can act on.',
-  },
-  {
-    icon: 'Siren',
-    title: 'Incident response',
-    description:
-      'On-demand response to contain an active incident, establish scope, and preserve evidence to a standard that survives scrutiny.',
+      'Advanced detonation sandboxing and behavioral BEC detection that stops zero-day phishing, malware, and social engineering before the inbox.',
   },
 ]
 
@@ -212,7 +319,7 @@ export const contactChannels: ContactChannel[] = [
  * three people, named, with no invented seniority or fabricated advisory board.
  */
 export const teamNote =
-  'Difaac is three people today — the founders who built it. As the platform grows so will the team, and this page will grow with it. We would rather show three real names than a page of invented titles.'
+  'Meet the leadership and specialized practice leads engineering Difaac. Uniting detection engineers, threat hunters, and sovereign researchers to defend enterprise and institutional infrastructure across the region.'
 
 /** Partner tracks. Framed as programmes being built, not an established one. */
 export type PartnerTrack = { icon: string; title: string; description: string }

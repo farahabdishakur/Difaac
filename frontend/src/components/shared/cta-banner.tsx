@@ -77,7 +77,7 @@ export function CTABanner({
       />
 
       <div className="relative flex flex-col items-center gap-7 px-6 py-16 text-center sm:px-10 lg:py-20">
-        <h2 className="max-w-3xl text-balance font-display t-h2 font-semibold text-text">
+        <h2 className="max-w-3xl text-balance font-display t-h2 font-medium text-text">
           {before}
           {after ? (
             <span className="bg-gradient-to-r from-brand via-brand-bright to-brand-ultra bg-clip-text text-transparent">
@@ -94,7 +94,7 @@ export function CTABanner({
         <div className="mt-1 flex flex-wrap justify-center gap-3">
           <Link
             to={primaryCta.href}
-            className="group inline-flex h-11 items-center gap-2 rounded-[50px] border border-brand bg-brand px-6 text-sm font-semibold text-brand-ink transition-colors duration-200 hover:bg-brand-bright"
+            className="group inline-flex h-11 items-center gap-2 rounded-[50px] border border-brand bg-brand px-6 text-sm font-medium text-brand-ink transition-colors duration-200 hover:bg-brand-bright"
           >
             <SlideUpLabel>{primaryCta.label}</SlideUpLabel>
             <ArrowRight
@@ -106,7 +106,7 @@ export function CTABanner({
           {secondaryCta ? (
             <Link
               to={secondaryCta.href}
-              className="group inline-flex h-11 items-center rounded-[50px] border border-line-soft bg-white/[0.03] px-6 text-sm font-semibold text-text backdrop-blur-sm transition-colors duration-200 hover:border-brand/50 hover:text-brand"
+              className="group inline-flex h-11 items-center rounded-[50px] border border-line-soft bg-white/[0.03] px-6 text-sm font-medium text-text backdrop-blur-sm transition-colors duration-200 hover:border-brand/50 hover:text-brand"
             >
               <SlideUpLabel>{secondaryCta.label}</SlideUpLabel>
             </Link>

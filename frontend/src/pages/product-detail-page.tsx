@@ -63,7 +63,7 @@ export default function ProductDetailPage() {
             {product.name}
           </h1>
 
-          <p className="text-balance font-display text-[clamp(30px,5vw,56px)] font-normal leading-[1.1] tracking-[-0.02em] text-text">
+          <p className="t-display text-balance font-display text-text">
             {product.tagline}
           </p>
 

@@ -108,7 +108,7 @@ export default function SubscriptionsPage() {
       {/* ─────────────────────────── Hero ─────────────────────────── */}
       <section className="pt-24 pb-16 lg:pt-32">
         <div className={COLUMN}>
-          <h1 className="text-center font-display text-[clamp(34px,6vw,68px)] font-normal leading-[1.08] tracking-[-0.03em]">
+          <h1 className="t-h1 text-center font-display">
             <span className="block text-text">Compare Difaac plans</span>
             <span className="block text-brand-ultra">capability by capability</span>
           </h1>
@@ -162,7 +162,7 @@ export default function SubscriptionsPage() {
         <div className={`${COLUMN} flex flex-col items-center gap-5 text-center`}>
           <ProductEmblem icon={ProductIcon} tone={tone} slug={currentSlug} size="hero" />
 
-          <h2 className="font-display text-[clamp(28px,4vw,52px)] font-normal leading-[1.15] tracking-[-0.02em] text-text">
+          <h2 className="t-h1 font-display text-text">
             {activeProduct.name}
           </h2>
 
@@ -228,7 +228,7 @@ export default function SubscriptionsPage() {
       {/* ────────────────────────── Feature matrix ────────────────────────── */}
       <section className="pt-24 lg:pt-32">
         <div className={COLUMN}>
-          <h2 className="text-center font-display text-[clamp(26px,3.2vw,40px)] font-normal tracking-[-0.02em] text-text">
+          <h2 className="t-h1 text-center font-display text-text">
             Feature matrix
           </h2>
 
@@ -396,7 +396,7 @@ export default function SubscriptionsPage() {
       {/* ───────────────────────── Subscription plans ───────────────────────── */}
       <section className="pt-32 lg:pt-40">
         <div className={COLUMN}>
-          <h2 className="text-center font-display text-[clamp(28px,4vw,52px)] font-normal tracking-[-0.02em] text-text">
+          <h2 className="t-h1 text-center font-display text-text">
             Pricing
           </h2>
 

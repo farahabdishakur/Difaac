@@ -38,7 +38,7 @@ export function IndustryChallenges({ challenges }: IndustryChallengesProps) {
           <span className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-xs font-medium text-brand">
             Industry Challenges
           </span>
-          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
+          <h2 className="mt-6 font-display t-h3 font-medium text-text">
             Threats unique to your industry
           </h2>
         </div>
@@ -83,7 +83,7 @@ export function IndustryChallenges({ challenges }: IndustryChallengesProps) {
             <div className="flex items-start gap-4">
               <GlassIcon icon={AlertTriangle} tone={tone} />
               <div className="flex-1">
-                <h3 className="font-display text-2xl font-semibold text-text">{active.title}</h3>
+                <h3 className="font-display text-2xl font-medium text-text">{active.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-body">{active.description}</p>
               </div>
             </div>

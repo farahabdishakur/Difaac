@@ -9,7 +9,7 @@ export default function DemoRequestsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Demo Requests</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Demo Requests</h1>
         <p className="mt-1 text-sm text-body">
           Submissions from the "Request a demo" form on the product pages. No email is sent — this
           list is the queue.

@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="size-6 text-brand" aria-hidden="true" />
           </div>
 
-          <h1 className="mt-6 font-display text-xl font-semibold text-text">
+          <h1 className="mt-6 font-display text-xl font-medium text-text">
             Something went wrong
           </h1>
 
@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={this.handleReload}
-              className="inline-flex items-center justify-center gap-2 rounded-[4px] bg-brand px-4 py-2.5 text-sm font-semibold text-brand-ink transition-colors hover:bg-brand-bright"
+              className="inline-flex items-center justify-center gap-2 rounded-[4px] bg-brand px-4 py-2.5 text-sm font-medium text-brand-ink transition-colors hover:bg-brand-bright"
             >
               <RefreshCw className="size-4" aria-hidden="true" />
               Reload the page

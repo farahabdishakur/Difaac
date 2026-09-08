@@ -25,7 +25,7 @@ export function SolutionHeroEnhanced({ name, tagline, description, group }: Solu
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="font-display t-h1 font-semibold leading-[1.15] text-text">
+          <h1 className="font-display t-h1 font-medium leading-[1.15] text-text">
             {tagline}
           </h1>
 

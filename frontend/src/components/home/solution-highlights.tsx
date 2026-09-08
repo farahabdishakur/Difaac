@@ -18,7 +18,7 @@ export function SolutionHighlights({ highlights, group }: SolutionHighlightsProp
           <span className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-xs font-medium text-brand">
             Key Features
           </span>
-          <h2 className="mt-6 font-display t-h3 font-semibold text-text">
+          <h2 className="mt-6 font-display t-h3 font-medium text-text">
             What you get
           </h2>
         </div>

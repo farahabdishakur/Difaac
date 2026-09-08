@@ -129,7 +129,7 @@ function Feature({ feature }: { feature: MenuPanel['feature'] }) {
         )}
         <div className="flex flex-col gap-2">
           <span className={eyebrowClass}>{feature.eyebrow}</span>
-          <span className="font-display text-base font-semibold text-text">{feature.title}</span>
+          <span className="font-display text-base font-medium text-text">{feature.title}</span>
           <span className="text-sm leading-relaxed text-body">{feature.description}</span>
         </div>
       </div>

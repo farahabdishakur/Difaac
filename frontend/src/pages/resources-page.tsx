@@ -572,7 +572,7 @@ export default function ResourcesPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-2">Monitored Countries</p>
-                <p className="font-mono text-base font-bold text-text">70+ Nations</p>
+                <p className="font-mono text-base font-medium text-text">70+ Nations</p>
               </div>
             </div>
             <div className="flex items-center gap-3 border-r border-line/40 pr-4">
@@ -581,7 +581,7 @@ export default function ResourcesPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-2">Active APT Trackers</p>
-                <p className="font-mono text-base font-bold text-brand">380+ Groups</p>
+                <p className="font-mono text-base font-medium text-brand">380+ Groups</p>
               </div>
             </div>
             <div className="flex items-center gap-3 border-r border-line/40 pr-4">
@@ -590,7 +590,7 @@ export default function ResourcesPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-2">Daily IOC Ingestion</p>
-                <p className="font-mono text-base font-bold text-text">1.4M+ Indicators</p>
+                <p className="font-mono text-base font-medium text-text">1.4M+ Indicators</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -599,7 +599,7 @@ export default function ResourcesPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-2">Forensic IR Cases</p>
-                <p className="font-mono text-base font-bold text-brand">400+ Missions</p>
+                <p className="font-mono text-base font-medium text-brand">400+ Missions</p>
               </div>
             </div>
           </div>
@@ -615,7 +615,7 @@ export default function ResourcesPage() {
             <div className="mb-16">
               <div className="mb-4 flex items-center gap-2">
                 <span className="flex size-2 animate-ping rounded-full bg-brand" />
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-brand">
+                <span className="font-mono text-xs font-medium uppercase tracking-wider text-brand">
                   Featured Intelligence Investigation
                 </span>
               </div>
@@ -631,7 +631,7 @@ export default function ResourcesPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink-2 via-ink-2/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-ink-2" />
                     <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                      <span className="rounded bg-brand px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-brand-ink">
+                      <span className="rounded bg-brand px-2.5 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-brand-ink">
                         ANNUAL REPORT
                       </span>
                       <span className="rounded border border-line-soft bg-ink/90 px-2.5 py-1 font-mono text-[11px] font-medium text-text backdrop-blur-sm">
@@ -645,7 +645,7 @@ export default function ResourcesPage() {
                     <div>
                       <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-2">
                         <span className="flex items-center gap-1.5 font-medium text-text">
-                          <span className="flex size-6 items-center justify-center rounded-full bg-brand/20 font-mono text-[10px] font-bold text-brand">
+                          <span className="flex size-6 items-center justify-center rounded-full bg-brand/20 font-mono text-[10px] font-medium text-brand">
                             {featuredArticle.author.avatar}
                           </span>
                           {featuredArticle.author.name}
@@ -664,7 +664,7 @@ export default function ResourcesPage() {
 
                       <h2
                         onClick={() => setSelectedArticle(featuredArticle)}
-                        className="cursor-pointer font-display text-2xl font-bold tracking-tight text-text transition-colors hover:text-brand sm:text-3xl"
+                        className="cursor-pointer font-display text-2xl font-medium tracking-tight text-text transition-colors hover:text-brand sm:text-3xl"
                       >
                         {featuredArticle.title}
                       </h2>
@@ -675,7 +675,7 @@ export default function ResourcesPage() {
 
                       {/* Key highlights teaser */}
                       <div className="mt-6 rounded-lg border border-line/60 bg-ink-3/60 p-4">
-                        <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-brand">
+                        <p className="mb-2 font-mono text-xs font-medium uppercase tracking-wider text-brand">
                           Key Executive Findings:
                         </p>
                         <ul className="space-y-1.5 text-xs text-body sm:text-sm">
@@ -705,7 +705,7 @@ export default function ResourcesPage() {
                     <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-line/60 pt-6">
                       <Button
                         onClick={() => setSelectedArticle(featuredArticle)}
-                        className="gap-2 bg-brand px-6 py-2.5 font-semibold text-brand-ink hover:bg-brand-bright"
+                        className="gap-2 bg-brand px-6 py-2.5 font-medium text-brand-ink hover:bg-brand-bright"
                       >
                         Read Investigation
                         <ArrowRight className="size-4" />
@@ -736,7 +736,7 @@ export default function ResourcesPage() {
                     key={cat}
                     type="button"
                     onClick={() => setSelectedCategory(cat)}
-                    className={`rounded-lg px-4 py-2 text-xs font-semibold transition-all duration-200 sm:text-sm ${
+                    className={`rounded-lg px-4 py-2 text-xs font-medium transition-all duration-200 sm:text-sm ${
                       isSelected
                         ? 'border border-brand bg-brand/10 text-brand shadow-sm shadow-brand/20'
                         : 'border border-line bg-ink-2 text-muted-2 hover:border-line-soft hover:bg-ink-3 hover:text-text'
@@ -774,7 +774,7 @@ export default function ResourcesPage() {
           {filteredArticles.length === 0 ? (
             <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-line bg-ink-2 p-10 text-center">
               <Bug className="size-12 text-muted-2/40" />
-              <h3 className="mt-4 text-lg font-bold text-text">No threat research reports found</h3>
+              <h3 className="mt-4 text-lg font-medium text-text">No threat research reports found</h3>
               <p className="mt-1 text-sm text-muted-2">
                 Try refining your search terms or selecting a different category filter.
               </p>
@@ -811,11 +811,11 @@ export default function ResourcesPage() {
 
                       {/* Header badges */}
                       <div className="absolute top-3 left-3 flex items-center gap-2">
-                        <span className="rounded bg-ink/90 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-brand border border-line-soft backdrop-blur-sm">
+                        <span className="rounded bg-ink/90 px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-wider text-brand border border-line-soft backdrop-blur-sm">
                           {article.category}
                         </span>
                         {article.isNew && (
-                          <span className="rounded bg-brand px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-brand-ink">
+                          <span className="rounded bg-brand px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-brand-ink">
                             NEW
                           </span>
                         )}
@@ -838,7 +838,7 @@ export default function ResourcesPage() {
                         </div>
 
                         {/* Title */}
-                        <h3 className="font-display text-lg font-bold leading-snug text-text transition-colors group-hover:text-brand line-clamp-2">
+                        <h3 className="font-display text-lg font-medium leading-snug text-text transition-colors group-hover:text-brand line-clamp-2">
                           {article.title}
                         </h3>
 
@@ -861,7 +861,7 @@ export default function ResourcesPage() {
                       </div>
 
                       {/* Card Footer Link */}
-                      <div className="mt-6 flex items-center justify-between border-t border-line/60 pt-4 text-xs font-semibold text-brand">
+                      <div className="mt-6 flex items-center justify-between border-t border-line/60 pt-4 text-xs font-medium text-brand">
                         <span className="flex items-center gap-1.5 group-hover:underline">
                           Read Investigation
                           <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
@@ -898,7 +898,7 @@ export default function ResourcesPage() {
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-brand uppercase tracking-wider">
+                        <span className="font-mono text-xs font-medium text-brand uppercase tracking-wider">
                           {selectedArticle.category}
                         </span>
                         <span className="rounded bg-ink px-1.5 py-0.5 font-mono text-[10px] text-muted-2 border border-line">
@@ -913,7 +913,7 @@ export default function ResourcesPage() {
                     <Button
                       size="sm"
                       onClick={() => handleDownloadReport(selectedArticle)}
-                      className="hidden gap-1.5 bg-brand/15 text-xs font-semibold text-brand hover:bg-brand hover:text-brand-ink sm:flex"
+                      className="hidden gap-1.5 bg-brand/15 text-xs font-medium text-brand hover:bg-brand hover:text-brand-ink sm:flex"
                     >
                       <Download className="size-3.5" />
                       Export Dossier
@@ -937,7 +937,7 @@ export default function ResourcesPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('overview')}
-                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-medium whitespace-nowrap transition-colors ${
                       activeTab === 'overview'
                         ? 'border-brand text-brand'
                         : 'border-transparent text-muted-2 hover:text-text'
@@ -949,7 +949,7 @@ export default function ResourcesPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('killchain')}
-                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-medium whitespace-nowrap transition-colors ${
                       activeTab === 'killchain'
                         ? 'border-brand text-brand'
                         : 'border-transparent text-muted-2 hover:text-text'
@@ -961,7 +961,7 @@ export default function ResourcesPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('iocs')}
-                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-medium whitespace-nowrap transition-colors ${
                       activeTab === 'iocs'
                         ? 'border-brand text-brand'
                         : 'border-transparent text-muted-2 hover:text-text'
@@ -973,7 +973,7 @@ export default function ResourcesPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('mitre')}
-                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-medium whitespace-nowrap transition-colors ${
                       activeTab === 'mitre'
                         ? 'border-brand text-brand'
                         : 'border-transparent text-muted-2 hover:text-text'
@@ -985,7 +985,7 @@ export default function ResourcesPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('yara')}
-                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-2 border-b-2 py-3 px-3 text-xs font-medium whitespace-nowrap transition-colors ${
                       activeTab === 'yara'
                         ? 'border-brand text-brand'
                         : 'border-transparent text-muted-2 hover:text-text'
@@ -1000,7 +1000,7 @@ export default function ResourcesPage() {
                 <div className="flex-1 overflow-y-auto p-6 sm:p-8">
                   {/* Article Title Header */}
                   <div className="mb-8">
-                    <h2 className="font-display text-2xl font-bold leading-tight text-text sm:text-3xl">
+                    <h2 className="font-display text-2xl font-medium leading-tight text-text sm:text-3xl">
                       {selectedArticle.title}
                     </h2>
                     <p className="mt-2 text-sm leading-relaxed text-muted-2 sm:text-base">
@@ -1009,7 +1009,7 @@ export default function ResourcesPage() {
 
                     <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-body border-t border-line/50 pt-4">
                       <div className="flex items-center gap-2">
-                        <span className="flex size-7 items-center justify-center rounded-full bg-brand font-mono text-xs font-bold text-brand-ink">
+                        <span className="flex size-7 items-center justify-center rounded-full bg-brand font-mono text-xs font-medium text-brand-ink">
                           {selectedArticle.author.avatar}
                         </span>
                         <div>
@@ -1039,7 +1039,7 @@ export default function ResourcesPage() {
 
                       {/* Executive Summary */}
                       <div className="rounded-xl border border-line bg-ink-2 p-6">
-                        <h3 className="mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-brand">
+                        <h3 className="mb-3 flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-brand">
                           <Activity className="size-4" />
                           Executive Intelligence Summary
                         </h3>
@@ -1050,7 +1050,7 @@ export default function ResourcesPage() {
 
                       {/* Key Findings List */}
                       <div>
-                        <h3 className="mb-4 font-display text-lg font-bold text-text">
+                        <h3 className="mb-4 font-display text-lg font-medium text-text">
                           Key Analytical Findings & Telemetry
                         </h3>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1059,7 +1059,7 @@ export default function ResourcesPage() {
                               key={idx}
                               className="flex items-start gap-3 rounded-lg border border-line/60 bg-ink-3/40 p-4"
                             >
-                              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/20 font-mono text-xs font-bold text-brand">
+                              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/20 font-mono text-xs font-medium text-brand">
                                 {idx + 1}
                               </span>
                               <p className="text-xs leading-relaxed text-body sm:text-sm">{finding}</p>
@@ -1070,7 +1070,7 @@ export default function ResourcesPage() {
 
                       {/* Mitigation Steps */}
                       <div className="rounded-xl border border-brand/30 bg-brand/5 p-6">
-                        <h3 className="mb-3 font-display text-base font-bold text-text">
+                        <h3 className="mb-3 font-display text-base font-medium text-text">
                           Recommended Defensive Actions & Countermeasures
                         </h3>
                         <ul className="space-y-2.5 text-xs leading-relaxed text-body sm:text-sm">
@@ -1099,11 +1099,11 @@ export default function ResourcesPage() {
                             className="relative flex flex-col gap-3 rounded-xl border border-line bg-ink-2 p-5 transition-all hover:border-brand/40 sm:flex-row sm:items-start"
                           >
                             <div className="flex shrink-0 items-center gap-3 sm:w-56">
-                              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand/10 font-mono text-xs font-bold text-brand">
+                              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand/10 font-mono text-xs font-medium text-brand">
                                 0{idx + 1}
                               </div>
                               <div>
-                                <p className="font-bold text-text text-sm">{step.phase}</p>
+                                <p className="font-medium text-text text-sm">{step.phase}</p>
                                 <span className="rounded bg-ink px-2 py-0.5 font-mono text-[10px] text-brand border border-line">
                                   {step.techniqueId}
                                 </span>
@@ -1166,7 +1166,7 @@ export default function ResourcesPage() {
                           <tbody className="divide-y divide-line font-mono">
                             {selectedArticle.iocs.map((ioc, idx) => (
                               <tr key={idx} className="transition-colors hover:bg-ink-3/50">
-                                <td className="py-3 px-4 text-brand font-bold">{ioc.type}</td>
+                                <td className="py-3 px-4 text-brand font-medium">{ioc.type}</td>
                                 <td className="py-3 px-4 text-text select-all break-all">{ioc.indicator}</td>
                                 <td className="py-3 px-4 font-sans text-muted-2">{ioc.description}</td>
                                 <td className="py-3 px-4 text-right">
@@ -1216,8 +1216,8 @@ export default function ResourcesPage() {
                           <tbody className="divide-y divide-line">
                             {selectedArticle.mitreAttack.map((item, idx) => (
                               <tr key={idx} className="transition-colors hover:bg-ink-3/50">
-                                <td className="py-3 px-4 font-bold text-text">{item.tactic}</td>
-                                <td className="py-3 px-4 font-mono font-bold text-brand">{item.id}</td>
+                                <td className="py-3 px-4 font-medium text-text">{item.tactic}</td>
+                                <td className="py-3 px-4 font-mono font-medium text-brand">{item.id}</td>
                                 <td className="py-3 px-4 font-medium text-text">{item.technique}</td>
                                 <td className="py-3 px-4 text-body leading-relaxed">{item.description}</td>
                               </tr>
@@ -1238,7 +1238,7 @@ export default function ResourcesPage() {
                         <button
                           type="button"
                           onClick={() => handleCopyIoc(selectedArticle.yaraRule)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-ink-2 px-3 py-1.5 text-xs font-semibold text-brand hover:bg-brand hover:text-brand-ink transition-colors"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-ink-2 px-3 py-1.5 text-xs font-medium text-brand hover:bg-brand hover:text-brand-ink transition-colors"
                         >
                           {copiedIoc === selectedArticle.yaraRule ? (
                             <>
@@ -1284,7 +1284,7 @@ export default function ResourcesPage() {
                         handleDownloadReport(selectedArticle)
                         setSelectedArticle(null)
                       }}
-                      className="bg-brand text-xs font-semibold text-brand-ink hover:bg-brand-bright"
+                      className="bg-brand text-xs font-medium text-brand-ink hover:bg-brand-bright"
                     >
                       Access Full Telemetry
                     </Button>

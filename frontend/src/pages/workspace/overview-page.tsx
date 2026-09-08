@@ -61,7 +61,7 @@ function ProductCard({
 
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium text-text">{name}</span>
-        <span className="font-display text-2xl font-semibold tracking-tight text-text">
+        <span className="font-display text-2xl font-medium tracking-tight text-text">
           {loading ? '—' : value}
         </span>
         <span className="text-xs text-muted-2">{label}</span>
@@ -100,7 +100,7 @@ export default function OverviewPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">
+        <h1 className="font-display text-2xl font-medium text-text">
           Welcome back{user?.full_name ? `, ${user.full_name}` : ''}
         </h1>
         <p className="mt-1 text-sm text-body">

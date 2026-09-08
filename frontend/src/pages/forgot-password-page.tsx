@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-ink flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center gap-4 text-center">
         <LogoMark />
-        <h2 className="font-display text-2xl font-bold text-text">Reset your password</h2>
+        <h2 className="font-display text-2xl font-medium text-text">Reset your password</h2>
         <p className="text-xs text-body">
           Enter your corporate email and we&apos;ll send you a link to reset your password.
         </p>
@@ -43,18 +43,18 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="flex flex-col items-center text-center gap-4 py-6">
               <MailCheck className="size-14 text-brand" />
-              <h3 className="font-display text-xl font-bold text-text">Check your email</h3>
+              <h3 className="font-display text-xl font-medium text-text">Check your email</h3>
               <p className="text-sm text-body">
                 If <span className="text-text">{email}</span> is registered, a reset link is on its way.
               </p>
-              <Link to="/sign-in" className="text-xs font-semibold text-brand hover:underline mt-2">
+              <Link to="/sign-in" className="text-xs font-medium text-brand hover:underline mt-2">
                 &larr; Back to sign in
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="email" className="text-xs font-semibold text-text uppercase tracking-wider">
+                <label htmlFor="email" className="text-xs font-medium text-text uppercase tracking-wider">
                   Corporate Email
                 </label>
                 <div className="relative">
@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-semibold mt-2"
+                className="w-full justify-center bg-brand text-brand-ink hover:bg-brand-bright font-medium mt-2"
               >
                 {loading ? 'Sending...' : 'Send reset link'}
                 {!loading && <ArrowRight className="size-4 ml-1" />}

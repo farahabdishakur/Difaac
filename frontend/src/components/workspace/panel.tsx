@@ -29,7 +29,7 @@ export function Panel({
     <section className="flat-card p-6 lg:p-7">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <h2 className="font-display text-lg font-semibold text-text">{title}</h2>
+          <h2 className="font-display text-lg font-medium text-text">{title}</h2>
           {description ? <p className="text-sm text-body">{description}</p> : null}
         </div>
         {action ? <div className="shrink-0">{action}</div> : null}

@@ -3,32 +3,21 @@ import { ArrowRight, Users, Handshake, Mail } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { getIcon } from '@/components/icons/icon-map'
 import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
-import { PersonGrid } from '@/components/company/person-grid'
+import { ProductEmblem } from '@/components/product/product-emblem'
+import { productAccent } from '@/lib/tone'
 import {
   mission,
-  founding,
-  founders,
   capabilities,
   principles,
   commitments,
   office,
 } from '@/lib/data/company'
 
-/**
- * About Difaac.
- *
- * Built on group-ib.com's company grammar — an eyebrow, a plain headline with
- * one phrase in the accent, a grey line, then content, repeated with room to
- * breathe. The content is deliberately honest: what the platform does and
- * commits to, how young the company is, and the three people who built it.
- * Nothing here asserts a history Difaac has not had.
- */
-
 const destinations = [
   {
     icon: Users,
     title: 'The team',
-    description: 'The three founders building Difaac, and how the team grows from here.',
+    description: 'Meet the leadership and specialized practice leads engineering Difaac.',
     href: '/company/team',
   },
   {
@@ -75,20 +64,8 @@ export default function CompanyPage() {
         </div>
       </Band>
 
-      {/* Founding story, then the founders as a portrait grid — the Leadership
-          Team section the way Group-IB's About page runs it. */}
-      <Band muted>
-        <div className="flex flex-col gap-12">
-          <SectionHead
-            eyebrow={`Founded ${founding.founded}`}
-            heading={{ lead: 'Built as a', accent: 'final-year project' }}
-            description={founding.story}
-          />
-          <PersonGrid people={founders} />
-        </div>
-      </Band>
 
-      {/* Capabilities — the workhorse three-column grid. */}
+      {/* Capabilities — the workhorse three-column grid with 3D product emblems. */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -96,17 +73,41 @@ export default function CompanyPage() {
             heading={{ lead: 'One platform,', accent: 'six defence layers' }}
             description="Every layer draws on the same adversary intelligence, so a signal seen in one strengthens detection across the rest."
           />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {capabilities.map((item) => {
               const Icon = getIcon(item.icon)
+              const tone = item.slug ? (productAccent[item.slug] ?? 'brand') : 'brand'
               return (
-                <div key={item.title} className="flex flex-col gap-3 rounded-2xl border border-line bg-ink-2 p-6">
-                  <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-ink-3 text-brand">
-                    <Icon className="size-5" strokeWidth={1.6} aria-hidden="true" />
+                <Link
+                  key={item.title}
+                  to={item.slug ? `/products/${item.slug}` : '/products'}
+                  className="group relative flex flex-col justify-between gap-6 rounded-2xl border border-line bg-ink-2 p-6 sm:p-7 transition-all duration-300 hover:border-brand/40 hover:bg-ink-3 hover:shadow-[0_0_30px_rgba(0,201,121,0.08)]"
+                >
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-center justify-between">
+                      <ProductEmblem
+                        icon={Icon}
+                        tone={tone}
+                        slug={item.slug}
+                        size="card"
+                      />
+                      <span className="flex size-8 items-center justify-center rounded-lg border border-line bg-ink-3/80 text-muted-2 transition-all group-hover:border-brand/30 group-hover:bg-brand/10 group-hover:text-brand">
+                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-display text-lg font-medium text-text transition-colors group-hover:text-brand">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-body">{item.description}</p>
+                    </div>
+                  </div>
+
+                  <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-brand">
+                    <span>Explore Layer</span>
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
                   </span>
-                  <h3 className="font-display text-base font-medium text-text">{item.title}</h3>
-                  <p className="text-sm leading-relaxed text-body">{item.description}</p>
-                </div>
+                </Link>
               )
             })}
           </div>

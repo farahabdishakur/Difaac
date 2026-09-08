@@ -56,7 +56,7 @@ export function ScoreDial({
           />
         </svg>
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
-          <span className={`font-display text-3xl font-semibold tabular-nums ${band.className}`}>
+          <span className={`font-display text-3xl font-medium tabular-nums ${band.className}`}>
             {loading ? '—' : score}
           </span>
           <span className="text-[11px] uppercase tracking-wide text-muted-2">{band.label}</span>

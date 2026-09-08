@@ -30,7 +30,7 @@ export function SectionHeading({
         {eyebrow ? (
           <span className="text-xs font-medium uppercase tracking-[0.14em] text-muted-2">{eyebrow}</span>
         ) : null}
-        <h2 className="text-balance font-display font-semibold text-text t-h1">
+        <h2 className="text-balance font-display font-medium text-text t-h1">
           {title}
         </h2>
         {description ? (

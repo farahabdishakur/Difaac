@@ -17,8 +17,8 @@ import { timeAgo } from '@/lib/time'
  * it in a total would lose that.
  */
 function exposureClass(score: number): string {
-  if (score >= 70) return 'font-semibold text-error'
-  if (score >= 40) return 'font-semibold text-warning'
+  if (score >= 70) return 'font-medium text-error'
+  if (score >= 40) return 'font-medium text-warning'
   return 'text-body'
 }
 
@@ -29,7 +29,7 @@ export default function AttackSurfacePage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">Attack Surface Management</h1>
+        <h1 className="font-display text-2xl font-medium text-text">Attack Surface Management</h1>
         <p className="mt-1 text-sm text-body">
           Everything of yours that answers from the internet, including what nobody remembers deploying.
         </p>
@@ -44,7 +44,7 @@ export default function AttackSurfacePage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.4fr]">
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Average exposure</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Average exposure</h2>
           <ScoreDial
             score={Math.round(summary?.average_exposure ?? 0)}
             loading={summaryLoading}
@@ -53,7 +53,7 @@ export default function AttackSurfacePage() {
         </section>
 
         <section className="flat-card p-6 lg:p-7">
-          <h2 className="mb-5 font-display text-lg font-semibold text-text">Assets by type</h2>
+          <h2 className="mb-5 font-display text-lg font-medium text-text">Assets by type</h2>
           {summary ? (
             <BreakdownBars
               tone="blue"

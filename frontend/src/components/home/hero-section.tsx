@@ -28,10 +28,10 @@ export function HeroSection() {
                 operative word, never a heavier stroke. The same rule the
                 company pages follow, so the site reads as one system rather
                 than a home page and a set of other pages. */}
-            <h1 className="mt-4 text-balance font-display text-[clamp(34px,5vw,56px)] font-normal leading-[1.08] tracking-[-0.03em] text-text">
+            <h1 className="t-display mt-4 text-balance font-display text-text">
               <span>Fight Somalian</span>
               <br />
-              <span className="text-brand">cybercrime.</span>
+              <span className="text-brand">Cybercrime.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">

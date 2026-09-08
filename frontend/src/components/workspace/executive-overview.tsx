@@ -43,7 +43,7 @@ export function ExecutiveOverview({ name }: { name: string }) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-text">
+        <h1 className="font-display text-2xl font-medium text-text">
           Security posture{name ? `, ${name}` : ''}
         </h1>
         <p className="mt-1 text-sm text-body">
@@ -54,7 +54,7 @@ export function ExecutiveOverview({ name }: { name: string }) {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_1.7fr]">
         <section className="flat-card flex flex-col justify-between p-6 lg:p-7">
           <div>
-            <h2 className="mb-5 font-display text-lg font-semibold text-text">Overall posture</h2>
+            <h2 className="mb-5 font-display text-lg font-medium text-text">Overall posture</h2>
             <ScoreDial
               score={overview?.posture_score ?? 0}
               loading={isLoading}
@@ -106,20 +106,20 @@ export function ExecutiveOverview({ name }: { name: string }) {
           <div className="flex flex-wrap gap-3 sm:col-span-2">
             <Link
               to="/workspace/managed-xdr"
-              className="inline-flex items-center gap-2 rounded-[4px] border border-brand bg-brand px-4 py-2.5 text-sm font-semibold text-brand-ink transition-colors hover:bg-brand-bright"
+              className="inline-flex items-center gap-2 rounded-[4px] border border-brand bg-brand px-4 py-2.5 text-sm font-medium text-brand-ink transition-colors hover:bg-brand-bright"
             >
               Review critical threats
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
             <Link
               to="/workspace/incidents"
-              className="inline-flex items-center gap-2 rounded-[4px] border border-line-soft px-4 py-2.5 text-sm font-semibold text-text transition-colors hover:border-brand/50 hover:text-brand"
+              className="inline-flex items-center gap-2 rounded-[4px] border border-line-soft px-4 py-2.5 text-sm font-medium text-text transition-colors hover:border-brand/50 hover:text-brand"
             >
               Open incidents
             </Link>
             <Link
               to="/workspace/attack-surface"
-              className="inline-flex items-center gap-2 rounded-[4px] border border-line-soft px-4 py-2.5 text-sm font-semibold text-text transition-colors hover:border-brand/50 hover:text-brand"
+              className="inline-flex items-center gap-2 rounded-[4px] border border-line-soft px-4 py-2.5 text-sm font-medium text-text transition-colors hover:border-brand/50 hover:text-brand"
             >
               Close exposure
             </Link>
@@ -129,7 +129,7 @@ export function ExecutiveOverview({ name }: { name: string }) {
 
       <section className="flat-card p-6 lg:p-7">
         <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="font-display text-lg font-semibold text-text">Security events per day</h2>
+          <h2 className="font-display text-lg font-medium text-text">Security events per day</h2>
           <span className="text-xs text-muted-2">
             {trend ? `${trend.total} in the last ${trend.days} days` : ''}
           </span>

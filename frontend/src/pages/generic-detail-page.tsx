@@ -80,7 +80,7 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
               <span className="flex size-16 items-center justify-center border border-line bg-ink-3 text-brand">
                 <Icon className="size-8" aria-hidden="true" />
               </span>
-              <h2 className="font-display t-h2 font-bold text-text">{data.tagline}</h2>
+              <h2 className="font-display t-h2 font-medium text-text">{data.tagline}</h2>
               <div className="h-1 w-12 bg-brand" />
               <p className="text-body text-lg leading-relaxed">{data.description}</p>
               
@@ -99,7 +99,7 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
                   const desc = typeof highlight === 'string' ? '' : (highlight.description || highlight.text)
                   return (
                     <div key={idx} className="flat-card flat-card-hover p-8 transition-colors duration-300">
-                       <h3 className="text-xl font-bold text-text mb-3">{title}</h3>
+                       <h3 className="text-xl font-medium text-text mb-3">{title}</h3>
                        {desc && <p className="text-body leading-relaxed">{desc}</p>}
                     </div>
                   )
@@ -109,17 +109,17 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
                {(!('highlights' in data) || !(data as Solution).highlights) && (
                  <>
                   <div className="flat-card flat-card-hover p-8 sm:col-span-2 relative overflow-hidden group">
-                     <h3 className="text-2xl font-display font-bold text-text mb-4 text-gradient-brand">Intelligent Defense</h3>
+                     <h3 className="text-2xl font-display font-medium text-text mb-4 text-gradient-brand">Intelligent Defense</h3>
                      <p className="text-body text-lg leading-relaxed">
                        Our solutions are powered by the most comprehensive threat intelligence available, giving your organization visibility into hidden risks before they materialize into cyber attacks.
                      </p>
                   </div>
                   <div className="flat-card flat-card-hover p-8 transition-colors duration-300">
-                     <h3 className="text-xl font-bold text-text mb-3">Proactive Mitigation</h3>
+                     <h3 className="text-xl font-medium text-text mb-3">Proactive Mitigation</h3>
                      <p className="text-body leading-relaxed">Stop threats at the reconnaissance phase using our advanced predictive analytics and global telemetry network.</p>
                   </div>
                   <div className="flat-card flat-card-hover p-8 transition-colors duration-300">
-                     <h3 className="text-xl font-bold text-text mb-3">Expert Response</h3>
+                     <h3 className="text-xl font-medium text-text mb-3">Expert Response</h3>
                      <p className="text-body leading-relaxed">Backed by world-class security engineers who have investigated the most complex APT and cybercrime syndicates globally.</p>
                   </div>
                  </>

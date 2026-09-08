@@ -57,25 +57,25 @@ export function MobileNav() {
         <div className="flex flex-col overflow-y-auto px-2 py-4">
           <Accordion multiple defaultValue={[]}>
             <AccordionItem value="products">
-              <AccordionTrigger className="px-3 text-sm font-semibold text-text">Products</AccordionTrigger>
+              <AccordionTrigger className="px-3 text-sm font-medium text-text">Products</AccordionTrigger>
               <AccordionContent>
                 <MobileLinkList items={panelLinks(productsMenu)} />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="industries">
-              <AccordionTrigger className="px-3 text-sm font-semibold text-text">Industries</AccordionTrigger>
+              <AccordionTrigger className="px-3 text-sm font-medium text-text">Industries</AccordionTrigger>
               <AccordionContent>
                 <MobileLinkList items={panelLinks(industriesMenu)} />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="solutions">
-              <AccordionTrigger className="px-3 text-sm font-semibold text-text">Solutions</AccordionTrigger>
+              <AccordionTrigger className="px-3 text-sm font-medium text-text">Solutions</AccordionTrigger>
               <AccordionContent>
                 <MobileLinkList items={panelLinks(solutionsMenu)} />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="services">
-              <AccordionTrigger className="px-3 text-sm font-semibold text-text">Services</AccordionTrigger>
+              <AccordionTrigger className="px-3 text-sm font-medium text-text">Services</AccordionTrigger>
               <AccordionContent>
                 <MobileLinkList items={panelLinks(servicesMenu)} />
               </AccordionContent>
@@ -84,7 +84,7 @@ export function MobileNav() {
               <SheetClose
                 render={<Link to="/subscriptions" />}
                 nativeButton={false}
-                className="flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-brand hover:bg-ink-3 transition-colors"
+                className="flex items-center justify-between px-3 py-2.5 text-sm font-medium text-brand hover:bg-ink-3 transition-colors"
               >
                 <span>Pricing</span>
                 <ChevronRight className="size-4 text-brand" />
@@ -92,7 +92,7 @@ export function MobileNav() {
             </div>
 
             <AccordionItem value="company">
-              <AccordionTrigger className="px-3 text-sm font-semibold text-text">Company</AccordionTrigger>
+              <AccordionTrigger className="px-3 text-sm font-medium text-text">Company</AccordionTrigger>
               <AccordionContent>
                 <MobileLinkList items={companyLinks} />
               </AccordionContent>
@@ -103,14 +103,14 @@ export function MobileNav() {
             <SheetClose
               render={<Link to="/talk-to-sales" />}
               nativeButton={false}
-              className="flex h-11 items-center justify-center rounded-none bg-brand px-5 text-sm font-semibold text-brand-ink"
+              className="flex h-11 items-center justify-center rounded-none bg-brand px-5 text-sm font-medium text-brand-ink"
             >
               Let's Talk
             </SheetClose>
             <SheetClose
               render={<Link to="/sign-in" />}
               nativeButton={false}
-              className="flex h-11 items-center justify-center rounded-none border border-line px-5 text-sm font-semibold text-text"
+              className="flex h-11 items-center justify-center rounded-none border border-line px-5 text-sm font-medium text-text"
             >
               Sign in
             </SheetClose>
