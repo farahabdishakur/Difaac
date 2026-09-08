@@ -69,12 +69,30 @@ export const founding = {
     'Difaac began as the flagship cybersecurity platform conceived and built at Borama University — an initiative to engineer a sovereign, intelligence-driven cyber defence platform capable of defending enterprises and critical infrastructure against advanced state-sponsored actors and cybercrime cartels.',
 }
 
-export const founders: Founder[] = [
+/**
+ * The portrait file for a person, derived from their name.
+ *
+ * Photographs live in `public/team` named after the person they show —
+ * `faarax-cabdi-shakuur-daahir.jpg` — so adding or replacing one is a matter
+ * of dropping the file in, with nothing here to edit. A name with no matching
+ * file falls back to a monogram, which is why a missing photo never renders as
+ * a broken image.
+ */
+export function portraitFor(name: string): string {
+  const slug = name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+  return `/team/${slug}.jpg`
+}
+
+const leadership: Omit<Founder, 'photo'>[] = [
   {
     name: 'Faarax Cabdi Shakuur Daahir',
     role: 'Chairman & Chief Executive, Co-Founder',
     department: 'Executive Leadership',
-    photo: '/team/member-4.jpg',
     note: 'Leads Difaac’s strategic direction, sovereign resilience work, and the relationships behind every engagement.',
     objectPosition: 'center 12%',
     linkedin: 'https://linkedin.com',
@@ -83,7 +101,6 @@ export const founders: Founder[] = [
     name: 'Sharmaarke Maxamed Jaamac',
     role: 'Deputy Chief Executive & CTO, Co-Founder',
     department: 'Core Engineering & Detection',
-    photo: '/team/member-6.jpg',
     note: 'Stands in for the chair, and architects the detection pipeline, telemetry ingestion and correlation engines.',
     objectPosition: 'center 12%',
     linkedin: 'https://linkedin.com',
@@ -92,7 +109,6 @@ export const founders: Founder[] = [
     name: 'Cabdi Fataax Abiib Muxumed',
     role: 'Chief Operating Officer, Co-Founder',
     department: 'Operations & Infrastructure',
-    photo: '/team/member-1.jpg',
     note: 'Runs delivery, the sensor estate, and the readiness behind every service commitment.',
     objectPosition: 'center 12%',
     linkedin: 'https://linkedin.com',
@@ -101,7 +117,6 @@ export const founders: Founder[] = [
     name: 'Cabdi Waasac Xuseen Muxumed',
     role: 'Head of Threat Intelligence',
     department: 'Cyber Threat Intelligence',
-    photo: '/team/member-2.jpg',
     note: 'Tracks the groups operating against the region, and turns what they do into detection the platform can use.',
     objectPosition: 'center 10%',
     linkedin: 'https://linkedin.com',
@@ -110,7 +125,6 @@ export const founders: Founder[] = [
     name: 'Amiin Axmed Ciiltire',
     role: 'Head of Incident Response',
     department: 'Incident Response & Forensics',
-    photo: '/team/member-3.jpg',
     note: 'Answers when something has already happened: containment, forensics, and getting operations back.',
     objectPosition: 'center 10%',
     linkedin: 'https://linkedin.com',
@@ -119,7 +133,6 @@ export const founders: Founder[] = [
     name: 'Ubax Maxamed Cabdilaahi',
     role: 'Head of Managed XDR & SOC Operations',
     department: 'Security Operations Centre',
-    photo: '/team/member-5.jpg',
     note: 'Runs the monitoring, writes the containment playbooks, and goes looking for attackers instead of waiting for an alert.',
     objectPosition: 'center 15%',
     linkedin: 'https://linkedin.com',
@@ -128,7 +141,6 @@ export const founders: Founder[] = [
     name: 'Khaalid Maxamed Cumer',
     role: 'Head of Fraud Protection',
     department: 'Fraud & Identity Defence',
-    photo: '/team/member-7.jpg',
     note: 'Works on device and behavioural signals, and on the fraud patterns that move through the region’s payment rails.',
     objectPosition: 'center 15%',
     linkedin: 'https://linkedin.com',
@@ -137,7 +149,6 @@ export const founders: Founder[] = [
     name: 'Mustafe Abubakar Khaliif',
     role: 'Head of Offensive Security',
     department: 'Offensive Security & Simulation',
-    photo: '/team/member-8.jpg',
     note: 'Attacks what Difaac defends: penetration testing, adversary simulation, and the findings that come back from both.',
     objectPosition: 'center 18%',
     linkedin: 'https://linkedin.com',
@@ -150,7 +161,7 @@ export const founders: Founder[] = [
  * Matching Group-IB's Advisory Board section, representing academic,
  * telecommunications, and sovereign cybersecurity governance leaders.
  */
-export const advisoryBoard: Founder[] = [
+const advisors: Omit<Founder, 'photo'>[] = [
   {
     name: 'Prof. Dr. Ahmed Warsame',
     role: 'Academic & R&D Advisor',
@@ -401,6 +412,16 @@ export const commitments: Commitment[] = [
   },
 ]
 
+
+export const founders: Founder[] = leadership.map((person) => ({
+  ...person,
+  photo: portraitFor(person.name),
+}))
+
+export const advisoryBoard: Founder[] = advisors.map((person) => ({
+  ...person,
+  photo: portraitFor(person.name),
+}))
 
 /**
  * The leadership as a reporting structure: the chair, the deputy who stands in
