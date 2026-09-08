@@ -90,13 +90,16 @@ address nobody recognises is the reason this exists.
 
 ## 4. Read them back
 
-Your analysts see them in the console under the workspace, or through the API
-with an ordinary session:
+Through the API, with an ordinary session:
 
 ```bash
 curl https://difaac.com/api/app-events?outcome=denied \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
+
+There is no console page for this stream yet. The endpoint is there, the events
+are stored and isolated, and an analyst can query them — but nobody has built
+the screen, and this file should not imply otherwise.
 
 ## What is enforced
 
