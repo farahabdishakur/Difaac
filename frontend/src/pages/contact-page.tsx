@@ -50,9 +50,7 @@ function SelectRow({
     >
       <span className="flex items-center gap-3">
         {icon}
-        {/* Sized so the longest product name ("Attack Surface Management")
-            still sits on one line in a half-width cell — a single wrapped
-            label would make its row taller than every other row. */}
+{/* Sized so the longest product name ("Attack Surface Management") still sits on one line in a half-width cell — a single wrapped label would make its row taller than every other row. */}
         <span className="font-display text-sm font-medium leading-snug text-text">{label}</span>
       </span>
       <span
@@ -424,7 +422,7 @@ function GeneralContactPage() {
         bgImage="/company-hero-3d.jpg"
       />
 
-      {/* Get in touch — copy beside a panel of the real channels. */}
+{/* Get in touch — copy beside a panel of the real channels. */}
       <Band>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-16">
           <SectionHead
@@ -463,7 +461,7 @@ function GeneralContactPage() {
         </div>
       </Band>
 
-      {/* The office — one, stated as one. */}
+{/* The office — one, stated as one. */}
       <Band muted className="scroll-mt-24" >
         <div id="office">
           <SectionHead
@@ -475,7 +473,6 @@ function GeneralContactPage() {
         </div>
       </Band>
 
-      {/* The message form. */}
       <section className="pb-24 lg:pb-32">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10">

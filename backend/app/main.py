@@ -30,9 +30,7 @@ from app.routes import (
     workspace,
 )
 
-# ---------------------------------------------------------------------------
 # Logging Setup
-# ---------------------------------------------------------------------------
 
 logging.basicConfig(
     level=logging.DEBUG if DEBUG else logging.INFO,
@@ -40,9 +38,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("difaac.api")
 
-# ---------------------------------------------------------------------------
 # Error Tracking
-# ---------------------------------------------------------------------------
 # sentry_sdk has been a dependency since the project's start but was never
 # initialised, so it did nothing. Wiring it here — gated on a DSN actually
 # being configured — is what turns it from dead weight into working crash
@@ -60,9 +56,7 @@ if SENTRY_DSN:
     logger.info("Sentry error tracking enabled.")
 
 
-# ---------------------------------------------------------------------------
 # App Initialization
-# ---------------------------------------------------------------------------
 
 @asynccontextmanager
 async def lifespan(_: fastapi.FastAPI):
@@ -95,9 +89,7 @@ app = fastapi.FastAPI(
 )
 
 
-# ---------------------------------------------------------------------------
 # Middleware
-# ---------------------------------------------------------------------------
 
 # Registration order matters: Starlette runs the most recently added middleware
 # first. Rate limiting is registered before CORS so that CORS ends up on the
@@ -134,9 +126,7 @@ async def add_security_headers(request: Request, call_next):
     return response
 
 
-# ---------------------------------------------------------------------------
 # Error Handling
-# ---------------------------------------------------------------------------
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -148,9 +138,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-# ---------------------------------------------------------------------------
 # Root Endpoint
-# ---------------------------------------------------------------------------
 
 @app.get("/")
 async def root():
@@ -164,9 +152,7 @@ async def root():
         body["docs_url"] = "/docs"
     return body
 
-# ---------------------------------------------------------------------------
 # Routes
-# ---------------------------------------------------------------------------
 
 app.include_router(auth.router)
 app.include_router(health.router)

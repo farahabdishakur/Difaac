@@ -316,6 +316,25 @@ html {
       );
   }
 
+  /* Extends a small control's hit area to the 24px a finger needs, without
+   * changing its size or moving anything around it. A 16px icon button and a
+   * 12px text link are both fine to look at and both hard to hit; growing them
+   * visually would be the wrong fix, so the target grows instead of the
+   * control. The pseudo-element is transparent and sits centred on top. */
+  .tap-target {
+    position: relative;
+  }
+
+  .tap-target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 24px);
+    height: max(100%, 24px);
+    transform: translate(-50%, -50%);
+  }
+
   .glass-header {
     background: rgba(1, 0, 5, 0.88);
     backdrop-filter: blur(16px);

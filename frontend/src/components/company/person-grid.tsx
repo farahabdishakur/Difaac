@@ -36,10 +36,8 @@ export function PersonGrid({ people }: { people: Founder[] }) {
           key={person.name}
           className="group flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#0c1017] p-6 text-center transition-all duration-300 hover:border-white/20 hover:bg-[#0f141d] shadow-lg"
         >
-          {/* Centered Square Portrait */}
           <Portrait photo={person.photo} name={person.name} />
 
-          {/* Name + Inline LinkedIn [in] badge */}
           <div className="mt-5 flex items-center justify-center gap-1.5">
             <h3 className="font-display text-base sm:text-lg font-medium tracking-tight text-white group-hover:text-brand transition-colors">
               {person.name}
@@ -50,7 +48,7 @@ export function PersonGrid({ people }: { people: Founder[] }) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`${person.name} on LinkedIn`}
-                className="inline-flex size-4 items-center justify-center rounded-[3px] bg-[#333842] text-[#9ca3af] hover:bg-[#0077b5] hover:text-white transition-colors"
+                className="tap-target inline-flex size-4 items-center justify-center rounded-[3px] bg-[#333842] text-[#9ca3af] hover:bg-[#0077b5] hover:text-white transition-colors"
                 title="LinkedIn Profile"
               >
                 <svg className="size-2.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -60,7 +58,6 @@ export function PersonGrid({ people }: { people: Founder[] }) {
             )}
           </div>
 
-          {/* Role / Title */}
           <p className="mt-1 text-xs sm:text-sm text-[#94a3b8] font-normal leading-normal">
             {person.role}
           </p>

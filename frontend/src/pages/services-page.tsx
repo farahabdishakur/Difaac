@@ -62,7 +62,7 @@ export default function ServicesPage() {
         secondaryCta={{ label: 'Talk to an operator', href: '/talk-to-sales' }}
       />
 
-      {/* How an engagement runs — the part a buyer is actually weighing. */}
+{/* How an engagement runs — the part a buyer is actually weighing. */}
       <section className="border-t border-line-soft bg-ink-2 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
@@ -90,7 +90,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* The catalogue. */}
       {GROUPS.map((group) => {
         const items = (services ?? []).filter((s) => s.group === group.key)
         if (items.length === 0) return null
@@ -141,7 +140,6 @@ export default function ServicesPage() {
         )
       })}
 
-      {/* How the work is bought. */}
       <section className="border-t border-line-soft bg-ink-2 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">

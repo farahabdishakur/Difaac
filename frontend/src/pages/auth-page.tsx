@@ -46,9 +46,7 @@ function ProductShowcasePanel() {
     // console, and a bright panel would put the loudest thing on the page
     // beside the one control the visitor came here to use.
     <div className="relative flex h-full flex-col justify-center overflow-hidden bg-gradient-to-br from-[#141a26] via-[#10151f] to-[#0b0f17] px-8 py-16 lg:px-14">
-      {/* The console, angled and bled off the edge, so it reads as the product
-          sitting behind the copy. Decorative, so it stays out of the
-          accessibility tree. */}
+{/* The console, angled and bled off the edge, so it reads as the product sitting behind the copy. Decorative, so it stays out of the accessibility tree. */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <img
           key={active.slug}
@@ -56,8 +54,7 @@ function ProductShowcasePanel() {
           alt=""
           className="absolute -right-32 top-1/2 w-[52rem] max-w-none -translate-y-1/2 rotate-[-16deg] rounded-2xl shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] transition-opacity duration-500"
         />
-        {/* Fades the screenshot out from the left so the copy sits on clean
-            surface, and softens it into the panel edge on the right. */}
+{/* Fades the screenshot out from the left so the copy sits on clean surface, and softens it into the panel edge on the right. */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#141a26] via-[#141a26]/80 to-transparent" />
       </div>
 
@@ -158,9 +155,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-ink lg:grid lg:grid-cols-[1.25fr_1fr]">
-      {/* Ordered so the form comes first in the DOM: someone arriving to sign
-          in should reach the fields immediately on a phone and with a
-          keyboard, without tabbing through six product links first. */}
+{/* Ordered so the form comes first in the DOM: someone arriving to sign in should reach the fields immediately on a phone and with a keyboard, without tabbing through six product links first. */}
       <div className="order-2 hidden lg:order-1 lg:block">
         <ProductShowcasePanel />
       </div>
@@ -204,7 +199,7 @@ export default function AuthPage() {
                 <label htmlFor="password" className="text-xs font-medium uppercase tracking-wide text-muted-2">
                   Password
                 </label>
-                <Link to="/forgot-password" className="text-xs font-medium text-brand hover:text-brand-bright">
+                <Link to="/forgot-password" className="tap-target text-xs font-medium text-brand hover:text-brand-bright">
                   Forgot password?
                 </Link>
               </div>

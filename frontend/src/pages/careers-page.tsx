@@ -46,7 +46,7 @@ export default function CareersPage() {
         bgImage="/company/careers-hero-bg.jpg"
       />
 
-      {/* Why join — the honest draws, as a three-column grid. */}
+{/* Why join — the honest draws, as a three-column grid. */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -70,9 +70,7 @@ export default function CareersPage() {
         </div>
       </Band>
 
-      {/* Open roles — plainly none yet, but the section still gives a candidate
-          something to act on: the disciplines we hire into first, and a way in
-          before a posting exists. */}
+{/* Open roles — plainly none yet, but the section still gives a candidate something to act on: the disciplines we hire into first, and a way in before a posting exists. */}
       <Band muted>
         <div className="flex flex-col gap-12">
           <SectionHead

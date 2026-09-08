@@ -141,7 +141,6 @@ export function PlatformTabsSection() {
           </p>
         </div>
 
-        {/* Tab switcher */}
         <div className="mx-auto mt-10 grid grid-cols-3 gap-3 sm:max-w-xl">
           {tabs.map((tab) => (
             <button
@@ -160,7 +159,6 @@ export function PlatformTabsSection() {
           ))}
         </div>
 
-        {/* Active panel */}
         <div className="mt-8">
           <ActivePanel />
         </div>
@@ -168,7 +166,7 @@ export function PlatformTabsSection() {
         <div className="mt-10 border-t border-line-soft pt-8 text-center">
           <Link
             to="/products"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"
+            className="tap-target group inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"
           >
             Learn more about the Difaac Unified Risk Platform
             <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />

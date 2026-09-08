@@ -24,10 +24,7 @@ from app.seeder import seed_all, seed_workspace_demo
 logger = logging.getLogger(__name__)
 
 
-# ---------------------------------------------------------------------------
 # Connection adapter
-# ---------------------------------------------------------------------------
-
 
 class _Conn:
     """A psycopg connection with two conveniences psycopg keeps on the cursor.
@@ -66,9 +63,7 @@ class _Conn:
         self._raw.rollback()
 
 
-# ---------------------------------------------------------------------------
 # Pool
-# ---------------------------------------------------------------------------
 
 _pool: ConnectionPool | None = None
 

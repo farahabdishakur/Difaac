@@ -520,13 +520,10 @@ def get_incidents(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
         )
 
 
-# ---------------------------------------------------------------------------
 # Organisation-wide view
-# ---------------------------------------------------------------------------
 # What a manager or administrator opens the platform to see: not six consoles
 # to visit in turn, but one answer to "how bad is it right now, and what needs
 # a decision today".
-
 
 @router.get("/overview/executive")
 def get_executive_overview():

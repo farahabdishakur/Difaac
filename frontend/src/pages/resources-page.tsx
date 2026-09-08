@@ -553,7 +553,6 @@ export default function ResourcesPage() {
 
   return (
     <>
-      {/* ── Top Hero ── */}
       <div className="relative overflow-hidden bg-ink">
         <PageHero
           centered
@@ -562,7 +561,6 @@ export default function ResourcesPage() {
         />
       </div>
 
-      {/* ── Intelligence Feed Metrics Bar ── */}
       <div className="border-y border-line bg-ink-2">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -606,11 +604,9 @@ export default function ResourcesPage() {
         </div>
       </div>
 
-      {/* ── Main Research Portal Section ── */}
       <section className="relative bg-ink py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* ── Featured Research Spotlight (Group-IB Flagship Style) ── */}
           {featuredArticle && !searchQuery && selectedCategory === 'All Intelligence' && (
             <div className="mb-16">
               <div className="mb-4 flex items-center gap-2">
@@ -622,7 +618,6 @@ export default function ResourcesPage() {
 
               <div className="group relative overflow-hidden rounded-xl border border-line bg-ink-2 shadow-2xl transition-all duration-300 hover:border-brand/50">
                 <div className="grid grid-cols-1 lg:grid-cols-12">
-                  {/* Left Column: Visual Cover */}
                   <div className="relative min-h-[320px] overflow-hidden lg:col-span-5 lg:min-h-[440px]">
                     <img
                       src={featuredArticle.image}
@@ -640,7 +635,6 @@ export default function ResourcesPage() {
                     </div>
                   </div>
 
-                  {/* Right Column: In-depth Context */}
                   <div className="flex flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:p-10">
                     <div>
                       <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-2">
@@ -673,7 +667,6 @@ export default function ResourcesPage() {
                         {featuredArticle.subtitle}
                       </p>
 
-                      {/* Key highlights teaser */}
                       <div className="mt-6 rounded-lg border border-line/60 bg-ink-3/60 p-4">
                         <p className="mb-2 font-mono text-xs font-medium uppercase tracking-wider text-brand">
                           Key Executive Findings:
@@ -688,7 +681,6 @@ export default function ResourcesPage() {
                         </ul>
                       </div>
 
-                      {/* Tag Chips */}
                       <div className="mt-5 flex flex-wrap gap-2">
                         {featuredArticle.tags.map((tag) => (
                           <span
@@ -701,7 +693,6 @@ export default function ResourcesPage() {
                       </div>
                     </div>
 
-                    {/* Action Bar */}
                     <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-line/60 pt-6">
                       <Button
                         onClick={() => setSelectedArticle(featuredArticle)}
@@ -725,9 +716,7 @@ export default function ResourcesPage() {
             </div>
           )}
 
-          {/* ── Search & Filter Controls Toolbar ── */}
           <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            {/* Category Pills */}
             <div className="flex flex-wrap items-center gap-2">
               {CATEGORIES.map((cat) => {
                 const isSelected = selectedCategory === cat
@@ -748,7 +737,6 @@ export default function ResourcesPage() {
               })}
             </div>
 
-            {/* Search Input Box */}
             <div className="relative w-full sm:w-80">
               <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-2" />
               <input
@@ -770,7 +758,6 @@ export default function ResourcesPage() {
             </div>
           </div>
 
-          {/* ── Research Articles Grid ── */}
           {filteredArticles.length === 0 ? (
             <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-line bg-ink-2 p-10 text-center">
               <Bug className="size-12 text-muted-2/40" />
@@ -799,7 +786,6 @@ export default function ResourcesPage() {
                     onClick={() => setSelectedArticle(article)}
                     className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-line bg-ink-2 transition-all duration-300 hover:-translate-y-1 hover:border-brand/50 hover:shadow-xl hover:shadow-brand/5"
                   >
-                    {/* Thumbnail Image */}
                     <div className="relative h-56 w-full overflow-hidden bg-ink-3">
                       <img
                         src={article.image}
@@ -809,7 +795,6 @@ export default function ResourcesPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-ink-2 via-ink-2/30 to-transparent" />
 
-                      {/* Header badges */}
                       <div className="absolute top-3 left-3 flex items-center gap-2">
                         <span className="rounded bg-ink/90 px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-wider text-brand border border-line-soft backdrop-blur-sm">
                           {article.category}
@@ -826,10 +811,8 @@ export default function ResourcesPage() {
                       </div>
                     </div>
 
-                    {/* Card Body */}
                     <div className="flex flex-1 flex-col justify-between p-6">
                       <div>
-                        {/* Meta info */}
                         <div className="mb-3 flex items-center gap-2 text-xs text-muted-2">
                           <Calendar className="size-3.5" />
                           <span>{article.date}</span>
@@ -837,17 +820,14 @@ export default function ResourcesPage() {
                           <span className="font-mono text-[11px] text-brand">{article.tlp}</span>
                         </div>
 
-                        {/* Title */}
                         <h3 className="font-display text-lg font-medium leading-snug text-text transition-colors group-hover:text-brand line-clamp-2">
                           {article.title}
                         </h3>
 
-                        {/* Subtitle / Excerpt */}
                         <p className="mt-2 text-xs leading-relaxed text-body line-clamp-3">
                           {article.subtitle}
                         </p>
 
-                        {/* Tag badges */}
                         <div className="mt-4 flex flex-wrap gap-1.5">
                           {article.tags.slice(0, 3).map((tag) => (
                             <span
@@ -860,7 +840,6 @@ export default function ResourcesPage() {
                         </div>
                       </div>
 
-                      {/* Card Footer Link */}
                       <div className="mt-6 flex items-center justify-between border-t border-line/60 pt-4 text-xs font-medium text-brand">
                         <span className="flex items-center gap-1.5 group-hover:underline">
                           Read Investigation
@@ -879,7 +858,6 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      {/* ── Interactive Deep-Dive Report Reader (Group-IB Style) ── */}
       {selectedArticle && (
         <DialogPrimitive.Root
           open={!!selectedArticle}
@@ -890,7 +868,6 @@ export default function ResourcesPage() {
             <DialogPrimitive.Popup className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 lg:p-10">
               <div className="relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-line bg-ink shadow-2xl">
 
-                {/* Modal Header Bar */}
                 <div className="relative flex shrink-0 items-center justify-between border-b border-line bg-ink-2 px-6 py-4">
                   <div className="flex items-center gap-3">
                     <span className="flex size-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
@@ -932,7 +909,6 @@ export default function ResourcesPage() {
                   </div>
                 </div>
 
-                {/* Modal Tab Navigator */}
                 <div className="flex shrink-0 border-b border-line bg-ink-3/70 px-6 overflow-x-auto">
                   <button
                     type="button"
@@ -996,9 +972,7 @@ export default function ResourcesPage() {
                   </button>
                 </div>
 
-                {/* Modal Scrollable Body */}
                 <div className="flex-1 overflow-y-auto p-6 sm:p-8">
-                  {/* Article Title Header */}
                   <div className="mb-8">
                     <h2 className="font-display text-2xl font-medium leading-tight text-text sm:text-3xl">
                       {selectedArticle.title}
@@ -1024,10 +998,8 @@ export default function ResourcesPage() {
                     </div>
                   </div>
 
-                  {/* Tab 1: Overview */}
                   {activeTab === 'overview' && (
                     <div className="space-y-8">
-                      {/* Image Banner */}
                       <div className="relative h-64 w-full overflow-hidden rounded-xl border border-line sm:h-72">
                         <img
                           src={selectedArticle.image}
@@ -1037,7 +1009,6 @@ export default function ResourcesPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
                       </div>
 
-                      {/* Executive Summary */}
                       <div className="rounded-xl border border-line bg-ink-2 p-6">
                         <h3 className="mb-3 flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-brand">
                           <Activity className="size-4" />
@@ -1048,7 +1019,6 @@ export default function ResourcesPage() {
                         </p>
                       </div>
 
-                      {/* Key Findings List */}
                       <div>
                         <h3 className="mb-4 font-display text-lg font-medium text-text">
                           Key Analytical Findings & Telemetry
@@ -1068,7 +1038,6 @@ export default function ResourcesPage() {
                         </div>
                       </div>
 
-                      {/* Mitigation Steps */}
                       <div className="rounded-xl border border-brand/30 bg-brand/5 p-6">
                         <h3 className="mb-3 font-display text-base font-medium text-text">
                           Recommended Defensive Actions & Countermeasures
@@ -1085,7 +1054,6 @@ export default function ResourcesPage() {
                     </div>
                   )}
 
-                  {/* Tab 2: Attack Kill Chain */}
                   {activeTab === 'killchain' && (
                     <div className="space-y-6">
                       <p className="text-sm text-muted-2">
@@ -1120,7 +1088,6 @@ export default function ResourcesPage() {
                     </div>
                   )}
 
-                  {/* Tab 3: IOCs */}
                   {activeTab === 'iocs' && (
                     <div className="space-y-6">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1196,7 +1163,6 @@ export default function ResourcesPage() {
                     </div>
                   )}
 
-                  {/* Tab 4: MITRE ATT&CK */}
                   {activeTab === 'mitre' && (
                     <div className="space-y-6">
                       <p className="text-sm text-muted-2">
@@ -1228,7 +1194,6 @@ export default function ResourcesPage() {
                     </div>
                   )}
 
-                  {/* Tab 5: YARA Rule */}
                   {activeTab === 'yara' && (
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -1263,7 +1228,6 @@ export default function ResourcesPage() {
                   )}
                 </div>
 
-                {/* Modal Bottom Footer */}
                 <div className="flex shrink-0 flex-wrap items-center justify-between gap-4 border-t border-line bg-ink-2 px-6 py-4">
                   <div className="flex items-center gap-2 text-xs text-muted-2">
                     <Shield className="size-4 text-brand" />
@@ -1297,7 +1261,6 @@ export default function ResourcesPage() {
         </DialogPrimitive.Root>
       )}
 
-      {/* ── Newsletter & Threat Telemetry Feed Subscription ── */}
       <section className="border-t border-line bg-ink-2 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <CTABanner

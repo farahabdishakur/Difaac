@@ -16,7 +16,6 @@ export default function TeamPage() {
         bgImage="/company-hero-3d.jpg"
       />
 
-      {/* The Leadership — the portrait grid */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -28,7 +27,6 @@ export default function TeamPage() {
         </div>
       </Band>
 
-      {/* How the team grows */}
       <Band muted>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
           <SectionHead

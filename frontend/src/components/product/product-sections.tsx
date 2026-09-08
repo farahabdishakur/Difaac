@@ -83,8 +83,7 @@ export function ProductHero({
 
   return (
     <section className="-mt-14 pt-[calc(3.5rem+2.5rem)] lg:-mt-16 lg:pt-[calc(4rem+3.5rem)] relative overflow-hidden pb-12 lg:pb-16">
-      {/* `spread` widens the accent until it carries the whole hero, so the
-          emblem below sits in a lit space rather than on a dark band. */}
+{/* `spread` widens the accent until it carries the whole hero, so the emblem below sits in a lit space rather than on a dark band. */}
       <HeroBackdrop tone={tone} spread slug={slug} />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -93,12 +92,10 @@ export function ProductHero({
             <ProductEmblem icon={Icon} tone={tone} slug={slug} />
           </div>
 
-          {/* The product-name label — plain text in the page's accent, no
-              pill or icon, the way Group-IB labels the product above the
-              headline. */}
+{/* The product-name label — plain text in the page's accent, no pill or icon, the way Group-IB labels the product above the headline. */}
           <p className={`text-sm font-medium ${toneText[tone]}`}>{hero.badge}</p>
 
-          {/* The accent is a colour on the operative phrase, not a second weight. */}
+{/* The accent is a colour on the operative phrase, not a second weight. */}
           <h1 className="mt-8 text-balance font-display t-h1 font-bold text-text">
             <span className="text-text">{hero.headlineLead}</span>
             <span className={toneText[tone]}>{hero.headlineAccent}</span>
@@ -291,8 +288,7 @@ export function ProductFeatureGrid({
           <h2 className="text-balance font-display t-h3 font-normal text-text">{featureGrid.heading}</h2>
         </div>
 
-        {/* Flat cards, one accent. Border and fill do the separating; there is
-            no gradient wash or glow to make each card shout over the next. */}
+{/* Flat cards, one accent. Border and fill do the separating; there is no gradient wash or glow to make each card shout over the next. */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {featureGrid.items.map((item) => {
             const Icon = getIcon(item.icon)
@@ -405,11 +401,7 @@ export function ProductComparison({
           <p className="max-w-2xl text-body">{comparison.description}</p>
         </div>
 
-        {/* `relative` gives the absolutely-positioned `sr-only` labels inside
-            the cells a containing block *inside* this scroll box. Without it
-            their containing block is the page itself, so on a phone they sit at
-            the wide table's far edge and drag a horizontal scrollbar onto the
-            whole document even though the table scrolls fine on its own. */}
+{/* `relative` gives the absolutely-positioned `sr-only` labels inside the cells a containing block *inside* this scroll box. Without it their containing block is the page itself, so on a phone they sit at the wide table's far edge and drag a horizontal scrollbar onto the whole document even though the table scrolls fine on its own. */}
         <div className="relative overflow-x-auto rounded-2xl border border-line">
           <table className="w-full min-w-[36rem]">
             <thead>
@@ -472,8 +464,7 @@ export function ProductPillars({ pillars, slug }: { pillars: ProductPageContent[
           <p className="max-w-2xl text-pretty text-body">{pillars.description}</p>
         </div>
 
-        {/* Full-width rows rather than a third card grid — a run of identical
-            grids reads as padding however good the content is. */}
+{/* Full-width rows rather than a third card grid — a run of identical grids reads as padding however good the content is. */}
         <div className="flex flex-col gap-px overflow-hidden rounded-2xl border border-line bg-line">
           {pillars.items.map((item, index) => {
             const Icon = getIcon(item.icon)

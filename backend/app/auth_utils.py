@@ -30,9 +30,7 @@ _BCRYPT_MAX_BYTES = 72
 _DUMMY_HASH = bcrypt.hashpw(b"difaac-timing-equaliser", bcrypt.gensalt()).decode()
 
 
-# ---------------------------------------------------------------------------
 # Passwords
-# ---------------------------------------------------------------------------
 
 def hash_password(password: str) -> str:
     """Hash a password with bcrypt and a freshly generated salt."""
@@ -65,9 +63,7 @@ def waste_password_comparison() -> None:
     verify_password("difaac-timing-equaliser", _DUMMY_HASH)
 
 
-# ---------------------------------------------------------------------------
 # Access tokens (signed, short-lived, not revocable)
-# ---------------------------------------------------------------------------
 
 def create_access_token(
     subject: str,
@@ -110,9 +106,7 @@ def decode_access_token(token: str) -> dict | None:
     return payload
 
 
-# ---------------------------------------------------------------------------
 # Refresh tokens (opaque, stored hashed, revocable)
-# ---------------------------------------------------------------------------
 
 def generate_refresh_token() -> str:
     """Return a new opaque refresh token with 256 bits of entropy."""

@@ -67,10 +67,7 @@ export function CTABanner({
         style={{ backgroundImage: 'url(/cta-texture.jpg)' }}
         aria-hidden="true"
       />
-      {/* Darkens the edges so the texture reads as depth in the middle while
-          the headline keeps its contrast. Light enough that the background is
-          visibly there — a scrim heavy enough to guarantee contrast on any
-          texture would make having one pointless. */}
+{/* Darkens the edges so the texture reads as depth in the middle while the headline keeps its contrast. Light enough that the background is visibly there — a scrim heavy enough to guarantee contrast on any texture would make having one pointless. */}
       <div
         className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/35 to-ink/80"
         aria-hidden="true"

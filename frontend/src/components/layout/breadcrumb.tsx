@@ -14,7 +14,7 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
         return (
           <span key={item.label} className="flex items-center gap-1.5">
             {item.href ? (
-              <Link to={item.href} className="link-underline text-body hover:text-text">
+              <Link to={item.href} className="tap-target link-underline text-body hover:text-text">
                 {item.label}
               </Link>
             ) : (

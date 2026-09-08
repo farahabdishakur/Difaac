@@ -58,7 +58,6 @@ export function SiteFooter() {
               response, and digital risk protection.
             </p>
             <div className="flex flex-wrap items-center gap-2.5 pt-4">
-              {/* X (formerly Twitter) */}
               <a
                 href="https://x.com"
                 target="_blank"
@@ -71,7 +70,6 @@ export function SiteFooter() {
                 </svg>
               </a>
 
-              {/* LinkedIn */}
               <a
                 href="https://linkedin.com"
                 target="_blank"
@@ -84,7 +82,6 @@ export function SiteFooter() {
                 </svg>
               </a>
 
-              {/* Discord */}
               <a
                 href="https://discord.com"
                 target="_blank"
@@ -97,7 +94,6 @@ export function SiteFooter() {
                 </svg>
               </a>
 
-              {/* Facebook */}
               <a
                 href="https://facebook.com"
                 target="_blank"
@@ -110,7 +106,6 @@ export function SiteFooter() {
                 </svg>
               </a>
 
-              {/* YouTube */}
               <a
                 href="https://youtube.com"
                 target="_blank"
@@ -151,11 +146,20 @@ export function SiteFooter() {
           <p className="text-xs text-muted-2">
             &copy; {new Date().getFullYear()} Difaac. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center gap-6">
-            <Link to="/privacy" className="text-xs text-muted-2 transition-colors hover:text-brand">
+          {/* The padding is what makes these tappable. At 12px the text box is
+              16px tall, under the 24px minimum a touch target needs, and these
+              two are the links a phone visitor is most likely to reach for. */}
+          <div className="-my-2 flex flex-wrap items-center gap-x-6">
+            <Link
+              to="/privacy"
+              className="inline-flex min-h-[28px] items-center text-xs text-muted-2 transition-colors hover:text-brand"
+            >
               Privacy policy
             </Link>
-            <Link to="/terms" className="text-xs text-muted-2 transition-colors hover:text-brand">
+            <Link
+              to="/terms"
+              className="inline-flex min-h-[28px] items-center text-xs text-muted-2 transition-colors hover:text-brand"
+            >
               Terms of use
             </Link>
           </div>

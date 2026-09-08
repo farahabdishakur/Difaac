@@ -18,9 +18,7 @@ export function SolutionHeroEnhanced({ name, tagline, description, group }: Solu
 
   return (
     <section className="-mt-14 pt-[calc(3.5rem+4rem)] lg:-mt-16 lg:pt-[calc(4rem+5rem)] relative overflow-hidden pb-24 lg:pb-32">
-      {/* The same wash the product and service heroes use: the accent carries
-          up behind the transparent header and settles into the page ground,
-          so the section has no top edge. */}
+{/* The same wash the product and service heroes use: the accent carries up behind the transparent header and settles into the page ground, so the section has no top edge. */}
       <HeroBackdrop tone={tone} spread />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">

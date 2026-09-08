@@ -49,7 +49,6 @@ export function IndustryHeroEnhanced({
 
   return (
     <section className="relative min-h-[75vh] overflow-hidden bg-ink">
-      {/* ── Full-bleed 3D visual background with layered contrast scrims ── */}
       {bgImage ? (
         <div className="absolute inset-0" aria-hidden="true">
           <img
@@ -59,29 +58,24 @@ export function IndustryHeroEnhanced({
             loading="eager"
             decoding="async"
           />
-          {/* Vertical gradient so the artwork meets the page ground without an edge */}
+{/* Vertical gradient so the artwork meets the page ground without an edge */}
           <div className="absolute inset-0 bg-gradient-to-b from-ink/35 via-ink/60 to-ink" />
-          {/* Subtle side vignettes for reading focus */}
           <div className="absolute inset-0 bg-gradient-to-r from-ink/50 via-transparent to-ink/50" />
         </div>
       ) : (
         <div className="absolute inset-0 bg-ink" />
       )}
 
-      {/* ── Content (Refined, balanced typography) ──────────────────── */}
       <div className="relative z-10 mx-auto flex min-h-[75vh] max-w-4xl flex-col items-center justify-center px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <div className="text-center">
-          {/* Heading — balanced and refined, not overly large */}
           <h1 className="mx-auto mt-6 max-w-3xl font-display t-h1 font-medium leading-[1.18] text-text">
             {highlight}
           </h1>
 
-          {/* Description — clear and readable */}
           <p className="mx-auto mt-5 max-w-2xl t-lead leading-relaxed text-body/90">
             {description}
           </p>
 
-          {/* CTAs */}
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <LinkButton href="/talk-to-sales" size="lg" className="gap-2 px-7">
               Get Protected
@@ -92,7 +86,6 @@ export function IndustryHeroEnhanced({
             </LinkButton>
           </div>
 
-          {/* Tagline Divider */}
           <div className="mx-auto mt-12 max-w-md border-t border-line-soft/40 pt-5">
             <p className="text-sm font-medium tracking-wide text-muted-2">
               {tagline}
@@ -101,7 +94,6 @@ export function IndustryHeroEnhanced({
         </div>
       </div>
 
-      {/* Bottom fade to page ground */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink" />
     </section>
   )

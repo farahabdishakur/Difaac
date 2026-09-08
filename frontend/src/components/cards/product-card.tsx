@@ -17,7 +17,6 @@ export function ProductCard({ product }: { product: Product }) {
       to={`/products/${product.slug}`}
       className="group relative overflow-hidden flex flex-col justify-between gap-6 rounded-[4px] border border-line bg-ink-2 p-6 lg:p-7 transition-all duration-300 hover:border-brand/60 hover:bg-ink-3 shadow-lg hover:shadow-[0_0_30px_rgba(0,201,121,0.1)]"
     >
-      {/* Subtle product background imagery on hover */}
       <div 
         className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-15 transition-opacity duration-500 mix-blend-screen"
         style={{ backgroundImage: `url(/products/hero-${product.slug}.jpg)` }}

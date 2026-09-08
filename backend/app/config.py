@@ -23,9 +23,7 @@ except ImportError:
     # python-dotenv is a development convenience, not a runtime requirement.
     pass
 
-# ---------------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------------
+# Database
 
 # PostgreSQL connection string. Override with the DATABASE_URL environment
 # variable in every real deployment; the default points at the local
@@ -35,15 +33,11 @@ DATABASE_URL: str = os.getenv(
     "DATABASE_URL", "postgresql://difaac:difaac@localhost:5432/difaac"
 )
 
-# ---------------------------------------------------------------------------
 # Server
-# ---------------------------------------------------------------------------
 
 DEBUG: bool = os.getenv("DIFAAC_DEBUG", "false").lower() in ("1", "true", "yes")
 
-# ---------------------------------------------------------------------------
 # CORS — allowed frontend origins
-# ---------------------------------------------------------------------------
 # Comma-separated list.  Falls back to the Vite dev-server defaults.
 
 _DEFAULT_ORIGINS = (
@@ -71,9 +65,7 @@ CORS_ORIGINS: list[str] = [
     if origin.strip()
 ]
 
-# ---------------------------------------------------------------------------
 # Rate Limiting (requests per minute per client IP)
-# ---------------------------------------------------------------------------
 
 RATE_LIMIT_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_RPM", "120"))
 
@@ -82,9 +74,7 @@ RATE_LIMIT_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_RPM", "120"))
 # into a password guessing oracle.
 RATE_LIMIT_AUTH_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_AUTH_RPM", "10"))
 
-# ---------------------------------------------------------------------------
 # Security & JWT Authentication
-# ---------------------------------------------------------------------------
 
 # JWT signing key. There is deliberately no usable default: a fallback baked
 # into source is public the moment the repository is, and anyone holding it can
@@ -135,18 +125,14 @@ PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = int(
 # dev server so local development works without extra configuration.
 FRONTEND_URL: str = os.getenv("DIFAAC_FRONTEND_URL", "https://localhost:5173")
 
-# ---------------------------------------------------------------------------
 # Account lockout
-# ---------------------------------------------------------------------------
 # IP rate limiting does not protect a single targeted account against an
 # attacker with many source addresses, so failures are also counted per account.
 
 MAX_FAILED_LOGINS: int = int(os.getenv("DIFAAC_MAX_FAILED_LOGINS", "8"))
 LOCKOUT_MINUTES: int = int(os.getenv("DIFAAC_LOCKOUT_MINUTES", "15"))
 
-# ---------------------------------------------------------------------------
 # Cookies
-# ---------------------------------------------------------------------------
 # The refresh token is delivered as an HttpOnly cookie so JavaScript — and
 # therefore any XSS on the page — cannot read it. `Secure` is dropped only in
 # DEBUG, where local dev may be served over plain HTTP.
@@ -155,9 +141,7 @@ COOKIE_SECURE: bool = not DEBUG
 COOKIE_SAMESITE: str = os.getenv("DIFAAC_COOKIE_SAMESITE", "lax")
 REFRESH_COOKIE_NAME: str = "difaac_refresh"
 
-# ---------------------------------------------------------------------------
 # Error tracking
-# ---------------------------------------------------------------------------
 # Unset by default, which leaves Sentry fully inert — sentry_sdk.init() is
 # only called when a DSN is present (see main.py). Nothing is sent anywhere
 # until an operator opts in by setting this.

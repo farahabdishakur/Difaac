@@ -45,7 +45,7 @@ export default function CompanyPage() {
         bgImage="/company-hero-3d.jpg"
       />
 
-      {/* Aspiration — the mission stated plainly, with the one real photograph. */}
+{/* Aspiration — the mission stated plainly, with the one real photograph. */}
       <Band>
         <div className="flex flex-col items-center gap-12">
           <SectionHead
@@ -65,7 +65,6 @@ export default function CompanyPage() {
       </Band>
 
 
-      {/* Capabilities — the workhorse three-column grid with 3D product emblems. */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -114,8 +113,7 @@ export default function CompanyPage() {
         </div>
       </Band>
 
-      {/* Principles — a plain list; the number is the only ornament, and it is
-          true (these are ordered, but read as a set). */}
+{/* Principles — a plain list; the number is the only ornament, and it is true (these are ordered, but read as a set). */}
       <Band muted>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -142,7 +140,7 @@ export default function CompanyPage() {
         </div>
       </Band>
 
-      {/* Commitments — four figures that are true from day one. */}
+{/* Commitments — four figures that are true from day one. */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -163,7 +161,6 @@ export default function CompanyPage() {
         </div>
       </Band>
 
-      {/* Where to go next. */}
       <Band muted>
         <div className="flex flex-col gap-12">
           <SectionHead

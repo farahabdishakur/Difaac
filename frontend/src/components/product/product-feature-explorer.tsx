@@ -49,7 +49,7 @@ export function ProductFeatureExplorer({
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Tab row — one line, scrolling sideways rather than wrapping. */}
+{/* Tab row — one line, scrolling sideways rather than wrapping. */}
       <div
         role="tablist"
         aria-label={`${name} capabilities`}
@@ -75,7 +75,6 @@ export function ProductFeatureExplorer({
         })}
       </div>
 
-      {/* Body — the described capability beside the real console. */}
       <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
         <div className="flex flex-col gap-4">
           <h3 className="font-display text-xl font-medium text-text sm:text-2xl">{activeTab.title}</h3>
@@ -96,9 +95,7 @@ export function ProductFeatureExplorer({
           ) : (
             <div className="aspect-[16/10] w-full" />
           )}
-          {/* A play affordance the way Group-IB overlays one on the console
-              still — here it links a viewer to the live workspace rather than a
-              video, since the real thing exists. */}
+{/* A play affordance the way Group-IB overlays one on the console still — here it links a viewer to the live workspace rather than a video, since the real thing exists. */}
           <a
             href="/sign-in"
             className="group absolute inset-0 flex items-center justify-center"

@@ -101,8 +101,7 @@ export function ExecutiveOverview({ name }: { name: string }) {
             loading={isLoading}
           />
 
-          {/* The decisions this page exists to prompt. Each goes to the console
-              that can actually action it rather than to a modal here. */}
+{/* The decisions this page exists to prompt. Each goes to the console that can actually action it rather than to a modal here. */}
           <div className="flex flex-wrap gap-3 sm:col-span-2">
             <Link
               to="/workspace/managed-xdr"

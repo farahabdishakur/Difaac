@@ -58,7 +58,6 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
   return (
     <>
       <div className="relative overflow-hidden bg-ink">
-        {/* Background effects removed for cleaner design */}
         
         <PageHero
           eyebrow={eyebrow}
@@ -75,7 +74,6 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:items-start">
             
-            {/* Left Content */}
             <div className="lg:col-span-4 flex flex-col gap-6 sticky top-32">
               <span className="flex size-16 items-center justify-center border border-line bg-ink-3 text-brand">
                 <Icon className="size-8" aria-hidden="true" />
@@ -92,7 +90,6 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
               </div>
             </div>
 
-            {/* Right Content */}
             <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
                {'highlights' in data && (data as Solution).highlights?.map((highlight: string | any, idx: number) => {
                   const title = typeof highlight === 'string' ? highlight : (highlight.title || highlight.name)
@@ -105,7 +102,6 @@ export default function GenericDetailPage({ type }: { type: 'industry' | 'soluti
                   )
                })}
 
-               {/* Fallback layout if no structured highlights are available */}
                {(!('highlights' in data) || !(data as Solution).highlights) && (
                  <>
                   <div className="flat-card flat-card-hover p-8 sm:col-span-2 relative overflow-hidden group">

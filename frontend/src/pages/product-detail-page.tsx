@@ -52,7 +52,7 @@ export default function ProductDetailPage() {
 
   return (
     <>
-      {/* ── Hero: name small, promise big, over the product's own hue. ── */}
+{/* Hero: name small, promise big, over the product's own hue. */}
       <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4.5rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
         <HeroBackdrop tone={tone} bgImage={`/products/hero-${product.slug}.jpg`} spread />
 
@@ -83,7 +83,7 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      {/* ── Metrics strip: a few things true from day one. ── */}
+{/* Metrics strip: a few things true from day one. */}
       {content ? (
         <div className="border-y border-line bg-ink-2">
           <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-line px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
@@ -99,7 +99,7 @@ export default function ProductDetailPage() {
         </div>
       ) : null}
 
-      {/* ── Feature explorer: the console is the argument. ── */}
+{/* Feature explorer: the console is the argument. */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -118,7 +118,6 @@ export default function ProductDetailPage() {
 
       {content ? (
         <>
-          {/* ── Use cases. ── */}
           <Band muted>
             <div className="flex flex-col gap-12">
               <SectionHead
@@ -141,7 +140,7 @@ export default function ProductDetailPage() {
             </div>
           </Band>
 
-          {/* ── How it works: three stages, run continuously. ── */}
+{/* How it works: three stages, run continuously. */}
           <Band>
             <div className="flex flex-col gap-12">
               <SectionHead
@@ -163,7 +162,6 @@ export default function ProductDetailPage() {
             </div>
           </Band>
 
-          {/* ── What you get + how it deploys. ── */}
           <Band muted>
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-16">
               <div className="flex flex-col gap-6">
@@ -198,7 +196,6 @@ export default function ProductDetailPage() {
         </>
       ) : null}
 
-      {/* ── Pricing: hand off to the matrix. ── */}
       <Band>
         <div className="flex flex-col items-center gap-8 rounded-2xl border border-line bg-ink-2 px-6 py-14 text-center sm:px-10">
           <SectionHead
@@ -213,7 +210,6 @@ export default function ProductDetailPage() {
         </div>
       </Band>
 
-      {/* ── FAQ. ── */}
       {faqs.length > 0 ? (
         <Band muted>
           <div className="flex flex-col gap-10">
@@ -228,7 +224,6 @@ export default function ProductDetailPage() {
         </Band>
       ) : null}
 
-      {/* ── Related products. ── */}
       {related.length > 0 ? (
         <Band>
           <div className="flex flex-col gap-10">

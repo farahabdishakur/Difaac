@@ -22,7 +22,7 @@ export default function PartnersPage() {
         bgImage="/company/partners-hero-bg.jpg"
       />
 
-      {/* Partner tracks — the three shapes a partnership can take. */}
+{/* Partner tracks — the three shapes a partnership can take. */}
       <Band>
         <div className="flex flex-col gap-12">
           <SectionHead
@@ -47,7 +47,7 @@ export default function PartnersPage() {
         </div>
       </Band>
 
-      {/* How it works — honest about the stage. */}
+{/* How it works — honest about the stage. */}
       <Band muted>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
           <SectionHead

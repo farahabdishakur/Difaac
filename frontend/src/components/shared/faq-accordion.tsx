@@ -44,8 +44,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
                 />
               </button>
             </h3>
-            {/* The panel stays in the DOM and is hidden, so the grid-rows
-                transition can animate its height rather than snapping. */}
+{/* The panel stays in the DOM and is hidden, so the grid-rows transition can animate its height rather than snapping. */}
             <div
               id={panelId}
               role="region"

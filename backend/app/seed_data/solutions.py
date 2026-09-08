@@ -1,7 +1,7 @@
 """Seed data for the solutions table."""
 
 SOLUTIONS: list[dict] = [
-    # ── Use-case solutions ─────────────────────────────────────────────
+    # Use-case solutions
     {
         "slug": "ransomware-protection",
         "name": "Ransomware Protection",
@@ -87,7 +87,7 @@ SOLUTIONS: list[dict] = [
         "highlights": None,
     },
 
-    # ── Role-based solutions ───────────────────────────────────────────
+    # Role-based solutions
     {
         "slug": "ciso",
         "name": "CISO",

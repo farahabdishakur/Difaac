@@ -54,7 +54,7 @@ export default function SolutionsPage() {
         secondaryCta={{ label: 'Explore products', href: '/products' }}
       />
 
-      {/* The problems, before anything that sells against them. */}
+{/* The problems, before anything that sells against them. */}
       <section className="border-t border-line-soft bg-ink-2 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
@@ -88,7 +88,6 @@ export default function SolutionsPage() {
         </div>
       </section>
 
-      {/* Use case, then role. */}
       {GROUPS.map((group) => {
         const items = (solutions ?? []).filter((s) => s.group === group.key)
         if (items.length === 0) return null
@@ -139,7 +138,7 @@ export default function SolutionsPage() {
         )
       })}
 
-      {/* The third way in, which the solutions data does not itself hold. */}
+{/* The third way in, which the solutions data does not itself hold. */}
       <section className="border-t border-line-soft bg-ink-2 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">

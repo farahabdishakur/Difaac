@@ -277,7 +277,7 @@ export default function SolutionDetailPage() {
 
       <SolutionHighlights highlights={solution.highlights || details.benefits.slice(0, 4)} group={solution.group} />
 
-      {/* What the solution actually does, as an ordered capability list. */}
+{/* What the solution actually does, as an ordered capability list. */}
       <section className="border-t border-line-soft bg-ink-2 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
@@ -302,7 +302,7 @@ export default function SolutionDetailPage() {
         </div>
       </section>
 
-      {/* Who runs into this, in their own words. */}
+{/* Who runs into this, in their own words. */}
       <section className="border-t border-line-soft py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
@@ -328,7 +328,6 @@ export default function SolutionDetailPage() {
         </div>
       </section>
 
-      {/* The products behind it. */}
       {related.length > 0 ? (
         <section className="border-t border-line-soft bg-ink-2 py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -69,9 +69,7 @@ DEFAULT_USER_ROLE = "analyst"
 _INVALID_CREDENTIALS = "Incorrect email or password"
 
 
-# ---------------------------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------------------------
 
 def _row_to_profile(row: Any) -> dict:
     return {
@@ -197,9 +195,7 @@ def require_permission(permission: Permission):
     return dependency
 
 
-# ---------------------------------------------------------------------------
 # Registration
-# ---------------------------------------------------------------------------
 
 @router.post(
     "/register", response_model=UserProfileResponse, status_code=status.HTTP_201_CREATED
@@ -265,9 +261,7 @@ async def register(payload: UserRegisterRequest, request: Request):
     return _row_to_profile(row)
 
 
-# ---------------------------------------------------------------------------
 # Login
-# ---------------------------------------------------------------------------
 
 @router.post("/login", response_model=TokenResponse)
 async def login(payload: UserLoginRequest, request: Request, response: Response):
@@ -349,9 +343,7 @@ async def login(payload: UserLoginRequest, request: Request, response: Response)
     return _token_response(row)
 
 
-# ---------------------------------------------------------------------------
 # Refresh
-# ---------------------------------------------------------------------------
 
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh(request: Request, response: Response):
@@ -413,9 +405,7 @@ async def refresh(request: Request, response: Response):
     return _token_response(row)
 
 
-# ---------------------------------------------------------------------------
 # Logout
-# ---------------------------------------------------------------------------
 
 @router.post("/logout", response_model=MessageResponse)
 async def logout(request: Request, response: Response):
@@ -455,9 +445,7 @@ async def logout_all(
     return {"detail": f"Signed out of {revoked} session(s)"}
 
 
-# ---------------------------------------------------------------------------
 # Profile and sessions
-# ---------------------------------------------------------------------------
 
 @router.get("/me", response_model=UserProfileResponse)
 async def read_current_user(current_user: dict = Depends(get_current_user)):
@@ -495,9 +483,7 @@ async def revoke_session(
     return {"detail": "Session revoked"}
 
 
-# ---------------------------------------------------------------------------
 # Password change
-# ---------------------------------------------------------------------------
 
 @router.post("/change-password", response_model=MessageResponse)
 async def change_password(
@@ -554,9 +540,7 @@ async def change_password(
     return {"detail": "Password updated. Please sign in again."}
 
 
-# ---------------------------------------------------------------------------
 # Password reset
-# ---------------------------------------------------------------------------
 
 _RESET_LINK_SENT = "If that email is registered, a reset link has been sent."
 

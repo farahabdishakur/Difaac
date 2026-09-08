@@ -83,8 +83,7 @@ export function ProductEmblem({
     <span
       className={`relative inline-flex shrink-0 items-center justify-center ${sizeClass} ${className ?? ''}`}
     >
-      {/* Ambient glow, sized past the prism so the light appears to come from
-          the object rather than sitting behind it as a disc. */}
+{/* Ambient glow, sized past the prism so the light appears to come from the object rather than sitting behind it as a disc. */}
       <span
         className="pointer-events-none absolute inset-0 scale-150 rounded-full opacity-40 blur-2xl"
         style={{ background: accent }}
@@ -103,7 +102,7 @@ export function ProductEmblem({
           </linearGradient>
         </defs>
 
-        {/* Outer prism: a hexagon read as a cube seen corner-on. */}
+{/* Outer prism: a hexagon read as a cube seen corner-on. */}
         <polygon
           points="60,8 108,34 108,86 60,112 12,86 12,34"
           fill={`url(#${uid}-face)`}
@@ -112,15 +111,14 @@ export function ProductEmblem({
           strokeLinejoin="round"
         />
 
-        {/* Inner facets: the three edges meeting at the centre are what make
-            the flat hexagon read as a solid rather than an outline. */}
+{/* Inner facets: the three edges meeting at the centre are what make the flat hexagon read as a solid rather than an outline. */}
         <g stroke={accent} strokeOpacity="0.28" strokeWidth="1">
           <line x1="60" y1="8" x2="60" y2="60" />
           <line x1="108" y1="34" x2="60" y2="60" />
           <line x1="12" y1="34" x2="60" y2="60" />
         </g>
 
-        {/* Inner prism, offset inward to suggest depth through the glass. */}
+{/* Inner prism, offset inward to suggest depth through the glass. */}
         <polygon
           points="60,30 87,45 87,75 60,90 33,75 33,45"
           fill={accent}
@@ -132,7 +130,7 @@ export function ProductEmblem({
         />
       </svg>
 
-      {/* The product's own glyph, centred in the prism. */}
+{/* The product's own glyph, centred in the prism. */}
       <Icon
         className={`absolute size-1/3 ${toneText[tone]}`}
         strokeWidth={1.25}
@@ -175,7 +173,6 @@ export function HeroBackdrop({
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Thematic product cyber photography / telemetry backdrop */}
       {image ? (
         <div className="absolute inset-0 overflow-hidden">
           <img
@@ -183,9 +180,8 @@ export function HeroBackdrop({
             alt=""
             className="size-full object-cover object-center opacity-35 mix-blend-screen scale-105 transition-transform duration-1000"
           />
-          {/* Top shadow settling into header */}
           <div className="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-transparent opacity-80" />
-          {/* Radial mask to ensure center text and emblem stay high-contrast */}
+{/* Radial mask to ensure center text and emblem stay high-contrast */}
           <div
             className="absolute inset-0"
             style={{
@@ -203,9 +199,7 @@ export function HeroBackdrop({
         }}
       />
 
-      {/* The product hero opts into a single wide pool of the accent, centred
-          high enough that the colour carries up behind the transparent header
-          and reaches the top of the page rather than starting below it. */}
+{/* The product hero opts into a single wide pool of the accent, centred high enough that the colour carries up behind the transparent header and reaches the top of the page rather than starting below it. */}
       {spread ? (
         <div
           className="absolute inset-0"
@@ -215,7 +209,7 @@ export function HeroBackdrop({
         />
       ) : null}
 
-      {/* Settles the wash back to the page ground at the fold. */}
+{/* Settles the wash back to the page ground at the fold. */}
       <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-b from-transparent via-ink/80 to-ink" />
     </div>
   )

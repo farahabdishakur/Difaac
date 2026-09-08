@@ -48,15 +48,11 @@ export function ServiceHero({
 
   return (
     <section className="-mt-14 pt-[calc(3.5rem+5rem)] lg:-mt-16 lg:pt-[calc(4rem+7rem)] relative overflow-hidden pb-24 lg:pb-32">
-      {/* The same wash the product heroes use: the accent carries up behind
-          the transparent header and settles into the page ground, so the
-          section has no top edge. */}
+{/* The same wash the product heroes use: the accent carries up behind the transparent header and settles into the page ground, so the section has no top edge. */}
       <HeroBackdrop tone={tone} spread />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        {/* No name pill above the headline: the nav already names where you
-            are, so a badge repeating the service only pushes the headline down
-            the page. */}
+{/* No name pill above the headline: the nav already names where you are, so a badge repeating the service only pushes the headline down the page. */}
         <div className="text-center">
           <h1 className="font-display t-h1 font-medium leading-[1.15]">
             <span className="text-text">{hero.headlineLead}</span>

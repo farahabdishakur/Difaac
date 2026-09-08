@@ -16,21 +16,15 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
-          {/* Left: Headline & CTAs */}
           <div className="max-w-2xl">
-            {/* A quiet line that says plainly what Difaac is before the
-                headline says what it does — one small accent, nothing more. */}
+            {/* A quiet line that says plainly what Difaac is before the headline says what it does — one small accent, nothing more. */}
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">
               Intelligent cyber defence
             </span>
 
-            {/* Two-tone, weight 400: the emphasis is the colour on the
-                operative word, never a heavier stroke. The same rule the
-                company pages follow, so the site reads as one system rather
-                than a home page and a set of other pages. */}
+            {/* Two-tone, weight 400: the emphasis is the colour on the operative word, never a heavier stroke. The same rule the company pages follow, so the site reads as one system rather than a home page and a set of other pages. */}
             <h1 className="t-display mt-4 text-balance font-display font-bold text-text">
-              <span>Fight Somalian</span>
-              <br />
+              <span>Fight Somalian</span><br />
               <span className="text-brand">Cybercrime.</span>
             </h1>
 
@@ -63,10 +57,7 @@ export function HeroSection() {
               className="pointer-events-none absolute inset-0 scale-90 rounded-full bg-brand/20 opacity-60 blur-3xl"
               aria-hidden="true"
             />
-            {/* The intrinsic size is declared so the browser reserves the
-                right box before the file arrives. Without it the row has no
-                height on the first paint, and the headline beside it is drawn
-                centred against nothing — then jumps when the image lands. */}
+            {/* The intrinsic size is declared so the browser reserves the right box before the file arrives. Without it the row has no height on the first paint, and the headline beside it is drawn centred against nothing — then jumps when the image lands. */}
             <img
               src="/hero-image.png"
               alt="Difaac unified cyber defense platform"

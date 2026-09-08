@@ -123,10 +123,7 @@ export function WorkspaceShell() {
           </button>
         </header>
 
-        {/* Small-screen nav: same destinations, laid out as a scrollable strip
-            rather than a collapsible drawer, so the workspace stays usable on
-            a tablet without adding a second navigation pattern to build and
-            maintain. */}
+{/* Small-screen nav: same destinations, laid out as a scrollable strip rather than a collapsible drawer, so the workspace stays usable on a tablet without adding a second navigation pattern to build and maintain. */}
         <nav aria-label="Workspace" className="flex gap-1 overflow-x-auto border-b border-line-soft bg-ink-2/60 px-4 py-2 lg:hidden">
           {visibleNav.map((item) => (
             <NavLink

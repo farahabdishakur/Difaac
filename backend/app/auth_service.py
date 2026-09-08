@@ -33,9 +33,7 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-# ---------------------------------------------------------------------------
 # Audit trail
-# ---------------------------------------------------------------------------
 
 def record_event(
     conn: Any,
@@ -64,9 +62,7 @@ def record_event(
         logger.error("Failed to record auth event %r: %s", event, exc)
 
 
-# ---------------------------------------------------------------------------
 # Account lockout
-# ---------------------------------------------------------------------------
 
 def lockout_remaining(row: Any) -> int:
     """Seconds until the account unlocks, or 0 if it is not locked."""
@@ -110,9 +106,7 @@ def clear_failed_logins(conn: Any, user_id: int) -> None:
     )
 
 
-# ---------------------------------------------------------------------------
 # Refresh tokens
-# ---------------------------------------------------------------------------
 
 def issue_refresh_token(
     conn: Any,
@@ -291,9 +285,7 @@ def purge_expired_tokens(conn: Any) -> int:
     return cursor.rowcount
 
 
-# ---------------------------------------------------------------------------
 # Password reset tokens
-# ---------------------------------------------------------------------------
 # Same opaque-token-hashed-at-rest mechanics as refresh tokens (reusing
 # `generate_refresh_token`/`hash_refresh_token`, which are generic — nothing
 # about them is specific to refresh tokens), but a short expiry and a

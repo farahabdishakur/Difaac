@@ -206,9 +206,7 @@ def _seed_drp_items(conn: Any) -> None:
     logger.info("  Seeded %d digital risk items.", len(DRP_ITEMS))
 
 
-# ---------------------------------------------------------------------------
 # Private helpers — one per table
-# ---------------------------------------------------------------------------
 
 def _seed_products(conn: Any) -> None:
     for i, p in enumerate(PRODUCTS):
@@ -324,8 +322,6 @@ def _seed_blog_posts(conn: Any) -> None:
             ),
         )
     logger.info("  Seeded %d blog posts.", len(BLOG_POSTS))
-
-
 
 
 def _seed_site_content(conn: Any) -> None:

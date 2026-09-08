@@ -61,7 +61,7 @@ function ShowcaseBand({ entry, index }: { entry: ShowcaseEntry; index: number })
               <ProductEmblem icon={Icon} tone={tone} slug={entry.slug} size="card" className="-m-1" />
               <Link
                 to={`/products/${entry.slug}`}
-                className={`text-sm font-medium transition-opacity hover:opacity-80 ${toneText[tone]}`}
+                className={`tap-target text-sm font-medium transition-opacity hover:opacity-80 ${toneText[tone]}`}
               >
                 {product.name}
               </Link>
@@ -75,7 +75,7 @@ function ShowcaseBand({ entry, index }: { entry: ShowcaseEntry; index: number })
 
             <Link
               to={`/products/${entry.slug}`}
-              className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"
+              className="tap-target group mt-8 inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"
             >
               Learn more
               <ArrowRight

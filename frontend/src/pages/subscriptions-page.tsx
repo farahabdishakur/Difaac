@@ -105,7 +105,6 @@ export default function SubscriptionsPage() {
   // ancestor and unpin it.
   return (
     <div className="overflow-x-hidden bg-ink text-text lg:overflow-x-visible">
-      {/* ─────────────────────────── Hero ─────────────────────────── */}
       <section className="pt-24 pb-16 lg:pt-32">
         <div className={COLUMN}>
           <h1 className="t-h1 text-center font-display font-bold">
@@ -113,9 +112,7 @@ export default function SubscriptionsPage() {
             <span className="block text-brand-ultra">capability by capability</span>
           </h1>
 
-          {/* Product picker. A wrapping grid rather than a row of tabs: every
-              product stays visible at once, and a long name is free to take a
-              second line instead of forcing the row to scroll. */}
+{/* Product picker. A wrapping grid rather than a row of tabs: every product stays visible at once, and a long name is free to take a second line instead of forcing the row to scroll. */}
           <div className="mt-16">
             <p className="text-center text-base text-body">Choose your product:</p>
 
@@ -157,7 +154,6 @@ export default function SubscriptionsPage() {
         </div>
       </section>
 
-      {/* ───────────────────── Product introduction ───────────────────── */}
       <section className="pb-4 pt-12">
         <div className={`${COLUMN} flex flex-col items-center gap-5 text-center`}>
           <ProductEmblem icon={ProductIcon} tone={tone} slug={currentSlug} size="hero" />
@@ -183,12 +179,10 @@ export default function SubscriptionsPage() {
         </div>
       </section>
 
-      {/* ─────────────────── Architecture domain segments ─────────────────── */}
       {activeProduct.subTabs && activeProduct.subTabs.length > 0 && (
         <section className="pt-16">
           <div className={`${COLUMN} flex flex-col items-center gap-8`}>
-            {/* One control, segmented — not three cards. The selected segment
-                is a lighter fill; nothing else changes. */}
+{/* One control, segmented — not three cards. The selected segment is a lighter fill; nothing else changes. */}
             <div
               role="tablist"
               aria-label="Architecture domain"
@@ -225,16 +219,13 @@ export default function SubscriptionsPage() {
         </section>
       )}
 
-      {/* ────────────────────────── Feature matrix ────────────────────────── */}
       <section className="pt-24 lg:pt-32">
         <div className={COLUMN}>
           <h2 className="t-h1 text-center font-display text-text">
             Feature matrix
           </h2>
 
-          {/* Quiet by design. The matrix runs to forty rows on some products,
-              so a filter earns its place — but it is one unadorned field, not
-              a toolbar competing with the table it sits above. */}
+{/* Quiet by design. The matrix runs to forty rows on some products, so a filter earns its place — but it is one unadorned field, not a toolbar competing with the table it sits above. */}
           <div className="mt-8 flex justify-center">
             <label className="relative w-full max-w-sm">
               <span className="sr-only">Filter capabilities</span>
@@ -255,11 +246,7 @@ export default function SubscriptionsPage() {
 
         <div className="mt-12 w-full max-w-full overflow-x-auto lg:overflow-x-visible">
           <div className="min-w-[720px] lg:min-w-0">
-            {/* The column header spans the full width rather than the content
-                column — that bleed is what makes it read as a band rather than
-                a row. It pins under the site header, which is itself sticky, so
-                the offset has to match that header's height or this slides
-                underneath it. */}
+{/* The column header spans the full width rather than the content column — that bleed is what makes it read as a band rather than a row. It pins under the site header, which is itself sticky, so the offset has to match that header's height or this slides underneath it. */}
             <div className="z-30 border-y border-line bg-ink lg:sticky lg:top-16">
               <div className={COLUMN}>
                 <div className={`grid ${MATRIX_GRID} items-center gap-4 py-4`}>
@@ -306,9 +293,7 @@ export default function SubscriptionsPage() {
 
                   {isOpen ? (
                     <>
-                      {/* The rule that opens each group is the one place a
-                          plain accent line appears — it says "this block
-                          belongs to that heading" without a box. */}
+{/* The rule that opens each group is the one place a plain accent line appears — it says "this block belongs to that heading" without a box. */}
                       <div className="border-t-2 border-brand">
                         {category.rows.map((row, rowIndex) => (
                           <div
@@ -322,14 +307,12 @@ export default function SubscriptionsPage() {
                                 {row.title}
                               </span>
 
-                              {/* Hover and keyboard focus both reveal it, and
-                                  no state is held for a thing that is only
-                                  ever visible while it is being pointed at. */}
+{/* Hover and keyboard focus both reveal it, and no state is held for a thing that is only ever visible while it is being pointed at. */}
                               <span className="group/tip relative inline-flex shrink-0">
                                 <button
                                   type="button"
                                   aria-label={`What ${row.title} means`}
-                                  className="cursor-help text-muted-2 transition-colors hover:text-body focus:text-body focus:outline-none"
+                                  className="tap-target cursor-help text-muted-2 transition-colors hover:text-body focus:text-body focus:outline-none"
                                 >
                                   <Info className="size-3.5" aria-hidden="true" />
                                 </button>
@@ -393,7 +376,6 @@ export default function SubscriptionsPage() {
         </div>
       </section>
 
-      {/* ───────────────────────── Subscription plans ───────────────────────── */}
       <section className="pt-32 lg:pt-40">
         <div className={COLUMN}>
           <h2 className="t-h1 text-center font-display text-text">
@@ -408,9 +390,7 @@ export default function SubscriptionsPage() {
                   tier.popular ? 'border-brand' : 'border-line'
                 }`}
               >
-                {/* The recommended plan is marked by its border changing
-                    colour. No ribbon, badge, glow, or lift — one property on
-                    one element is unmistakable when nothing else competes. */}
+{/* The recommended plan is marked by its border changing colour. No ribbon, badge, glow, or lift — one property on one element is unmistakable when nothing else competes. */}
                 <h3 className="text-xl font-medium text-brand-ultra">{tier.name}</h3>
 
                 <p className="text-base leading-relaxed text-body">{tier.idealFor}</p>
@@ -424,7 +404,6 @@ export default function SubscriptionsPage() {
         </div>
       </section>
 
-      {/* ──────────────────────────── Close ──────────────────────────── */}
       <section className="pt-32 lg:pt-40">
         <div className={COLUMN}>
           <CTABanner

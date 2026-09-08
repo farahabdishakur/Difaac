@@ -25,7 +25,6 @@ export default function IndustriesPage() {
   return (
     <>
       <div className="relative overflow-hidden bg-ink">
-        {/* Background effects removed for cleaner design */}
         
         <PageHero
           eyebrow="Industries"

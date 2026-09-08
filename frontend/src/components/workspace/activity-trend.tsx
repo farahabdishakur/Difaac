@@ -71,8 +71,7 @@ export function ActivityTrend({ series, loading }: { series: TrendPoint[]; loadi
           </linearGradient>
         </defs>
 
-        {/* Grid and axis labels, kept recessive: they are a reference the eye
-            checks against, not something to read. */}
+{/* Grid and axis labels, kept recessive: they are a reference the eye checks against, not something to read. */}
         {[0, 0.5, 1].map((t) => {
           const gy = PAD.top + plotH - t * plotH
           return (
@@ -95,8 +94,7 @@ export function ActivityTrend({ series, loading }: { series: TrendPoint[]; loadi
         <path d={area} fill={`url(#${gradientId})`} />
         <path d={line} fill="none" stroke="var(--color-brand)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
 
-        {/* First and last day only. A label under every point is noise at this
-            width, and those two are what set the window. */}
+{/* First and last day only. A label under every point is noise at this width, and those two are what set the window. */}
         {[0, series.length - 1].map((i) => (
           <text
             key={i}
@@ -120,15 +118,13 @@ export function ActivityTrend({ series, loading }: { series: TrendPoint[]; loadi
               strokeOpacity="0.4"
               strokeWidth="1"
             />
-            {/* A surface ring around the marker so it stays visible wherever
-                on the area it lands. */}
+{/* A surface ring around the marker so it stays visible wherever on the area it lands. */}
             <circle cx={x(hover!)} cy={y(active.count)} r="5" fill="var(--color-ink)" />
             <circle cx={x(hover!)} cy={y(active.count)} r="4" fill="var(--color-brand)" />
           </>
         ) : null}
 
-        {/* Full-height hit targets, one per day: the pointer never has to find
-            a 4px dot. */}
+{/* Full-height hit targets, one per day: the pointer never has to find a 4px dot. */}
         {series.map((p, i) => (
           <rect
             key={p.day}

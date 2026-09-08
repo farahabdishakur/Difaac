@@ -39,7 +39,7 @@ export function PlatformCommitments() {
 
             <Link
               to="/company"
-              className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"
+              className="tap-target group mt-8 inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-bright"
             >
               How Difaac works
               <ArrowRight

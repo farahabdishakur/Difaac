@@ -1,7 +1,7 @@
 """Seed data for the services table."""
 
 SERVICES: list[dict] = [
-    # ── Assessment ─────────────────────────────────────────────────────
+    # Assessment
     {
         "slug": "penetration-testing",
         "name": "Penetration Testing",
@@ -55,7 +55,7 @@ SERVICES: list[dict] = [
         ),
     },
 
-    # ── Response ───────────────────────────────────────────────────────
+    # Response
     {
         "slug": "incident-response",
         "name": "Incident Response",
@@ -79,7 +79,7 @@ SERVICES: list[dict] = [
         ),
     },
 
-    # ── Training ───────────────────────────────────────────────────────
+    # Training
     {
         "slug": "technical-training",
         "name": "Technical training",
@@ -114,7 +114,7 @@ SERVICES: list[dict] = [
         ),
     },
 
-    # ── Investigation ──────────────────────────────────────────────────
+    # Investigation
     {
         "slug": "cyber-investigation",
         "name": "Cyber Investigation",

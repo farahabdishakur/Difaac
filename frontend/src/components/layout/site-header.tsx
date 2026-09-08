@@ -93,24 +93,13 @@ export function SiteHeader() {
       }`}
       onMouseLeave={scheduleClose}
     >
-      {/*
-        Three tracks: logo, navigation, actions.
-
-        The outer two both take `flex-1`, so they always resolve to the same
-        width whatever they contain. That is what keeps the navigation optically
-        centred in the bar — a fixed width on each side would only look centred
-        until one side outgrew it, and `ml-auto` on the right centres nothing at
-        all, it just pushes.
-      */}
+{/* Three tracks: logo, navigation, actions. The outer two both take `flex-1`, so they always resolve to the same width whatever they contain. That is what keeps the navigation optically centred in the bar — a fixed width on each side would only look centred until one side outgrew it, and `ml-auto` on the right centres nothing at all, it just pushes. */}
       <div className="relative mx-auto flex h-14 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:h-16 lg:gap-4 lg:px-8 xl:gap-8">
         <div className="flex flex-1 items-center justify-start">
           <LogoMark />
         </div>
 
-        {/*
-          Padding lives on each item rather than in the gap, so hover and active
-          targets touch and the group reads as one navigation block.
-        */}
+{/* Padding lives on each item rather than in the gap, so hover and active targets touch and the group reads as one navigation block. */}
         <nav aria-label="Primary" className="hidden shrink-0 items-center justify-center lg:flex">
           {navItems.map((item) => (
             <div key={item.key} className={item.key === 'company' ? 'relative' : 'static'} onMouseEnter={() => openNav(item.key)}>
@@ -157,7 +146,7 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        {/* Mirrors the logo track's flex-1 so both sides measure the same. */}
+{/* Mirrors the logo track's flex-1 so both sides measure the same. */}
         <div className="flex flex-1 items-center justify-end gap-2">
           <Button
             variant="ghost"
