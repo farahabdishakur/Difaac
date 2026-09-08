@@ -241,8 +241,8 @@ on a loopback-only port:
 DIFAAC_DEBUG=false
 DATABASE_URL=postgresql://difaac:the-password-you-set@127.0.0.1:5432/difaac
 DIFAAC_SECRET_KEY=<python3 -c "import secrets; print(secrets.token_urlsafe(48))">
-DIFAAC_FRONTEND_URL=https://difaac.example.com
-DIFAAC_CORS_ORIGINS=https://difaac.example.com
+DIFAAC_FRONTEND_URL=https://difaac.com
+DIFAAC_CORS_ORIGINS=https://difaac.com,https://www.difaac.com
 ```
 
 Lock it down — it holds the signing key and the database password:
@@ -322,7 +322,7 @@ Install Caddy, then replace `/etc/caddy/Caddyfile` with the same routing the
 container stack uses, pointed at local paths:
 
 ```
-difaac.example.com {
+difaac.com, www.difaac.com {
 	encode zstd gzip
 	root * /opt/difaac/frontend/dist
 
