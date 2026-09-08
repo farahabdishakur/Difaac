@@ -54,9 +54,7 @@ def _login(client, email: str, password: str = VALID_PASSWORD):
     return client.post("/auth/login", json={"email": email, "password": password})
 
 
-# ---------------------------------------------------------------------------
 # Registration
-# ---------------------------------------------------------------------------
 
 class TestRegistration:
     def test_role_cannot_be_chosen_by_the_client(self, client):
@@ -95,9 +93,7 @@ class TestRegistration:
         assert "password" not in response.json()
 
 
-# ---------------------------------------------------------------------------
 # Login
-# ---------------------------------------------------------------------------
 
 class TestLogin:
     def test_valid_credentials_return_a_token_and_profile(self, client):
@@ -150,9 +146,7 @@ class TestLogin:
         assert _login(client, "stilllocked@difaac.io").status_code == 429
 
 
-# ---------------------------------------------------------------------------
 # Refresh token rotation
-# ---------------------------------------------------------------------------
 
 class TestRefreshRotation:
     def test_refresh_issues_a_new_access_token(self, client):
@@ -207,9 +201,7 @@ class TestRefreshRotation:
         assert client.post("/auth/refresh").status_code == 401
 
 
-# ---------------------------------------------------------------------------
 # Protected endpoints
-# ---------------------------------------------------------------------------
 
 class TestProtectedEndpoints:
     def test_me_requires_a_token(self, client):
@@ -246,9 +238,7 @@ class TestProtectedEndpoints:
         assert response.status_code == 401
 
 
-# ---------------------------------------------------------------------------
 # Logout and password change
-# ---------------------------------------------------------------------------
 
 class TestSessionTermination:
     def test_logout_revokes_the_session(self, client):
@@ -306,9 +296,7 @@ class TestSessionTermination:
         assert response.status_code == 400
 
 
-# ---------------------------------------------------------------------------
 # Rate limiting
-# ---------------------------------------------------------------------------
 
 class TestRateLimiting:
     def test_login_endpoint_is_throttled(self, client):
@@ -337,9 +325,7 @@ class TestRateLimiting:
         assert "retry-after" in {k.lower() for k in last.headers}
 
 
-# ---------------------------------------------------------------------------
 # Public content — the site must keep working
-# ---------------------------------------------------------------------------
 
 class TestPublicContent:
     @pytest.mark.parametrize(
