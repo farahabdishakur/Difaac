@@ -45,9 +45,23 @@ difaac.com, www.difaac.com {
 		# through to.
 		Referrer-Policy "strict-origin-when-cross-origin"
 
-		# No other site may frame this one. Clickjacking a console whose
-		# buttons contain and isolate hosts is worth ruling out.
-		Content-Security-Policy "frame-ancestors 'none'"
+		# What the page is allowed to load, and from where. This is the
+		# control that limits what an XSS can do once it exists: an injected
+		# script has no origin it may call and no host it may exfiltrate to.
+		#
+		# Two allowances are deliberate. `fonts.googleapis.com` and
+		# `fonts.gstatic.com` are the stylesheet and the font files; drop them
+		# and the site falls back to a system font. `'unsafe-inline'` in
+		# style-src is needed because React writes inline styles — it is not
+		# in script-src, which is where it would actually matter.
+		#
+		# frame-ancestors 'none' keeps any other site from framing this one;
+		# clickjacking a console whose buttons contain and isolate hosts is
+		# worth ruling out, and X-Frame-Options repeats it for older browsers.
+		#
+		# Verified against the production build: every page renders, the fonts
+		# load, and the browser reports no violation.
+		Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; connect-src 'self'; upgrade-insecure-requests"
 		X-Frame-Options "DENY"
 
 		# Nothing here needs a camera, a microphone or a location.

@@ -143,6 +143,20 @@ Restore into an empty database with:
 gunzip -c difaac-2026-09-05.sql.gz | docker compose exec -T db psql -U difaac -d difaac
 ```
 
+`scripts/backup.sh` does all of this on a schedule — dump, verify the dump is
+readable, prune, and copy off the box:
+
+```bash
+sudo cp scripts/backup.sh /usr/local/bin/difaac-backup && sudo chmod +x /usr/local/bin/difaac-backup
+sudo crontab -e
+# 15 2 * * *  DIFAAC_BACKUP_REMOTE=you@elsewhere:/backups /usr/local/bin/difaac-backup >> /var/log/difaac-backup.log 2>&1
+```
+
+Set `DIFAAC_BACKUP_REMOTE` or the backup exists only on the machine it came
+from, and the failure that destroys the database is usually the one that
+destroys the disk under it. Then restore one into a scratch database, once,
+before you need it — an untested backup is a guess, not a backup.
+
 A nightly dump loses at most a day. For point-in-time recovery, archive the
 write-ahead log to an S3-compatible bucket (Hostinger object storage, Backblaze
 B2, AWS S3) with [pgBackRest](https://pgbackrest.org) or
