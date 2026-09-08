@@ -31,6 +31,7 @@ from typing import Any
 from app.auth_utils import hash_password
 from app.permissions import Role, permissions_for
 from app.database import _Conn, close_pool, get_connection
+from app.tenancy import DEFAULT_TENANT_SLUG
 from app.models import MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH
 
 # Read from the permission model rather than restated here, so a role added
@@ -42,6 +43,25 @@ def _normalise(email: str) -> str:
     """Match the normalisation the auth routes apply, so the CLI and the API
     can never disagree about whether two addresses are the same account."""
     return email.strip().lower()
+
+
+def _resolve_tenant(conn: _Conn, slug: str | None) -> int:
+    """The id of the tenant named by `slug`, or the default one.
+
+    Creating an account without saying which organisation it belongs to used to
+    be unambiguous. It is not any more, and guessing would put a hospital's
+    analyst in Difaac's own tenant — where they would see Difaac's data and
+    none of their own.
+    """
+    row = conn.execute(
+        "SELECT id FROM tenants WHERE slug = %s", (slug or DEFAULT_TENANT_SLUG,)
+    ).fetchone()
+    if not row:
+        known = [
+            r["slug"] for r in conn.execute("SELECT slug FROM tenants ORDER BY slug").fetchall()
+        ]
+        sys.exit(f"No tenant '{slug}'. Known tenants: {', '.join(known)}")
+    return row["id"]
 
 
 def _find(conn: _Conn, email: str) -> dict[str, Any] | None:
@@ -81,10 +101,12 @@ def cmd_list(_: argparse.Namespace) -> None:
     with get_connection() as conn:
         rows = conn.execute(
             """
-            SELECT email, full_name, role, is_active,
-                   failed_login_attempts, locked_until, last_login_at
-              FROM users
-          ORDER BY id
+            SELECT u.email, u.full_name, u.role, u.is_active,
+                   u.failed_login_attempts, u.locked_until, u.last_login_at,
+                   t.slug AS tenant
+              FROM users u
+              JOIN tenants t ON t.id = u.tenant_id
+          ORDER BY t.id, u.id
             """
         ).fetchall()
 
@@ -92,7 +114,7 @@ def cmd_list(_: argparse.Namespace) -> None:
         print("No accounts.")
         return
 
-    print(f"{'EMAIL':<28} {'ROLE':<9} {'STATE':<10} LAST LOGIN")
+    print(f"{'EMAIL':<28} {'TENANT':<14} {'ROLE':<9} {'STATE':<10} LAST LOGIN")
     for r in rows:
         if not r["is_active"]:
             state = "disabled"
@@ -101,9 +123,36 @@ def cmd_list(_: argparse.Namespace) -> None:
         else:
             state = "active"
         print(
-            f"{r['email']:<28} {r['role']:<9} {state:<10} "
+            f"{r['email']:<28} {r['tenant']:<14} {r['role']:<9} {state:<10} "
             f"{r['last_login_at'] or 'never'}"
         )
+
+
+def cmd_tenants(args: argparse.Namespace) -> None:
+    """List the organisations, or add one."""
+    with get_connection() as conn:
+        if args.add:
+            conn.execute(
+                "INSERT INTO tenants (slug, name) VALUES (%s, %s)"
+                " ON CONFLICT (slug) DO NOTHING",
+                (args.add, args.name or args.add.replace("-", " ").title()),
+            )
+            conn.commit()
+            print(f"Tenant '{args.add}' ready.")
+
+        rows = conn.execute(
+            """
+            SELECT t.slug, t.name, t.is_active,
+                   (SELECT COUNT(*) FROM users u WHERE u.tenant_id = t.id) AS accounts
+              FROM tenants t
+          ORDER BY t.id
+            """
+        ).fetchall()
+
+    print(f"{'SLUG':<20} {'NAME':<26} {'STATE':<10} ACCOUNTS")
+    for r in rows:
+        state = "active" if r["is_active"] else "disabled"
+        print(f"{r['slug']:<20} {r['name']:<26} {state:<10} {r['accounts']}")
 
 
 def cmd_create(args: argparse.Namespace) -> None:
@@ -113,16 +162,18 @@ def cmd_create(args: argparse.Namespace) -> None:
     with get_connection() as conn:
         if _find(conn, email):
             sys.exit(f"{email} already exists. Use set-role or set-password instead.")
+        tenant_id = _resolve_tenant(conn, args.tenant)
         conn.execute(
             """
-            INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)
-            VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
+            INSERT INTO users
+                (email, hashed_password, full_name, role, tenant_id, password_changed_at)
+            VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
             """,
-            (email, hash_password(password), args.name, args.role),
+            (email, hash_password(password), args.name, args.role, tenant_id),
         )
         conn.commit()
 
-    print(f"Created {email} with role {args.role}.")
+    print(f"Created {email} with role {args.role} in tenant {args.tenant or DEFAULT_TENANT_SLUG}.")
     _report_password(email, password, generated)
 
 
@@ -209,11 +260,20 @@ def main() -> None:
 
     sub.add_parser("list", help="list every account").set_defaults(func=cmd_list)
 
+    tenants = sub.add_parser("tenants", help="list organisations, or add one")
+    tenants.add_argument("--add", metavar="SLUG", default=None, help="create this tenant")
+    tenants.add_argument("--name", default=None, help="display name for --add")
+    tenants.set_defaults(func=cmd_tenants)
+
     create = sub.add_parser("create", help="create an account")
     create.add_argument("email")
     create.add_argument("--role", choices=ROLES, default="analyst")
     create.add_argument("--name", default=None, help="full name")
     create.add_argument("--password", default=None, help="omit to generate one")
+    create.add_argument(
+        "--tenant", default=None,
+        help=f"tenant slug the account belongs to (default: {DEFAULT_TENANT_SLUG})",
+    )
     create.set_defaults(func=cmd_create)
 
     role = sub.add_parser("set-role", help="change an account's role")

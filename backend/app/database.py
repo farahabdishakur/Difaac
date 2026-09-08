@@ -16,8 +16,11 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
+from app.tenancy import apply_to_connection, tenant_scope
+
 from app.config import DATABASE_URL, SEED_DEMO_DATA
 from app.migrations import run_migrations
+from app.tenancy_migration import run_tenancy_migration
 from app.schemas import SCHEMA_SQL
 from app.seeder import seed_all, seed_workspace_demo
 
@@ -57,7 +60,12 @@ class _Conn:
         self._raw.execute(script)
 
     def commit(self) -> None:
+        # The tenant setting is scoped to the transaction, so committing
+        # discards it. Anything this connection does next would then run with
+        # no tenant announced and be refused by the row-level policy — which is
+        # the right failure, but not one the caller asked for by committing.
         self._raw.commit()
+        apply_to_connection(self._raw)
 
     def rollback(self) -> None:
         self._raw.rollback()
@@ -122,6 +130,10 @@ def get_connection() -> Generator[_Conn, None, None]:
     no-op.
     """
     with _get_pool().connection() as raw:
+        # Announced on every checkout, not once at connect: a pooled
+        # connection serves many requests and must never carry one tenant's
+        # setting into the next request's transaction.
+        apply_to_connection(raw)
         yield _Conn(raw)
 
 
@@ -135,7 +147,12 @@ def init_db() -> None:
         conn.executescript(SCHEMA_SQL)
         conn.commit()
         run_migrations(conn)
+        default_tenant = run_tenancy_migration(conn)
 
+    # A second connection, taken inside the tenant scope so its checkout
+    # announces the tenant. Everything below writes into tables that now
+    # enforce a policy.
+    with tenant_scope(default_tenant), get_connection() as conn:
         row = conn.execute("SELECT COUNT(*) AS n FROM products").fetchone()
         count: int = row["n"] if row else 0
 

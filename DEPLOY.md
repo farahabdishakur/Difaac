@@ -181,14 +181,36 @@ cookie is marked secure and needs HTTPS to be sent.
 
 ## What is deliberately not here yet
 
-The platform is **single-tenant**: every account sees the same organisation's
-data. That is correct for Difaac running its own SOC. Before onboarding a
-second, separate customer, every workspace table needs a `tenant_id` and every
-query needs to filter on it. Now that the database is PostgreSQL, that filter
-should be enforced by row-level security rather than left to the application —
-a missed `WHERE tenant_id = …` then fails closed instead of leaking another
-customer's data. Until that work is done, keep all accounts inside one
-organisation.
+Nothing here blocks a second customer any more — see **Tenants** below.
+
+## Tenants
+
+Each customer organisation is a tenant, and every workspace table carries a
+`tenant_id` with a PostgreSQL row-level security policy behind it. A request
+announces its tenant from the signed-in account, and a query that forgets to
+filter returns nothing rather than somebody else's rows.
+
+```bash
+docker compose exec backend python manage_users.py tenants
+docker compose exec backend python manage_users.py tenants --add borama-hospital     --name "Borama General Hospital"
+docker compose exec backend python manage_users.py create soc@hospital.example     --role analyst --tenant borama-hospital
+```
+
+An account created without `--tenant` belongs to `difaac`, the organisation
+Difaac itself operates as. That default is right for your own analysts and
+wrong for a customer's, so state it when the account is theirs.
+
+Two things are worth knowing about how this is enforced.
+
+The policies are `FORCE`d. A table's owner is otherwise exempt from its own
+row-level security, and the application connects as the owner — without FORCE
+every policy would be present, reported as enabled, and applying to nobody.
+`tests/test_tenancy.py` asserts it directly, because that is not a mistake you
+would notice any other way.
+
+It fails closed. The policy compares against a session setting read with the
+missing-ok form, so a connection that never announced a tenant matches no rows
+at all. Forgetting to set the tenant empties a dashboard; it cannot widen one.
 
 ## Appendix: running it without Docker
 

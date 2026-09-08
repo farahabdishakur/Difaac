@@ -49,3 +49,12 @@ def pytest_configure(config: object) -> None:
         # otherwise make the drop fail rather than the run start clean.
         conn.execute(f'DROP DATABASE IF EXISTS "{_TEST_DB}" WITH (FORCE)')
         conn.execute(f'CREATE DATABASE "{_TEST_DB}"')
+
+    # Build the schema here rather than leaving it to whichever test happens to
+    # start the app first. Tests that talk to the database directly — the
+    # tenant isolation ones, which have to bypass the API to prove anything —
+    # otherwise run against an empty database and fail for the wrong reason.
+    from app.database import close_pool, init_db
+
+    init_db()
+    close_pool()

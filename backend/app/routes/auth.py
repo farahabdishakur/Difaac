@@ -43,6 +43,7 @@ from app.config import (
     REFRESH_TOKEN_EXPIRE_DAYS,
 )
 from app.database import get_connection
+from app.tenancy import set_current_tenant
 from app.models import (
     ForgotPasswordRequest,
     MessageResponse,
@@ -151,7 +152,7 @@ async def get_current_user(
     with get_connection() as conn:
         row = conn.execute(
             """
-            SELECT id, email, full_name, role, created_at, is_active
+            SELECT id, email, full_name, role, created_at, is_active, tenant_id
               FROM users WHERE email = %s
             """,
             (payload["sub"],),
@@ -164,8 +165,14 @@ async def get_current_user(
             status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user account"
         )
 
+    # Everything this request goes on to query is scoped to the tenant the
+    # account belongs to. It is read from the account rather than accepted from
+    # the caller, because a tenant id a client can choose is not isolation.
+    set_current_tenant(row["tenant_id"])
+
     profile = _row_to_profile(row)
     profile["id"] = row["id"]
+    profile["tenant_id"] = row["tenant_id"]
     return profile
 
 
