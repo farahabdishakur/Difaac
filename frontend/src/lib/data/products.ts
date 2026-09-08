@@ -74,7 +74,7 @@ export const products: Product[] = [
       { title: 'Unified detection', description: 'Correlates signals across every layer of your environment into one timeline.' },
       { title: '24/7 SOC', description: 'Analysts monitor, triage, and escalate around the clock.' },
       { title: 'Guided response', description: 'Pre-approved playbooks contain threats before they spread.' },
-      { title: 'Threat hunting', description: 'Proactive hunts based on the latest adversary tradecraft.' },
+      { title: 'Threat hunting', description: 'Hunts built from the tradecraft attackers are using this month.' },
     ],
   },
   {
@@ -134,7 +134,7 @@ export const products: Product[] = [
       { title: 'Threat detonation', description: 'Executes suspicious content in isolated environments before delivery.' },
       { title: 'BEC detection', description: 'Identifies impersonation and social engineering without relying on payloads.' },
       { title: 'Retroactive hunting', description: 'Re-scans delivered mail as new intelligence emerges.' },
-      { title: 'Seamless deployment', description: 'API-based integration with existing mail infrastructure.' },
+      { title: 'Deploys over the API', description: 'Connects to the mail platform you already run. No MX change, no gateway in front.' },
     ],
   },
 ]

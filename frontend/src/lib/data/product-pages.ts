@@ -129,7 +129,7 @@ export const productPages: Record<string, ProductPageContent> = {
         { icon: 'Link2', title: 'Campaign Attribution', description: 'Link incidents to campaigns through behavioural and infrastructure overlap.', tone: 'violet' },
         { icon: 'Bug', title: 'Vulnerability Intelligence', description: 'Connect disclosed CVEs to active exploitation and actor tooling.', tone: 'brand' },
         { icon: 'Zap', title: 'SIEM & SOAR Delivery', description: 'Pre-scored indicators via STIX/TAXII and REST API.', tone: 'cyan' },
-        { icon: 'Search', title: 'Threat Hunting', description: 'Proactive hunts and custom research scoped to your environment.', tone: 'violet' },
+        { icon: 'Search', title: 'Threat Hunting', description: 'Hunts and research scoped to your environment, run without waiting for an alert.', tone: 'violet' },
       ],
     },
     tabs: {
@@ -240,7 +240,7 @@ export const productPages: Record<string, ProductPageContent> = {
           icon: 'TrendingUp',
           title: 'Tactical intelligence',
           description: 'Identify attacks faster and cut incident response time.',
-          details: ['Pre-scored indicators', 'Detection at scale', 'Investigation context'],
+          details: ['Pre-scored indicators', 'Detection without tuning', 'Investigation context'],
         },
       ],
     },
@@ -248,7 +248,7 @@ export const productPages: Record<string, ProductPageContent> = {
       eyebrow: 'Why Difaac Threat Intelligence',
       heading: 'What changes for your team',
       items: [
-        { icon: 'AlertCircle', title: 'Identify risks earlier', description: 'Proactive actor tracking surfaces threats before they reach you.' },
+        { icon: 'AlertCircle', title: 'Identify risks earlier', description: 'We track the actors themselves, so a threat shows up here before it shows up on your network.' },
         { icon: 'BarChart3', title: 'Prioritise vulnerabilities', description: 'Patch what is actively exploited, not just what scores highest.' },
         { icon: 'Workflow', title: 'Automate enrichment', description: 'Indicators feed detection and response tooling directly.' },
         { icon: 'Layers', title: 'No new console to learn', description: 'Intelligence lands in the SIEM and SOAR analysts already work in.' },
@@ -303,7 +303,7 @@ export const productPages: Record<string, ProductPageContent> = {
     cta: {
       title: 'Ready to see threats before they become incidents?',
       description:
-        "Book a walkthrough with a Difaac threat intelligence specialist, scoped to your sector and threat landscape.",
+        "Book a walkthrough with a Difaac threat intelligence specialist, scoped to your sector and the threats that actually target it.",
     },
   },
 
@@ -516,7 +516,7 @@ export const productPages: Record<string, ProductPageContent> = {
       },
     ],
     trust: {
-      heading: 'Protecting customers at scale',
+      heading: 'Protecting customers you never meet',
       description: 'From fintech to marketplaces, fraud teams run their decision layer on Difaac.',
       items: [
         { stat: '<100ms', label: 'Decision time' },
@@ -572,7 +572,7 @@ export const productPages: Record<string, ProductPageContent> = {
         { title: 'Unified detection', description: 'Correlates signals across every layer of your environment into one timeline.' },
         { title: '24/7 SOC', description: 'Analysts monitor, triage, and escalate around the clock.' },
         { title: 'Guided response', description: 'Pre-approved playbooks contain threats before they spread.' },
-        { title: 'Threat hunting', description: 'Proactive hunts based on the latest adversary tradecraft.' },
+        { title: 'Threat hunting', description: 'Hunts built from the tradecraft attackers are using this month.' },
       ],
     },
     featureGrid: {
@@ -581,7 +581,7 @@ export const productPages: Record<string, ProductPageContent> = {
         { icon: 'Layers', title: 'Unified Telemetry', description: 'Endpoint, network, email, and cloud correlated into one timeline.', tone: 'brand' },
         { icon: 'Users', title: 'Human-led Triage', description: 'Analysts validate every high-confidence detection by hand.', tone: 'cyan' },
         { icon: 'Siren', title: 'Guided Containment', description: 'Pre-approved playbooks isolate hosts and cut attacker access.', tone: 'violet' },
-        { icon: 'Search', title: 'Proactive Hunting', description: 'Hypothesis-driven hunts based on current adversary tradecraft.', tone: 'brand' },
+        { icon: 'Search', title: 'Hunting', description: 'Hypothesis-driven hunts based on current adversary tradecraft.', tone: 'brand' },
         { icon: 'Radar', title: 'Intelligence-informed', description: 'Detections enriched with Difaac threat actor context.', tone: 'cyan' },
         { icon: 'FileText', title: 'Incident Reporting', description: 'Full timeline, root cause, and remediation guidance per incident.', tone: 'violet' },
       ],
@@ -667,7 +667,7 @@ export const productPages: Record<string, ProductPageContent> = {
         { feature: 'Cross-layer correlation', values: [true, true, false] },
         { feature: 'Human triage on every alert', values: [true, true, false] },
         { feature: 'Containment on your behalf', values: [true, true, false] },
-        { feature: 'Proactive threat hunting', values: [true, false, false] },
+        { feature: 'Threat hunting', values: [true, false, false] },
         { feature: 'No night and weekend rota', values: [true, false, true] },
         { feature: 'Intelligence-enriched detections', values: [true, false, false] },
         { feature: 'Predictable operating cost', values: [true, false, true] },
@@ -706,7 +706,7 @@ export const productPages: Record<string, ProductPageContent> = {
         { icon: 'Users', title: 'Coverage without headcount', description: '24/7 monitoring without staffing a night rota.' },
         { icon: 'DollarSign', title: 'Predictable operating cost', description: 'A staffed capability without the hiring, rota, and tooling spend behind it.' },
         { icon: 'Layers', title: 'One view of the estate', description: 'Endpoint, network, email, and cloud in a single timeline.' },
-        { icon: 'Search', title: 'Threats found proactively', description: 'Hunting surfaces intrusions detection logic missed.' },
+        { icon: 'Search', title: 'Threats found before they fired', description: 'Hunting surfaces intrusions detection logic missed.' },
         { icon: 'FileText', title: 'Audit-ready evidence', description: 'Every incident documented with timeline and root cause.' },
       ],
     },
@@ -743,7 +743,7 @@ export const productPages: Record<string, ProductPageContent> = {
       },
     ],
     trust: {
-      heading: 'Detection and response, operated at scale',
+      heading: 'Detection and response, running while you sleep',
       description: 'A staffed SOC, unified telemetry, and containment inside boundaries you set.',
       items: [
         { stat: '24/7', label: 'Analyst-staffed SOC' },
@@ -970,7 +970,7 @@ export const productPages: Record<string, ProductPageContent> = {
       },
     ],
     trust: {
-      heading: 'External risk, reduced at scale',
+      heading: 'External risk, found before it is used',
       description: 'Continuous discovery and ranking across the whole internet-facing estate.',
       items: [
         { stat: 'Agentless', label: 'Discovery model' },
@@ -1253,7 +1253,7 @@ export const productPages: Record<string, ProductPageContent> = {
         { title: 'Threat detonation', description: 'Executes suspicious content in isolated environments before delivery.' },
         { title: 'BEC detection', description: 'Identifies impersonation and social engineering without relying on payloads.' },
         { title: 'Retroactive hunting', description: 'Re-scans delivered mail as new intelligence emerges.' },
-        { title: 'Seamless deployment', description: 'API-based integration with existing mail infrastructure.' },
+        { title: 'Deploys over the API', description: 'Connects to the mail platform you already run. No MX change, no gateway in front.' },
       ],
     },
     featureGrid: {

@@ -172,7 +172,7 @@ const industryDetails: Record<string, IndustryData> = {
     solutions: [
       {
         product: 'Fraud Protection',
-        benefit: 'Detect account takeover and payment fraud while keeping checkout seamless.',
+        benefit: 'Detect account takeover and payment fraud without adding a step to checkout.',
       },
       {
         product: 'Digital Risk Protection',
@@ -195,7 +195,7 @@ const industryDetails: Record<string, IndustryData> = {
     ],
   },
   crypto: {
-    highlight: 'Comprehensive Threat Defense for Digital Asset Platforms',
+    highlight: 'Threat Defence Built for Digital Asset Platforms',
     challenges: [
       {
         title: 'Account & Wallet Compromise',
@@ -337,7 +337,7 @@ export default function IndustryDetailPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <CTABanner
             title={`Ready to protect ${industry.name}?`}
-            description="Talk to a Difaac specialist to discuss solutions tailored to your industry's unique threats."
+            description="Tell us what your sector is being hit with, and we will tell you what we are seeing."
           />
         </div>
       </section>

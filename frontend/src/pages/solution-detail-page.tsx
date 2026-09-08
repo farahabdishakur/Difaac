@@ -126,7 +126,7 @@ const solutionDetails: Record<string, { benefits: string[]; useCases: string[] }
       'Supply chain vulnerability tracking',
     ],
     useCases: [
-      'Enterprise security teams managing at scale',
+      'Security teams with more assets than analysts',
       'Cloud environments with rapid changes',
       'Organizations with limited patch resources',
       'Regulated industries needing compliance documentation',
@@ -167,7 +167,7 @@ const solutionDetails: Record<string, { benefits: string[]; useCases: string[] }
   'head-of-fraud': {
     benefits: [
       'Real-time fraud prevention without checkout friction',
-      'Device and behavioral fingerprinting at scale',
+      'Device and behavioural fingerprinting on every session',
       'Account takeover and payment fraud detection',
       'Chargeback and dispute analytics',
       'Carrier/network fraud prevention',

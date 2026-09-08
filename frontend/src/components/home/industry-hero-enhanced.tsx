@@ -59,7 +59,7 @@ export function IndustryHeroEnhanced({
             loading="eager"
             decoding="async"
           />
-          {/* Vertical gradient for contrast & seamless page ground blend */}
+          {/* Vertical gradient so the artwork meets the page ground without an edge */}
           <div className="absolute inset-0 bg-gradient-to-b from-ink/35 via-ink/60 to-ink" />
           {/* Subtle side vignettes for reading focus */}
           <div className="absolute inset-0 bg-gradient-to-r from-ink/50 via-transparent to-ink/50" />

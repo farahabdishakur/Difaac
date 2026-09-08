@@ -91,13 +91,13 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
         id: 'pro',
         name: 'Pro',
         tagline: '24/7 Managed SOC & Rapid Threat Containment',
-        idealFor: 'Enterprises requiring round-the-clock defense, sub-15 minute response SLAs, proactive threat hunting, and pre-authorized active containment.',
+        idealFor: 'Enterprises requiring round-the-clock defense, sub-15 minute response SLAs, hunting that does not wait for an alert, and containment we are pre-authorised to carry out.',
         popular: true,
         badge: 'Recommended',
         features: [
           '24/7/365 Continuous Human SOC monitoring & triage',
           '< 15 min Mean Time to Respond (MTTR) for critical incidents',
-          'Proactive adversary threat hunting campaigns (bi-weekly)',
+          'Adversary hunting campaigns, every two weeks',
           'Pre-authorized containment execution (host isolation, account lock)',
           'Interactive malware detonation sandbox with behavioral telemetry',
           '14-day endpoint forensic & 30-day network log retention',
@@ -118,7 +118,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
           'Custom adversary detection rule engineering (Sigma / YARA / Suricata)',
           '30-day endpoint forensic & 60-day network PCAP retention',
           'On-premise / private cloud sensor appliances & multi-tenant isolation',
-          'Executive and board-level threat landscape briefings',
+          'Briefings for executives and the board, in plain language',
         ],
         highlights: ['Dedicated CSIRT Lead', '<10 Min Critical SLA', '40h IR Retainer Credits', '30-Day Deep Forensics'],
       },
@@ -185,7 +185,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
             tierValues: [false, true, true],
           },
           {
-            title: 'Streamlined Host Containment',
+            title: 'One-Click Host Containment',
             tooltip: 'One-click or automated network isolation, process termination, file quarantine, and DNS sinkholing executed directly on the host agent.',
             tierValues: [true, true, true],
           },
@@ -303,7 +303,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
             tierValues: ['Guided Recommendations', 'Active Containment (Pre-approved)', 'Immediate Full Authority'],
           },
           {
-            title: 'Proactive Threat Hunting Campaigns',
+            title: 'Threat Hunting Campaigns',
             tooltip: 'Hypothesis-driven threat hunts mapped to MITRE ATT&CK conducted by senior threat researchers to discover stealthy persistence mechanisms.',
             tierValues: ['Quarterly Sweeps', 'Bi-Weekly Campaigns', 'Continuous Bespoke Hunting'],
           },
@@ -340,7 +340,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
       },
       {
         question: 'How do we control what containment actions Difaac analysts are allowed to take?',
-        answer: 'During onboarding, we document a comprehensive Rules of Engagement (ROE) charter. You specify which assets (e.g., primary domain controllers, core banking servers, hospital ICU systems) require explicit human authorization before containment, and which developer or general workstations can be isolated automatically.',
+        answer: 'During onboarding, we write a Rules of Engagement (ROE) charter. You specify which assets (e.g., primary domain controllers, core banking servers, hospital ICU systems) require explicit human authorization before containment, and which developer or general workstations can be isolated automatically.',
       },
       {
         question: 'Where is our telemetry stored and does it comply with data sovereignty laws?',
@@ -353,7 +353,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
     slug: 'incident-response-retainer',
     name: 'Incident Response Retainer',
     icon: 'ShieldAlert',
-    tagline: 'Guaranteed emergency response SLAs, forensic investigators on standby, and proactive readiness evaluations.',
+    tagline: 'Guaranteed emergency response SLAs, forensic investigators on standby, and readiness exercises run before anything happens.',
     description: 'A pre-negotiated master service agreement ensuring immediate availability of Tier-3 DFIR specialists during critical cybersecurity emergencies.',
     tiers: [
       {
@@ -381,7 +381,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
           '40 pre-funded incident response & digital forensics hours',
           'Annual tabletop exercise (executive simulation)',
           'Readiness assessment of logging and forensic visibility',
-          'Unused hours rollover or convert to proactive security audits',
+          'Unused hours roll over, or become security audits',
         ],
         highlights: ['2h Remote SLA', '40 Pre-funded Hours', 'Tabletop Exercise', 'Hour Rollover'],
       },
@@ -417,11 +417,11 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
           },
           {
             title: 'Included Retainer Hours (Annual)',
-            tooltip: 'Pre-allocated hours that can be utilized for live incident response or proactive security services.',
+            tooltip: 'Hours set aside in advance, for a live incident or for the work that prevents one.',
             tierValues: ['0 Hours (Pay-as-you-go)', '40 Hours', '100 Hours'],
           },
           {
-            title: 'Proactive Service Conversion (Tabletop / Audits)',
+            title: 'Turning Unused Hours Into Tabletops and Audits',
             tooltip: 'Ability to apply unused retainer hours toward tabletop exercises, vulnerability assessments, or threat hunting.',
             tierValues: [false, true, true],
           },
@@ -436,7 +436,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
     faqs: [
       {
         question: 'What happens if we do not experience an incident during the subscription period?',
-        answer: 'Unused hours in our Active and Enterprise tiers can be seamlessly converted into proactive services such as executive tabletop exercises, compromise assessments, or purple team exercises.',
+        answer: 'Unused hours in our Active and Enterprise tiers can be converted into work such as executive tabletop exercises, compromise assessments, or purple team exercises.',
       },
       {
         question: 'Can Difaac assist with regulatory disclosure and law enforcement coordination?',
@@ -456,7 +456,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
         id: 'standard',
         name: 'Standard Gateway',
         tagline: 'Phishing & Malicious Attachment Filtering',
-        idealFor: 'Growing organizations needing robust detection of malicious attachments, credential harvesting links, and spam.',
+        idealFor: 'Growing organisations that need to catch malicious attachments, credential harvesting links, and spam.',
         features: [
           'API-based deployment for Microsoft 365 & Google Workspace (zero MX changes)',
           'Static and behavioral attachment inspection',
@@ -608,7 +608,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
           },
           {
             title: 'Tracked Threat Actor Dossiers',
-            tooltip: 'Comprehensive profiles covering historical campaigns, TTPs, tooling, and aliases.',
+            tooltip: 'Profiles covering past campaigns, TTPs, tooling, and known aliases.',
             tierValues: ['Basic Profiles', '700+ Groups with TTPs', '700+ Groups + Active Infrastructure Tracking'],
           },
           {
@@ -755,7 +755,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
         id: 'pro',
         name: 'Full Digital Protection',
         tagline: 'Managed Takedowns & Social Monitoring',
-        idealFor: 'Enterprises requiring end-to-end takedown operations across domain registrars, hosters, and social platforms.',
+        idealFor: 'Enterprises that need a takedown carried through — registrar, host, and platform — rather than reported.',
         popular: true,
         badge: 'Recommended',
         features: [
@@ -791,7 +791,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
             tierValues: [true, true, true],
           },
           {
-            title: 'Managed End-to-End Takedowns',
+            title: 'Takedowns Carried Through',
             tooltip: 'Human-led legal and technical takedown enforcement with global hosting providers and domain registries.',
             tierValues: ['Self-Service Tools', 'Included (20 / Month)', 'Unlimited Managed Takedowns'],
           },
@@ -877,7 +877,7 @@ export const productSubscriptions: Record<string, ProductSubscription> = {
           },
           {
             title: 'Continuous Exposure & Port Scanning Frequency',
-            tooltip: 'Frequency of comprehensive port and service scanning across discovered IP ranges.',
+            tooltip: 'How often ports and services are scanned across the IP ranges we have discovered.',
             tierValues: ['Weekly', 'Continuous Daily', 'Continuous Real-Time'],
           },
           {

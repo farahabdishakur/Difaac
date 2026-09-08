@@ -250,7 +250,7 @@ const threatResearchData: ThreatArticle[] = [
     id: 'apt-investigation-sandstorm',
     slug: 'operation-sandstorm-state-sponsored-apt-campaigns',
     title: 'Operation SandStorm: Dissecting State-Sponsored APT Campaigns Targeting Critical Infrastructure',
-    subtitle: 'Comprehensive attribution analysis of a multi-stage cyber espionage operation targeting telecom networks and government ministries.',
+    subtitle: 'Attribution analysis of a multi-stage espionage operation targeting telecom networks and government ministries.',
     category: 'APT Investigation',
     icon: Globe,
     image: '/resources/apt-investigation.jpg',

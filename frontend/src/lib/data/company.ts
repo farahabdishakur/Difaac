@@ -120,7 +120,7 @@ export const founders: Founder[] = [
     role: 'Head of Managed XDR & SOC Operations',
     department: 'Security Operations Center',
     photo: '/team/member-6.jpg',
-    note: 'Spearheads continuous threat monitoring, automated containment playbooks, and proactive adversary hunting.',
+    note: 'Runs the monitoring, writes the containment playbooks, and goes looking for attackers instead of waiting for an alert.',
     objectPosition: 'center 15%',
     linkedin: 'https://linkedin.com',
   },
