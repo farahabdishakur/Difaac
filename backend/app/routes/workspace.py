@@ -655,3 +655,41 @@ def get_activity_trend(days: int = Query(14, ge=7, le=90)):
         day = today - timedelta(days=offset)
         series.append({"day": day.isoformat(), "count": counted.get(day, 0)})
     return {"days": days, "series": series, "total": sum(p["count"] for p in series)}
+
+
+@router.get("/app-events")
+def list_app_events(
+    limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    action: str | None = Query(None, max_length=120),
+    outcome: str | None = Query(None, max_length=40),
+):
+    """What the customer's own systems have reported.
+
+    For a hospital this is the record-access trail: `action` says what was
+    done, `subject_ref` says to which record, and `actor` says by whom. It is
+    the answer to "who opened this patient's file", which is a question a
+    regulator asks and an ordinary SOC console cannot answer.
+    """
+    clauses: list[str] = []
+    params: list[object] = []
+    if action:
+        clauses.append("action = %s")
+        params.append(action)
+    if outcome:
+        clauses.append("outcome = %s")
+        params.append(outcome)
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    params.append(limit)
+
+    with get_connection() as conn:
+        return conn.execute(
+            f"""
+            SELECT id, source, action, outcome, severity, actor, subject_ref,
+                   ip_address, detail, occurred_at, received_at
+              FROM app_events
+              {where}
+          ORDER BY occurred_at DESC
+             LIMIT %s
+            """,
+            tuple(params),
+        ).fetchall()

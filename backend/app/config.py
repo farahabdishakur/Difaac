@@ -74,6 +74,11 @@ RATE_LIMIT_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_RPM", "120"))
 # into a password guessing oracle.
 RATE_LIMIT_AUTH_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_AUTH_RPM", "10"))
 
+# Ingest is a different shape of traffic: one integration, posting batches, all
+# day. The batch size cap bounds what a single request can carry, so the limit
+# here is about how often rather than how much.
+RATE_LIMIT_INGEST_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_INGEST_RPM", "600"))
+
 # Security & JWT Authentication
 
 # JWT signing key. There is deliberately no usable default: a fallback baked

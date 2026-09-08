@@ -32,18 +32,6 @@ def _database():
     init_db()
 
 
-@pytest.fixture
-def client():
-    """A fresh client with rate-limit counters reset.
-
-    Without the reset, tests that make many login attempts would leak their
-    budget into unrelated tests.
-    """
-    rate_limit.reset()
-    with TestClient(app) as test_client:
-        yield test_client
-
-
 def _register(client, email: str, password: str = VALID_PASSWORD, **extra):
     body = {"email": email, "password": password, "full_name": "Test User"}
     body.update(extra)

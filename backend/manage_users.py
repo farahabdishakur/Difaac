@@ -28,6 +28,7 @@ import secrets
 import sys
 from typing import Any
 
+from app import api_keys
 from app.auth_utils import hash_password
 from app.permissions import Role, permissions_for
 from app.database import _Conn, close_pool, get_connection
@@ -155,6 +156,58 @@ def cmd_tenants(args: argparse.Namespace) -> None:
         print(f"{r['slug']:<20} {r['name']:<26} {state:<10} {r['accounts']}")
 
 
+def cmd_keys(args: argparse.Namespace) -> None:
+    """Issue, list or revoke the credentials an integration authenticates with."""
+    with get_connection() as conn:
+        if args.issue:
+            tenant_id = _resolve_tenant(conn, args.tenant)
+            full, prefix, key_hash = api_keys.generate()
+            conn.execute(
+                "INSERT INTO api_keys (tenant_id, name, prefix, key_hash, created_by)"
+                " VALUES (%s, %s, %s, %s, %s)",
+                (tenant_id, args.issue, prefix, key_hash, "manage_users.py"),
+            )
+            conn.commit()
+            print("-" * 62)
+            print("  Issued once, and not recoverable. Copy it now:")
+            print(f"      name: {args.issue}")
+            print(f"      key:  {full}")
+            print("  Send it over something better than email.")
+            print("-" * 62)
+
+        if args.revoke:
+            cur = conn.execute(
+                "UPDATE api_keys SET revoked_at = now()"
+                " WHERE prefix = %s AND revoked_at IS NULL",
+                (args.revoke,),
+            )
+            conn.commit()
+            if cur.rowcount:
+                print(f"Key {args.revoke} revoked. It stops working immediately.")
+            else:
+                sys.exit(f"No active key with prefix {args.revoke}.")
+
+        rows = conn.execute(
+            """
+            SELECT k.prefix, k.name, t.slug AS tenant, k.last_used_at, k.revoked_at
+              FROM api_keys k
+              JOIN tenants t ON t.id = k.tenant_id
+          ORDER BY k.id
+            """
+        ).fetchall()
+
+    if not rows:
+        print("No API keys.")
+        return
+    print(f"{'PREFIX':<14} {'NAME':<22} {'TENANT':<16} {'STATE':<9} LAST USED")
+    for r in rows:
+        state = "revoked" if r["revoked_at"] else "active"
+        print(
+            f"{r['prefix']:<14} {r['name']:<22} {r['tenant']:<16} {state:<9} "
+            f"{r['last_used_at'] or 'never'}"
+        )
+
+
 def cmd_create(args: argparse.Namespace) -> None:
     email = _normalise(args.email)
     password, generated = _resolve_password(args.password)
@@ -259,6 +312,14 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("list", help="list every account").set_defaults(func=cmd_list)
+
+    keys = sub.add_parser("keys", help="list, issue or revoke integration API keys")
+    keys.add_argument("--issue", metavar="NAME", default=None,
+                      help="issue a key with this name")
+    keys.add_argument("--tenant", default=None, help="tenant the key belongs to")
+    keys.add_argument("--revoke", metavar="PREFIX", default=None,
+                      help="revoke the key with this prefix")
+    keys.set_defaults(func=cmd_keys)
 
     tenants = sub.add_parser("tenants", help="list organisations, or add one")
     tenants.add_argument("--add", metavar="SLUG", default=None, help="create this tenant")

@@ -17,6 +17,8 @@ inherits rows from the last one.
 from __future__ import annotations
 
 import os
+
+import pytest
 from urllib.parse import urlparse, urlunparse
 
 import psycopg
@@ -58,3 +60,21 @@ def pytest_configure(config: object) -> None:
 
     init_db()
     close_pool()
+
+
+@pytest.fixture
+def client():
+    """A test client with the rate-limit counters reset.
+
+    Without the reset a test that makes many sign-in attempts spends the budget
+    of whichever test runs after it, and the failure surfaces somewhere
+    unrelated to the cause.
+    """
+    from fastapi.testclient import TestClient
+
+    from app import rate_limit
+    from app.main import app
+
+    rate_limit.reset()
+    with TestClient(app) as test_client:
+        yield test_client

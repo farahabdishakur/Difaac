@@ -60,11 +60,17 @@ TENANT_TABLES: tuple[str, ...] = (
     "xdr_detections",
     "incidents",
     "demo_requests",
+    # Everything an integrated application reports. This is the most sensitive
+    # stream on the platform for a healthcare customer, because `subject_ref`
+    # says which record was touched.
+    "app_events",
 )
 
 # Tables that carry a tenant_id without a policy of their own: `users` for the
 # reason above, and it is the anchor the rest hangs from.
-TENANT_COLUMN_ONLY: tuple[str, ...] = ("users",)
+# `api_keys` carries a tenant without a policy for the same reason as `users`:
+# a key has to be found before anyone knows whose it is.
+TENANT_COLUMN_ONLY: tuple[str, ...] = ("users", "api_keys")
 
 ALL_TENANT_TABLES: tuple[str, ...] = TENANT_TABLES + TENANT_COLUMN_ONLY
 

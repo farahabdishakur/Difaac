@@ -238,3 +238,57 @@ class SessionResponse(BaseModel):
     user_agent: str | None = None
     current: bool = False
 
+
+MAX_EVENTS_PER_BATCH = 500
+
+
+class AppEvent(BaseModel):
+    """One security-relevant thing that happened inside a customer's system.
+
+    The vocabulary is deliberately open. Every application names its actions
+    differently, and forcing a hospital's record system into a fixed taxonomy
+    would either lose what it was trying to say or stop it reporting at all.
+    What is constrained is length and shape, so a malformed integration cannot
+    fill the table with one enormous row.
+
+    `subject_ref` is the field to be careful with. It says which record was
+    touched, and for a hospital that is the whole value of the audit trail —
+    but it must be an identifier, never the patient's name. Difaac does not
+    want that data and should not be storing it.
+    """
+
+    source: str = Field(min_length=1, max_length=120)
+    action: str = Field(min_length=1, max_length=120)
+    outcome: str = Field(min_length=1, max_length=40)
+    severity: str = Field(default="info", max_length=20)
+    actor: str | None = Field(default=None, max_length=200)
+    subject_ref: str | None = Field(default=None, max_length=200)
+    ip_address: str | None = Field(default=None, max_length=64)
+    user_agent: str | None = Field(default=None, max_length=400)
+    detail: str | None = Field(default=None, max_length=2000)
+    occurred_at: datetime
+
+    @field_validator("severity")
+    @classmethod
+    def known_severity(cls, value: str) -> str:
+        allowed = {"info", "low", "medium", "high", "critical"}
+        lowered = value.strip().lower()
+        if lowered not in allowed:
+            raise ValueError(f"severity must be one of {sorted(allowed)}")
+        return lowered
+
+    @field_validator("outcome")
+    @classmethod
+    def known_outcome(cls, value: str) -> str:
+        allowed = {"success", "failure", "denied", "error"}
+        lowered = value.strip().lower()
+        if lowered not in allowed:
+            raise ValueError(f"outcome must be one of {sorted(allowed)}")
+        return lowered
+
+
+class AppEventBatch(BaseModel):
+    """A batch of events. Capped, because an application under attack sends
+    more than one at rest, and that is exactly when this path must hold."""
+
+    events: list[AppEvent] = Field(min_length=1, max_length=MAX_EVENTS_PER_BATCH)

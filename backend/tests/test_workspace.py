@@ -50,13 +50,6 @@ def _database():
 
 
 @pytest.fixture
-def client():
-    rate_limit.reset()
-    with TestClient(app) as test_client:
-        yield test_client
-
-
-@pytest.fixture
 def auth_headers(client):
     email = "workspace-user@difaac.io"
     client.post(

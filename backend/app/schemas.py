@@ -100,6 +100,33 @@ CREATE TABLE IF NOT EXISTS users (
 -- ==========================================
 
 -- Threat Intelligence: Indicators of Compromise (IOCs)
+CREATE TABLE IF NOT EXISTS api_keys (
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    tenant_id     INTEGER NOT NULL REFERENCES tenants(id),
+    name          TEXT    NOT NULL,
+    prefix        TEXT    UNIQUE NOT NULL,
+    key_hash      TEXT    NOT NULL,
+    created_by    TEXT,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    last_used_at  TIMESTAMPTZ,
+    revoked_at    TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS app_events (
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    source        TEXT    NOT NULL,
+    action        TEXT    NOT NULL,
+    outcome       TEXT    NOT NULL,
+    severity      TEXT    NOT NULL DEFAULT 'info',
+    actor         TEXT,
+    subject_ref   TEXT,
+    ip_address    TEXT,
+    user_agent    TEXT,
+    detail        TEXT,
+    occurred_at   TIMESTAMPTZ NOT NULL,
+    received_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS ti_iocs (
     id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     value       TEXT UNIQUE NOT NULL,

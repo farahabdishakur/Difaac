@@ -19,7 +19,7 @@ from collections import defaultdict, deque
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.config import RATE_LIMIT_AUTH_RPM, RATE_LIMIT_RPM
+from app.config import RATE_LIMIT_AUTH_RPM, RATE_LIMIT_INGEST_RPM, RATE_LIMIT_RPM
 
 logger = logging.getLogger(__name__)
 
@@ -74,8 +74,15 @@ def _prune(timestamps: deque[float], now: float) -> None:
         timestamps.popleft()
 
 
+_INGEST_PATH = "/api/ingest/events"
+
+
 def _limit_for(path: str) -> int:
-    return RATE_LIMIT_AUTH_RPM if path in _AUTH_PATHS else RATE_LIMIT_RPM
+    if path in _AUTH_PATHS:
+        return RATE_LIMIT_AUTH_RPM
+    if path == _INGEST_PATH:
+        return RATE_LIMIT_INGEST_RPM
+    return RATE_LIMIT_RPM
 
 
 async def rate_limit_middleware(request: Request, call_next):
