@@ -8,11 +8,12 @@
 # refresh-token cookie work as a plain SameSite=Lax cookie with no
 # cross-site handling.
 #
-# Replace difaac.example.com with the domain you pointed at this server.
-# For a first run without a domain yet, change the site line to :80 and
-# Caddy will serve plain HTTP so you can test by IP.
+# For a first run before DNS resolves, change the site line to :80 and Caddy
+# will serve plain HTTP so the stack can be tested by IP. Change it back
+# before real use: the auth cookie is marked Secure and a browser will not
+# send it over plaintext.
 
-difaac.example.com {
+difaac.com, www.difaac.com {
 	encode zstd gzip
 
 	# The API and auth endpoints go to the backend, everything else to the
@@ -28,7 +29,39 @@ difaac.example.com {
 		reverse_proxy frontend:80
 	}
 
-	# HSTS: once a browser has seen HTTPS here, never let it fall back to
-	# plaintext. Safe because Caddy always serves this site over TLS.
-	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	header {
+		# Once a browser has seen HTTPS here, never let it fall back to
+		# plaintext. Safe because Caddy always serves this site over TLS.
+		# `preload` is deliberately absent: it is a one-way commitment that
+		# is painful to undo, and it should not be made by a config file.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+		# Stops a browser guessing a type the server did not declare, which
+		# is how an uploaded file ends up executed as a script.
+		X-Content-Type-Options "nosniff"
+
+		# Referrers keep the origin when leaving the site, so a path a
+		# customer was reading is not handed to whoever they clicked
+		# through to.
+		Referrer-Policy "strict-origin-when-cross-origin"
+
+		# No other site may frame this one. Clickjacking a console whose
+		# buttons contain and isolate hosts is worth ruling out.
+		Content-Security-Policy "frame-ancestors 'none'"
+		X-Frame-Options "DENY"
+
+		# Nothing here needs a camera, a microphone or a location.
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+		# The server header names the software and its version to anyone
+		# scanning; it is free to remove and there is no reason to publish it.
+		-Server
+	}
+}
+
+# Anything else arriving on this IP — a scanner using the bare address, or a
+# stale hostname — gets nothing rather than a copy of the site under a name
+# the certificate does not cover.
+:80, :443 {
+	respond 421
 }

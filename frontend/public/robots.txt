@@ -1,0 +1,13 @@
+# The marketing site is meant to be indexed. The application behind the
+# sign-in is not: those URLs need a session to render anything, so a crawler
+# only ever sees an empty shell, and listing them tells anyone reading this
+# file where the console lives.
+
+User-agent: *
+Allow: /
+Disallow: /workspace
+Disallow: /sign-in
+Disallow: /forgot-password
+Disallow: /reset-password
+
+Sitemap: https://difaac.com/sitemap.xml
