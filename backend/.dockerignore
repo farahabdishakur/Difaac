@@ -35,4 +35,6 @@ __pycache__/
 
 # --- Not needed to serve requests ------------------------------------------
 tests/
+scripts/
 *.md
+*.log
