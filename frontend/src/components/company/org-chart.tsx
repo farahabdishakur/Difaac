@@ -20,7 +20,7 @@ function Portrait({ person }: { person: Founder }) {
 
   if (!person.photo || broken) {
     return (
-      <div className="flex aspect-square w-24 items-center justify-center rounded-lg border border-line bg-ink-3">
+      <div className="flex aspect-square w-24 items-center justify-center rounded-lg border border-brand/30 bg-ink-3">
         <span className="font-display text-2xl text-brand/60" aria-hidden="true">
           {person.name[0]}
         </span>
@@ -36,7 +36,7 @@ function Portrait({ person }: { person: Founder }) {
       width={400}
       height={400}
       style={{ objectPosition: person.objectPosition ?? 'center 12%' }}
-      className="aspect-square w-24 rounded-lg border border-line object-cover"
+      className="aspect-square w-24 rounded-lg border border-brand/30 object-cover"
       loading="lazy"
     />
   )
@@ -44,7 +44,7 @@ function Portrait({ person }: { person: Founder }) {
 
 function Card({ person }: { person: Founder }) {
   return (
-    <figure className="flex h-full flex-col items-center gap-3 rounded-xl border border-line bg-ink-2/70 px-5 py-6 text-center transition-colors hover:border-line-soft">
+    <figure className="flex h-full flex-col items-center gap-3 rounded-xl border border-brand/30 bg-ink-2/70 px-5 py-6 text-center transition-colors hover:border-brand/70 hover:bg-brand/10">
       <Portrait person={person} />
       <figcaption className="flex flex-col gap-1">
         <span className="font-display text-base font-medium text-text">{person.name}</span>
@@ -109,7 +109,7 @@ export function OrgChart({ tiers }: { tiers: Founder[][] }) {
  */
 function Bridge({ columns }: { columns: number }) {
   if (columns === 1) {
-    return <div aria-hidden="true" className="mx-auto hidden h-14 w-px bg-line lg:block" />
+    return <div aria-hidden="true" className="mx-auto hidden h-14 w-px bg-brand/50 lg:block" />
   }
 
   return (
@@ -118,16 +118,16 @@ function Bridge({ columns }: { columns: number }) {
       className="org-row mx-auto hidden lg:block"
       style={{ ['--org-row-width' as string]: rowWidth(columns) }}
     >
-      <div className="mx-auto h-7 w-px bg-line" />
+      <div className="mx-auto h-7 w-px bg-brand/50" />
       {/* Inset by half a card, so the rule begins and ends directly over the
           outermost stubs rather than running past them into the margin. */}
-      <div className="border-t border-line" style={{ marginInline: `${CARD_WIDTH / 2}px` }} />
+      <div className="border-t border-brand/50" style={{ marginInline: `${CARD_WIDTH / 2}px` }} />
       {/* The same gap the row uses: without it each stub sits half a gap off
           the card it belongs to, which reads as a drawing mistake. */}
       <div className="flex gap-6">
         {Array.from({ length: columns }, (_, i) => (
           <div key={i} className="flex flex-1 justify-center">
-            <div className="h-7 w-px bg-line" />
+            <div className="h-7 w-px bg-brand/50" />
           </div>
         ))}
       </div>
