@@ -62,9 +62,22 @@ function Card({ person }: { person: Founder }) {
   )
 }
 
-function Row({ children }: { children: React.ReactNode }) {
+// A card is 288px wide with 24px between cards, which is what decides how wide
+// a row of n of them is. The connector above the row divides that same width,
+// so a stub is always over a card centre however many cards the row holds.
+const CARD_WIDTH = 288
+const CARD_GAP = 24
+
+function rowWidth(columns: number): string {
+  return `${columns * CARD_WIDTH + (columns - 1) * CARD_GAP}px`
+}
+
+function Row({ columns, children }: { columns: number; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-5 lg:flex-row lg:items-stretch lg:justify-center lg:gap-6">
+    <div
+      className="org-row mx-auto flex flex-col gap-5 lg:flex-row lg:items-stretch lg:gap-6"
+      style={{ ['--org-row-width' as string]: rowWidth(columns) }}
+    >
       {children}
     </div>
   )
@@ -76,9 +89,9 @@ export function OrgChart({ tiers }: { tiers: Founder[][] }) {
       {tiers.map((tier, index) => (
         <div key={tier.map((p) => p.name).join()}>
           {index > 0 ? <Bridge columns={tier.length} /> : null}
-          <Row>
+          <Row columns={tier.length}>
             {tier.map((person) => (
-              <div key={person.name} className="lg:max-w-xs lg:flex-1">
+              <div key={person.name} className="lg:flex-1">
                 <Card person={person} />
               </div>
             ))}
@@ -100,15 +113,20 @@ function Bridge({ columns }: { columns: number }) {
   }
 
   return (
-    <div aria-hidden="true" className="hidden lg:block">
+    <div
+      aria-hidden="true"
+      className="org-row mx-auto hidden lg:block"
+      style={{ ['--org-row-width' as string]: rowWidth(columns) }}
+    >
       <div className="mx-auto h-7 w-px bg-line" />
-      <div className="flex">
+      {/* Inset by half a card, so the rule begins and ends directly over the
+          outermost stubs rather than running past them into the margin. */}
+      <div className="border-t border-line" style={{ marginInline: `${CARD_WIDTH / 2}px` }} />
+      {/* The same gap the row uses: without it each stub sits half a gap off
+          the card it belongs to, which reads as a drawing mistake. */}
+      <div className="flex gap-6">
         {Array.from({ length: columns }, (_, i) => (
-          <div key={i} className="flex flex-1 flex-col items-center">
-            <div className="flex h-px w-full">
-              <div className={i === 0 ? 'w-1/2' : 'w-1/2 bg-line'} />
-              <div className={i === columns - 1 ? 'w-1/2' : 'w-1/2 bg-line'} />
-            </div>
+          <div key={i} className="flex flex-1 justify-center">
             <div className="h-7 w-px bg-line" />
           </div>
         ))}
@@ -116,3 +134,4 @@ function Bridge({ columns }: { columns: number }) {
     </div>
   )
 }
+

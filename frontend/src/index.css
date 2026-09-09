@@ -169,6 +169,17 @@ html {
 }
 
 @layer utilities {
+  /* A row of the org chart, and the connector above it, held to the same
+   * width so the stubs land on the cards rather than beside them. The width
+   * is the card count times the card width plus the gaps, passed in as
+   * --org-row-width, and it only binds from lg upwards because that is where
+   * the chart stops being a plain stack. */
+  @media (min-width: 1024px) {
+    .org-row {
+      max-width: var(--org-row-width);
+    }
+  }
+
   .link-underline {
     position: relative;
     text-decoration: none;

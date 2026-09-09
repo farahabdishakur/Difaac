@@ -99,10 +99,18 @@ const leadership: Omit<Founder, 'photo'>[] = [
   },
   {
     name: 'Sharmaarke Maxamed Jaamac',
-    role: 'Deputy Chief Executive & CTO, Co-Founder',
+    role: 'Deputy Chairman & Chief Technology Officer, Co-Founder',
     department: 'Core Engineering & Detection',
     note: 'Stands in for the chair, and architects the detection pipeline, telemetry ingestion and correlation engines.',
     objectPosition: 'center 12%',
+    linkedin: 'https://linkedin.com',
+  },
+  {
+    name: 'Khaalid Maxamed Cumer',
+    role: 'Treasurer & Head of Finance, Co-Founder',
+    department: 'Finance & Administration',
+    note: 'Holds the accounts, the contracts and the runway, and signs off what an engagement commits Difaac to before it starts.',
+    objectPosition: 'center 15%',
     linkedin: 'https://linkedin.com',
   },
   {
@@ -134,14 +142,6 @@ const leadership: Omit<Founder, 'photo'>[] = [
     role: 'Head of Managed XDR & SOC Operations',
     department: 'Security Operations Centre',
     note: 'Runs the monitoring, writes the containment playbooks, and goes looking for attackers instead of waiting for an alert.',
-    objectPosition: 'center 15%',
-    linkedin: 'https://linkedin.com',
-  },
-  {
-    name: 'Khaalid Maxamed Cumer',
-    role: 'Head of Fraud Protection',
-    department: 'Fraud & Identity Defence',
-    note: 'Works on device and behavioural signals, and on the fraud patterns that move through the region’s payment rails.',
     objectPosition: 'center 15%',
     linkedin: 'https://linkedin.com',
   },
@@ -431,6 +431,7 @@ export const advisoryBoard: Founder[] = advisors.map((person) => ({
 export const leadershipTiers: Founder[][] = [
   founders.slice(0, 1),
   founders.slice(1, 2),
-  founders.slice(2, 5),
-  founders.slice(5, 8),
+  founders.slice(2, 3),
+  founders.slice(3, 6),
+  founders.slice(6, 8),
 ]
