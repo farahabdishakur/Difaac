@@ -3,17 +3,12 @@ import { LinkButton } from '@/components/shared/link-button'
 
 export function HeroSection() {
   return (
-    // The vertical rhythm is stated once, here, and top equals bottom so the
-    // content sits exactly in the middle of the section box. Each figure
-    // carries the header's height because the section runs up underneath it:
-    // 4rem of header plus 3rem of air. Splitting this across the section and
-    // the inner div, as it was, left 144px above the content and 80px below.
-    <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+2.5rem)] pb-[calc(3.5rem+2.5rem)] lg:-mt-16 lg:pt-[calc(4rem+3rem)] lg:pb-[calc(4rem+3rem)]">
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"
-        aria-hidden="true"
-      />
-
+    // Padding equal to the header plus the same air, top and bottom. The
+    // section runs up underneath the header, so matching the raw figures would
+    // put the content low: 64px of it is hidden behind the header, leaving 47
+    // visible above against 112 below. Counting the header only on the top
+    // gives the same amount of visible air on each side.
+    <section className="relative -mt-14 overflow-hidden bg-ink pt-[calc(3.5rem+3.5rem)] pb-14 lg:-mt-16 lg:pt-[calc(4rem+4rem)] lg:pb-16">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="max-w-2xl">
@@ -22,10 +17,12 @@ export function HeroSection() {
               Intelligent cyber defence
             </span>
 
-            {/* Two-tone, weight 400: the emphasis is the colour on the operative word, never a heavier stroke. The same rule the company pages follow, so the site reads as one system rather than a home page and a set of other pages. */}
+            {/* Balanced rather than broken by hand. A hard <br> puts the break
+                in the same place at every width, which is right at one of them
+                and arbitrary at the rest; text-balance evens the lines out
+                wherever the column happens to land. */}
             <h1 className="t-display mt-4 text-balance font-display font-bold text-text">
-              <span>Fight Somalian</span><br />
-              <span className="text-brand">Cybercrime.</span>
+              Fight Somalian <span className="text-brand">Cybercrime.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
@@ -51,19 +48,18 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right: hero artwork, transparent so it sits directly on the page ground */}
-          <div className="relative w-full">
-            <div
-              className="pointer-events-none absolute inset-0 scale-90 rounded-full bg-brand/20 opacity-60 blur-3xl"
-              aria-hidden="true"
-            />
+          {/* The artwork carries its own light, so nothing is laid behind or
+              over it: the glow that used to sit here and the scrim that used to
+              fade its lower edge were both washing out an image that already
+              reads on a dark ground. */}
+          <div className="w-full">
             {/* The intrinsic size is declared so the browser reserves the right box before the file arrives. Without it the row has no height on the first paint, and the headline beside it is drawn centred against nothing — then jumps when the image lands. */}
             <img
               src="/hero-image.png"
               alt="Difaac unified cyber defense platform"
               width={1112}
               height={941}
-              className="relative h-auto w-full"
+              className="h-auto w-full"
               loading="eager"
               fetchPriority="high"
             />
