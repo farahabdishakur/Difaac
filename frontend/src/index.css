@@ -95,14 +95,15 @@
   --color-error: #ef4444;
   --color-warning: #f59e0b;
 
-  /* Two cuts of one family. Inter sets the reading text, where its open
-     apertures and generous spacing are what make a long paragraph easy. Inter
-     Tight sets the headings: the same skeleton drawn narrower, so a headline
-     holds together as a shape instead of spreading across the column. Using
-     two unrelated families would make the page look assembled; using one for
-     both makes a 56px headline look like enlarged body copy. */
+  /* A grotesque for the headings, a humanist sans for the reading text.
+     Space Grotesk sets the headlines: its slightly mechanical, geometric
+     letterforms give the page the precise, technical register a security
+     platform wants — the same reason the field gravitates to type like this.
+     Inter carries the body, where its open apertures and even rhythm keep a
+     long paragraph easy. The two are distinct enough to give headlines their
+     own voice, close enough in proportion that the page still reads as one. */
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
 }
 
 :root {
