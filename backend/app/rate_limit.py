@@ -51,7 +51,7 @@ _AUTH_PATHS = (
     "/auth/forgot-password",
     "/auth/reset-password",
     "/auth/change-password",
-    "/demo-requests",
+    "/api/demo-requests",
 )
 
 # Never let the bookkeeping itself become the memory leak.

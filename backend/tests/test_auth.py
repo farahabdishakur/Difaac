@@ -442,7 +442,7 @@ class TestRateLimiting:
         for _ in range(14):
             client.post("/auth/login", json={"email": "flood2@difaac.io", "password": "x"})
 
-        assert client.get("/products").status_code == 200
+        assert client.get("/api/products").status_code == 200
 
     def test_rate_limited_response_carries_retry_after(self, client):
         last = None
@@ -460,10 +460,10 @@ class TestPublicContent:
     @pytest.mark.parametrize(
         "path,expected_count",
         [
-            ("/products", 6),
-            ("/industries", 6),
-            ("/solutions", 13),
-            ("/services", 12),
+            ("/api/products", 6),
+            ("/api/industries", 6),
+            ("/api/solutions", 13),
+            ("/api/services", 12),
         ],
     )
     def test_content_endpoints_serve_the_expected_rows(self, client, path, expected_count):
@@ -472,10 +472,10 @@ class TestPublicContent:
         assert len(response.json()) == expected_count
 
     def test_content_requires_no_authentication(self, client):
-        assert client.get("/products").status_code == 200
+        assert client.get("/api/products").status_code == 200
 
     def test_security_headers_are_present(self, client):
-        headers = client.get("/products").headers
+        headers = client.get("/api/products").headers
         assert headers["X-Content-Type-Options"] == "nosniff"
         assert headers["X-Frame-Options"] == "DENY"
         assert "frame-ancestors 'none'" in headers["Content-Security-Policy"]

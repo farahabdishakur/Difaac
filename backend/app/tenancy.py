@@ -209,3 +209,50 @@ def assert_rls_enforced(conn: Any) -> None:
         return
 
     raise RuntimeError(message)
+
+
+# The tenant an unauthenticated write belongs to.
+#
+# Most writes happen inside a request that has already authenticated, so the
+# tenant is announced by then and the row-level policy is satisfied. Two are
+# not: a prospective customer submitting a demo request, and the inspection
+# middleware recording an attack — neither caller has an account, and the
+# middleware deliberately runs before authentication because an attacker never
+# authenticates.
+#
+# Both belong to Difaac itself: a lead is Difaac's lead, and traffic against
+# Difaac's own API is Difaac's own estate. Without announcing that, the insert
+# has no tenant, the policy refuses it, and the write is lost — a demo request
+# came back as a 500 and a detection vanished with only a swallowed exception
+# to show for it.
+#
+# Cached because it is read on a request path and the row never changes.
+_default_tenant_cache: int | None = None
+
+
+def default_tenant_id(conn_factory: Any) -> int | None:
+    """The id of the tenant Difaac itself operates as.
+
+    `conn_factory` is `app.database.get_connection`, passed in rather than
+    imported: `database` imports this module, and importing it back here would
+    be a cycle.
+    """
+    global _default_tenant_cache
+
+    if _default_tenant_cache is None:
+        with conn_factory() as conn:
+            row = conn.execute(
+                "SELECT id FROM tenants WHERE slug = %s", (DEFAULT_TENANT_SLUG,)
+            ).fetchone()
+        _default_tenant_cache = row["id"] if row else None
+
+    return _default_tenant_cache
+
+
+def writing_tenant(conn_factory: Any) -> int | None:
+    """The tenant the current write belongs to.
+
+    Whoever is authenticated, if anyone; otherwise Difaac's own tenant.
+    """
+    announced = current_tenant()
+    return announced if announced is not None else default_tenant_id(conn_factory)

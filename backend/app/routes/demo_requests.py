@@ -22,13 +22,17 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 
 from app.client_ip import UNKNOWN, client_ip
 from app.database import get_connection
+from app.tenancy import tenant_scope, writing_tenant
 from app.models import DemoRequestCreate, DemoRequestResponse, MessageResponse
 from app.permissions import Permission
 from app.routes.auth import require_permission
 
 logger = logging.getLogger(__name__)
 
-public_router = APIRouter(tags=["Demo Requests"])
+# Served under /api. The site is a single-page app on the same origin, so
+# "/{name}" is the page a browser navigates to; the JSON has to live
+# somewhere the reverse proxy actually forwards, and that is /api.
+public_router = APIRouter(prefix="/api", tags=["Demo Requests"])
 
 # Reading submissions is workspace data, so it sits behind the same
 # authentication dependency as the rest of the SOC endpoints.
@@ -59,8 +63,12 @@ async def create_demo_request(payload: DemoRequestCreate, request: Request):
     matched a real product — neither is useful to the sender, and both would
     turn this into a probe.
     """
+    # Scoped, because this caller has no account and therefore no tenant. A
+    # lead reaching Difaac's own site is Difaac's own; without announcing that
+    # the row-level policy on `demo_requests` refuses the insert and the
+    # submission comes back as a 500 with the lead lost.
     try:
-        with get_connection() as conn:
+        with tenant_scope(writing_tenant(get_connection)), get_connection() as conn:
             conn.execute(
                 """
                 INSERT INTO demo_requests

@@ -1,0 +1,11 @@
+{
+  "name": "difaac-backend-dev",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Task runner for the backend during local development. There is no JavaScript here: the backend is Python, and this file exists so `npm run dev` starts it the same way it starts the frontend. It serves HTTPS because vite.config.ts proxies /api and /auth to https://localhost:8000 — the certificate is the mkcert pair at the repository root, the same one vite-plugin-mkcert trusts. Deleting this file leaves the proxy pointing at a server nothing starts, and the browser reports a bare 500 with no explanation.",
+  "scripts": {
+    "dev": "python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --ssl-keyfile ../localhost+2-key.pem --ssl-certfile ../localhost+2.pem",
+    "dev:venv": ".venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --ssl-keyfile ../localhost+2-key.pem --ssl-certfile ../localhost+2.pem",
+    "test": "python -m pytest tests/ -q"
+  }
+}

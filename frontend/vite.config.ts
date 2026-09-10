@@ -4,6 +4,48 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import mkcert from 'vite-plugin-mkcert'
 
+
+// Where the dev proxy sends /api and /auth.
+//
+// HTTPS by default, because that is what `npm run dev` in backend/ starts —
+// uvicorn with the same mkcert pair vite-plugin-mkcert trusts. Override with
+// DIFAAC_API_TARGET when the backend is running plain HTTP.
+const apiTarget = process.env.DIFAAC_API_TARGET ?? 'https://localhost:8000'
+
+// A proxy with no backend behind it returns a bare 500 and says nothing about
+// why, which is a confusing way to discover that the API is simply not
+// running. This turns that into a sentence naming the target and the command
+// that starts it.
+const apiProxy = {
+  target: apiTarget,
+  changeOrigin: false,
+  // Applies to Vite's own connection to the backend, not the browser's
+  // connection to Vite. Vite is what accepts the backend's certificate, over
+  // loopback.
+  secure: false,
+  configure: (proxy: { on: (event: string, cb: (err: Error & { code?: string }) => void) => void }) => {
+    let warned = false
+    proxy.on('error', (err) => {
+      if (warned) return
+      warned = true
+      const reason =
+        err.code === 'ECONNREFUSED'
+          ? 'nothing is listening there'
+          : err.code === 'EPROTO' || err.code === 'ECONNRESET'
+            ? 'it answered, but not over HTTPS — start it with TLS, or set DIFAAC_API_TARGET=http://localhost:8000'
+            : err.message
+      console.error(
+        [
+          '',
+          `  The API proxy could not reach ${apiTarget}: ${reason}.`,
+          '  Start the backend with:  npm run dev --prefix backend',
+          '',
+        ].join('\n'),
+      )
+    })
+  },
+}
+
 export default defineConfig({
   plugins: [react(), tailwindcss(), mkcert()],
   server: {
@@ -22,8 +64,8 @@ export default defineConfig({
     // the browser's connection to Vite. Vite is what accepts the backend's
     // self-signed certificate, over loopback.
     proxy: {
-      '/api': { target: 'https://localhost:8000', changeOrigin: false, secure: false },
-      '/auth': { target: 'https://localhost:8000', changeOrigin: false, secure: false },
+      '/api': apiProxy,
+      '/auth': apiProxy,
     },
   },
   resolve: {

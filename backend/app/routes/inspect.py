@@ -30,49 +30,11 @@ from app.database import get_connection
 from app.inspection import FLAG_AT, Verdict, inspect
 from app.permissions import Permission
 from app.routes.auth import require_permission
-from app.tenancy import DEFAULT_TENANT_SLUG, current_tenant, tenant_scope
+from app.tenancy import tenant_scope, writing_tenant
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["Inspection"])
-
-
-# The tenant a perimeter detection belongs to, looked up once.
-#
-# Traffic hitting Difaac's own API is Difaac's own estate, so an unauthenticated
-# request that trips a rule is recorded against the Difaac tenant. An
-# authenticated one is recorded against whoever sent it — `current_tenant()` is
-# already set by then for anything that reached a route, though the middleware
-# usually runs before that and finds nothing.
-_default_tenant_id: int | None = None
-
-
-def _detection_tenant() -> int | None:
-    """Which tenant to write a detection under.
-
-    Without this the write is refused and the detection is lost. The
-    inspection middleware runs *before* authentication — that is the point of
-    it, since an attacker never authenticates — so no tenant is announced, and
-    the row-level policy on `xdr_detections` correctly rejects an insert that
-    belongs to nobody. Failing closed is right for a read; for this write it
-    meant every detection the engine made was dropped, the console stayed
-    empty, and the only trace was an exception the middleware swallowed by
-    design.
-    """
-    global _default_tenant_id
-
-    announced = current_tenant()
-    if announced is not None:
-        return announced
-
-    if _default_tenant_id is None:
-        with get_connection() as conn:
-            row = conn.execute(
-                "SELECT id FROM tenants WHERE slug = %s", (DEFAULT_TENANT_SLUG,)
-            ).fetchone()
-        _default_tenant_id = row["id"] if row else None
-
-    return _default_tenant_id
 
 
 class InspectRequest(BaseModel):
@@ -147,7 +109,7 @@ def inspect_request(
     )
 
     if verdict.score >= FLAG_AT:
-        with tenant_scope(_detection_tenant()), get_connection() as conn:
+        with tenant_scope(writing_tenant(get_connection)), get_connection() as conn:
             record_detection(
                 conn, verdict, path=payload.path, source=payload.source_ip or "api"
             )
@@ -198,7 +160,7 @@ async def inspection_middleware(request: Request, call_next):
             client = client_ip(request)
             # Scoped, because this runs before authentication and an insert
             # with no tenant announced is refused by the row-level policy.
-            with tenant_scope(_detection_tenant()), get_connection() as conn:
+            with tenant_scope(writing_tenant(get_connection)), get_connection() as conn:
                 record_detection(conn, verdict, path=path, source=client)
             logger.warning(
                 "Inspection flagged %s from %s: score=%d rules=%s",

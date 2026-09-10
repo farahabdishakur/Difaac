@@ -46,7 +46,7 @@ PUBLIC_WRITES = {
     ("POST", "/auth/logout"),
     # A prospective customer has no account. Bounded by its Pydantic model and
     # rate limited alongside the credential endpoints.
-    ("POST", "/demo-requests"),
+    ("POST", "/api/demo-requests"),
 }
 
 # Public reads: the marketing site, which has to render for a signed-out
@@ -54,18 +54,18 @@ PUBLIC_WRITES = {
 PUBLIC_READS = {
     "/",
     "/health",
-    "/blog",
-    "/products",
-    "/products/{slug}",
-    "/solutions",
-    "/solutions/{slug}",
-    "/services",
-    "/services/{slug}",
-    "/industries",
-    "/industries/{slug}",
-    "/resources",
-    "/resources/{slug}",
-    "/site-content",
+    "/api/blog",
+    "/api/products",
+    "/api/products/{slug}",
+    "/api/solutions",
+    "/api/solutions/{slug}",
+    "/api/services",
+    "/api/services/{slug}",
+    "/api/industries",
+    "/api/industries/{slug}",
+    "/api/resources",
+    "/api/resources/{slug}",
+    "/api/site-content",
 }
 
 

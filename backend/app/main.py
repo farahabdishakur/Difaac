@@ -172,7 +172,30 @@ async def root():
 # Routes
 
 app.include_router(auth.router)
+
+# Not under /api, deliberately: the container healthcheck calls this directly
+# on 127.0.0.1:8000, never through the proxy, and an orchestrator expects it
+# at a stable well-known path.
 app.include_router(health.router)
+
+# Public content, under /api like everything else the browser calls.
+#
+# These used to be served at the bare paths — /products, /solutions and so on —
+# which made them unreachable from the site. The frontend is a single-page app
+# served from the same origin, so /products is the *page*; the reverse proxy
+# (and the Vite dev proxy) send only /api and /auth to the backend and
+# everything else to the SPA. A fetch of /products therefore came back as the
+# HTML shell, res.json() threw, and every content hook fell through to its
+# static fallback. The site looked fine and had not read the database since it
+# was deployed.
+#
+# The collision is the reason this is a prefix rather than a proxy rule: one
+# path cannot be both the page a browser navigates to and the JSON an XHR
+# asks for.
+#
+# The prefix is declared on each APIRouter rather than passed here: this
+# FastAPI build ignores include_router(prefix=...) silently, and the app went
+# on serving the bare paths as though the argument had never been written.
 app.include_router(products.router)
 app.include_router(industries.router)
 app.include_router(solutions.router)

@@ -34,7 +34,7 @@ export type DemoRequest = {
 }
 
 export async function submitDemoRequest(input: DemoRequestInput): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/demo-requests`, {
+  const response = await fetch(`${API_BASE_URL}/api/demo-requests`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),

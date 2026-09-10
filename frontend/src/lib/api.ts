@@ -20,7 +20,7 @@ async function fetcher<T>(path: string): Promise<T> {
 }
 
 export function useProducts() {
-  const { data, isLoading } = useSWR<Product[]>('/products', fetcher, {
+  const { data, isLoading } = useSWR<Product[]>('/api/products', fetcher, {
     fallbackData: staticProducts,
     shouldRetryOnError: false,
   })
@@ -31,7 +31,7 @@ export function useProducts() {
 export function useProduct(slug: string | undefined) {
   const fallback = slug ? staticProducts.find((p) => p.slug === slug) : undefined
   const { data, error, isLoading } = useSWR<Product>(
-    slug ? `/products/${slug}` : null,
+    slug ? `/api/products/${slug}` : null,
     fetcher,
     {
       fallbackData: fallback,
@@ -43,7 +43,7 @@ export function useProduct(slug: string | undefined) {
 }
 
 export function useIndustries() {
-  const { data, isLoading } = useSWR<Industry[]>('/industries', fetcher, {
+  const { data, isLoading } = useSWR<Industry[]>('/api/industries', fetcher, {
     fallbackData: staticIndustries,
     shouldRetryOnError: false,
   })
@@ -54,7 +54,7 @@ export function useIndustries() {
 export function useIndustry(slug: string | undefined) {
   const fallback = slug ? staticIndustries.find((i) => i.slug === slug) : undefined
   const { data, error, isLoading } = useSWR<Industry>(
-    slug ? `/industries/${slug}` : null,
+    slug ? `/api/industries/${slug}` : null,
     fetcher,
     {
       fallbackData: fallback,
@@ -66,7 +66,7 @@ export function useIndustry(slug: string | undefined) {
 }
 
 export function useSolutions() {
-  const { data, isLoading } = useSWR<Solution[]>('/solutions', fetcher, {
+  const { data, isLoading } = useSWR<Solution[]>('/api/solutions', fetcher, {
     fallbackData: staticSolutions,
     shouldRetryOnError: false,
   })
@@ -77,7 +77,7 @@ export function useSolutions() {
 export function useSolution(slug: string | undefined) {
   const fallback = slug ? staticSolutions.find((s) => s.slug === slug) : undefined
   const { data, error, isLoading } = useSWR<Solution>(
-    slug ? `/solutions/${slug}` : null,
+    slug ? `/api/solutions/${slug}` : null,
     fetcher,
     {
       fallbackData: fallback,
@@ -89,7 +89,7 @@ export function useSolution(slug: string | undefined) {
 }
 
 export function useServices() {
-  const { data, isLoading } = useSWR<Service[]>('/services', fetcher, {
+  const { data, isLoading } = useSWR<Service[]>('/api/services', fetcher, {
     fallbackData: staticServices,
     shouldRetryOnError: false,
   })
@@ -100,7 +100,7 @@ export function useServices() {
 export function useService(slug: string | undefined) {
   const fallback = slug ? staticServices.find((s) => s.slug === slug) : undefined
   const { data, error, isLoading } = useSWR<Service>(
-    slug ? `/services/${slug}` : null,
+    slug ? `/api/services/${slug}` : null,
     fetcher,
     {
       fallbackData: fallback,

@@ -5,7 +5,10 @@ from fastapi import APIRouter, HTTPException, Path
 from app.database import get_connection
 from app.models import ServiceResponse
 
-router = APIRouter(prefix="/services", tags=["Services"])
+# Served under /api. The site is a single-page app on the same origin, so
+# "/{name}" is the page a browser navigates to; the JSON has to live
+# somewhere the reverse proxy actually forwards, and that is /api.
+router = APIRouter(prefix="/api/services", tags=["Services"])
 
 
 def _row_to_service(row) -> dict:
