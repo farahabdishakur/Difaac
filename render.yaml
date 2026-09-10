@@ -1,0 +1,91 @@
+# Render Blueprint — the whole Difaac stack in one file.
+#
+# Render → New → Blueprint → connect this repo → Apply. Render reads this and
+# creates the database, the API, and the static site together, with every
+# environment variable already set. Nothing is typed by hand, which is the
+# point: the one deploy that failed did so because a single variable
+# (DIFAAC_SECRET_KEY) was missed in the dashboard. Here it is generated
+# automatically and cannot be forgotten.
+#
+# The two cross-links between the site and the API use the predicted
+# onrender.com hostnames below. If Render appends a suffix because a name is
+# taken (difaac-api-xxxx.onrender.com), fix the three URL values marked
+# "# EDIT IF RENAMED" after the first apply and redeploy. Everything else is
+# self-contained and needs no attention.
+#
+# See RENDER.md for the manual, click-by-click alternative and the reasoning.
+
+databases:
+  - name: difaac-db
+    databaseName: difaac
+    plan: free
+    region: frankfurt          # closest Render region to the Horn of Africa
+
+services:
+  # ---------------------------------------------------------------------------
+  # The API — FastAPI under gunicorn, built from backend/Dockerfile.
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: difaac-api
+    runtime: docker
+    region: frankfurt          # must match the database's region
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    envVars:
+      - key: DIFAAC_DEBUG
+        value: "false"
+
+      # The full postgres:// connection string, taken from the database above.
+      # This is the piece that has to be right and is easiest to get wrong by
+      # hand; Render fills it in.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: difaac-db
+          property: connectionString
+
+      # Generated once by Render, stored as a secret, never shown in the repo.
+      # This is what removes the manual step that broke the first deploy.
+      - key: DIFAAC_SECRET_KEY
+        generateValue: true
+
+      # A live server starts empty apart from the admin account; no demo data.
+      - key: DIFAAC_SEED_DEMO
+        value: "false"
+
+      # The site and the API are two different onrender.com domains, so the
+      # session cookie travels cross-site and must say so.
+      - key: DIFAAC_COOKIE_SAMESITE
+        value: none
+
+      # Render's load balancer sits in front of the API on its private
+      # network. Without this the rate limiter counts every caller as one.
+      - key: DIFAAC_TRUSTED_PROXIES
+        value: 10.0.0.0/8
+
+      - key: DIFAAC_CORS_ORIGINS
+        value: https://difaac-site.onrender.com      # EDIT IF RENAMED
+
+      - key: DIFAAC_FRONTEND_URL
+        value: https://difaac-site.onrender.com      # EDIT IF RENAMED
+
+  # ---------------------------------------------------------------------------
+  # The site — the built React app, served as static files.
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: difaac-site
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: ./frontend/dist
+    branch: main
+    envVars:
+      - key: VITE_API_URL
+        value: https://difaac-api.onrender.com       # EDIT IF RENAMED
+    routes:
+      # A hard refresh of any client-side route must return index.html rather
+      # than a 404. Most specific rules would go first; this is the only one.
+      - type: rewrite
+        source: /*
+        destination: /index.html
