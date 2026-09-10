@@ -26,9 +26,12 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
-              Difaac is a cyber defence platform built for organisations across Somalia and the
-              Horn of Africa. We track the groups behind ransomware, fraud, and brand abuse, and
-              give your team the intelligence to stop them before they do real harm.
+              Difaac is a cyber defence platform built for Somalia — for the mobile-money
+              networks, banks, telecoms and institutions the Somali community depends on, at home
+              and across the diaspora. We track the actors who target them specifically: the fraud
+              rings draining mobile wallets, the pages built to impersonate local banks, the
+              phishing that follows every remittance — and give your team the intelligence to stop
+              them first.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">

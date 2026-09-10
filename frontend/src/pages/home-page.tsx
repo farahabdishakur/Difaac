@@ -21,9 +21,9 @@ import { useSeo } from '@/lib/seo'
  */
 export default function HomePage() {
   useSeo({
-    title: 'Intelligent cyber defence for the Horn of Africa',
+    title: 'Unified Risk Platform',
     description:
-      'Difaac tracks the groups behind ransomware, fraud and brand abuse across Somalia and the Horn of Africa, and gives your team the intelligence to stop them.',
+      "Difaac is Somalia's unified risk platform: one place to track the fraud, phishing and brand abuse targeting Somali banks, mobile money and institutions — at home and across the diaspora — and stop them first.",
     path: '/',
   })
   return (
