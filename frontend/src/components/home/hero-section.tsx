@@ -20,12 +20,14 @@ export function HeroSection() {
               Intelligent cyber defence
             </span>
 
-            {/* Balanced rather than broken by hand. A hard <br> puts the break
-                in the same place at every width, which is right at one of them
-                and arbitrary at the rest; text-balance evens the lines out
-                wherever the column happens to land. */}
-            <h1 className="t-display mt-4 text-balance font-display font-bold text-text">
-              Fight Somalian <span className="text-brand">Cybercrime.</span>
+            {/* A fixed two-line lockup: "Fight Somalian" on the first line and
+                "Cybercrime." on the second, at every width — mobile, tablet and
+                desktop. The break is hard on purpose so the headline reads the
+                same shape on every screen. */}
+            <h1 className="t-display mt-4 font-display font-bold text-text">
+              Fight Somalian
+              <br />
+              <span className="text-brand">Cybercrime.</span>
             </h1>
 
             <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-pretty leading-relaxed text-body text-base sm:text-lg">
