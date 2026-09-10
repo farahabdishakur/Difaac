@@ -66,16 +66,19 @@ services:
         value: 10.0.0.0/8
 
       - key: DIFAAC_CORS_ORIGINS
-        value: https://difaac-site.onrender.com      # EDIT IF RENAMED
+        value: https://difaac.onrender.com           # EDIT IF RENAMED
 
       - key: DIFAAC_FRONTEND_URL
-        value: https://difaac-site.onrender.com      # EDIT IF RENAMED
+        value: https://difaac.onrender.com           # EDIT IF RENAMED
 
   # ---------------------------------------------------------------------------
   # The site — the built React app, served as static files.
   # ---------------------------------------------------------------------------
+  # Named plainly "difaac" so the public URL is difaac.onrender.com rather than
+  # difaac-site.onrender.com. The API keeps the -api suffix; only the site,
+  # which is what people visit, takes the bare name.
   - type: web
-    name: difaac-site
+    name: difaac
     runtime: static
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: ./frontend/dist
