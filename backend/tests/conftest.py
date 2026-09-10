@@ -76,5 +76,12 @@ def client():
     from app.main import app
 
     rate_limit.reset()
-    with TestClient(app) as test_client:
+    # https, not the TestClient default of http. Outside DEBUG the refresh
+    # cookie is marked Secure, and a Secure cookie is never returned over a
+    # plaintext request -- so the whole refresh-rotation flow fails when the
+    # suite runs with DIFAAC_DEBUG=false, which is exactly how CI runs it to
+    # match production. Presenting as https is what production is: the app
+    # always sits behind TLS. With http the tests only passed because DEBUG
+    # was on locally, which is the wrong thing to depend on.
+    with TestClient(app, base_url="https://testserver") as test_client:
         yield test_client
