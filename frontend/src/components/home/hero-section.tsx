@@ -26,8 +26,10 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
-              Fraud and phishing target Somali banks, mobile money and businesses every day, at
-              home and in the diaspora. Difaac helps your team spot it early and shut it down.
+              Somali banks, mobile-money networks and the businesses that rely on them are a
+              constant target for fraud and phishing, at home and across the diaspora. Difaac
+              tracks the groups behind these attacks and gives your team the intelligence to stop
+              them before real damage is done.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
