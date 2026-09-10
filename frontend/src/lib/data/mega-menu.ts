@@ -48,7 +48,7 @@ export const productsMenu: MenuPanel = {
     description:
       'Every product draws on the same adversary intelligence, so a signal detected in one area strengthens detection across the rest.',
     icon: 'ShieldCheck',
-    image: '/emblems/emblem_unified-risk-platform.png',
+    image: '/emblems/emblem_unified-risk-platform.webp',
     links: [
       { label: 'Explore the platform', href: '/products' },
       { label: 'Pricing', href: '/subscriptions' },

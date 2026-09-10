@@ -16,7 +16,7 @@ export function HeroSection() {
               artwork. */}
           <div className="max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
             {/* A quiet line that says plainly what Difaac is before the headline says what it does — one small accent, nothing more. */}
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">
+            <span className="text-sm font-medium tracking-wide text-brand">
               Intelligent cyber defence
             </span>
 
@@ -63,7 +63,7 @@ export function HeroSection() {
           <div className="w-full">
             {/* The intrinsic size is declared so the browser reserves the right box before the file arrives. Without it the row has no height on the first paint, and the headline beside it is drawn centred against nothing — then jumps when the image lands. */}
             <img
-              src="/hero-image.png"
+              src="/hero-image.webp"
               alt="Difaac unified cyber defense platform"
               width={1112}
               height={941}

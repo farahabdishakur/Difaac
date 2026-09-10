@@ -27,7 +27,7 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Difaac tracks the groups active against your sector, the infrastructure they stand up, and the methods they reuse between campaigns. Your defences get tuned to adversaries that are actually operating, not to a generic rule set.',
     screenshot: {
-      image: '/screenshots/workspace-threat-intelligence.png',
+      image: '/screenshots/workspace-threat-intelligence.webp',
       path: '/workspace/threat-intelligence',
     },
   },
@@ -37,7 +37,7 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Every session is scored as it happens on device, behaviour, and network signals. Genuine customers move through login and checkout untouched; scripted traffic and stolen credentials are stopped at the point they are used.',
     screenshot: {
-      image: '/screenshots/workspace-fraud.png',
+      image: '/screenshots/workspace-fraud.webp',
       path: '/workspace/fraud',
     },
   },
@@ -47,7 +47,7 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Signals from endpoints, network, email, and cloud land in one timeline instead of four consoles. Analysts who know your environment triage what fires, confirm what is real, and contain it under playbooks you approved in advance.',
     screenshot: {
-      image: '/screenshots/workspace-managed-xdr.png',
+      image: '/screenshots/workspace-managed-xdr.webp',
       path: '/workspace/managed-xdr',
     },
   },
@@ -57,7 +57,7 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Difaac maps the domains, hosts, and services that carry your name — including the ones nobody remembers deploying — and ranks what it finds by what an attacker could realistically reach, not by severity score alone.',
     screenshot: {
-      image: '/screenshots/workspace-attack-surface.png',
+      image: '/screenshots/workspace-attack-surface.webp',
       path: '/workspace/attack-surface',
     },
   },
@@ -67,7 +67,7 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Impersonation, lookalike domains, leaked credentials, and counterfeit listings are found across the open, deep, and dark web. Findings come with takedown action behind them, not just a notification.',
     screenshot: {
-      image: '/screenshots/workspace-digital-risk.png',
+      image: '/screenshots/workspace-digital-risk.webp',
       path: '/workspace/digital-risk',
     },
   },
@@ -77,7 +77,7 @@ export const showcase: ShowcaseEntry[] = [
     description:
       'Attachments and links are detonated in isolation before they reach a mailbox, and the attempts that carry no payload at all — invoice fraud, executive impersonation — are caught on language and context instead.',
     screenshot: {
-      image: '/screenshots/workspace-email-protection.png',
+      image: '/screenshots/workspace-email-protection.webp',
       path: '/workspace/email-protection',
     },
   },

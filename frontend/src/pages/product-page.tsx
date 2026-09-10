@@ -31,12 +31,12 @@ import ProductDetailPage from '@/pages/product-detail-page'
  * longer exists.
  */
 const workspaceScreenshot: Record<string, { image: string; path: string }> = {
-  'threat-intelligence': { image: '/screenshots/workspace-threat-intelligence.png', path: '/workspace/threat-intelligence' },
-  'fraud-protection': { image: '/screenshots/workspace-fraud.png', path: '/workspace/fraud' },
-  'managed-xdr': { image: '/screenshots/workspace-managed-xdr.png', path: '/workspace/managed-xdr' },
-  'attack-surface-management': { image: '/screenshots/workspace-attack-surface.png', path: '/workspace/attack-surface' },
-  'digital-risk-protection': { image: '/screenshots/workspace-digital-risk.png', path: '/workspace/digital-risk' },
-  'business-email-protection': { image: '/screenshots/workspace-email-protection.png', path: '/workspace/email-protection' },
+  'threat-intelligence': { image: '/screenshots/workspace-threat-intelligence.webp', path: '/workspace/threat-intelligence' },
+  'fraud-protection': { image: '/screenshots/workspace-fraud.webp', path: '/workspace/fraud' },
+  'managed-xdr': { image: '/screenshots/workspace-managed-xdr.webp', path: '/workspace/managed-xdr' },
+  'attack-surface-management': { image: '/screenshots/workspace-attack-surface.webp', path: '/workspace/attack-surface' },
+  'digital-risk-protection': { image: '/screenshots/workspace-digital-risk.webp', path: '/workspace/digital-risk' },
+  'business-email-protection': { image: '/screenshots/workspace-email-protection.webp', path: '/workspace/email-protection' },
 }
 
 /**

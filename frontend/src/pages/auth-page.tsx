@@ -28,12 +28,12 @@ import { useSeo } from '@/lib/seo'
 
 /** Which console to show behind each product, and where its screenshot lives. */
 const CONSOLE_IMAGE: Record<string, string> = {
-  'threat-intelligence': '/screenshots/workspace-threat-intelligence.png',
-  'fraud-protection': '/screenshots/workspace-fraud.png',
-  'managed-xdr': '/screenshots/workspace-managed-xdr.png',
-  'attack-surface-management': '/screenshots/workspace-attack-surface.png',
-  'digital-risk-protection': '/screenshots/workspace-digital-risk.png',
-  'business-email-protection': '/screenshots/workspace-email-protection.png',
+  'threat-intelligence': '/screenshots/workspace-threat-intelligence.webp',
+  'fraud-protection': '/screenshots/workspace-fraud.webp',
+  'managed-xdr': '/screenshots/workspace-managed-xdr.webp',
+  'attack-surface-management': '/screenshots/workspace-attack-surface.webp',
+  'digital-risk-protection': '/screenshots/workspace-digital-risk.webp',
+  'business-email-protection': '/screenshots/workspace-email-protection.webp',
 }
 
 function ProductShowcasePanel() {

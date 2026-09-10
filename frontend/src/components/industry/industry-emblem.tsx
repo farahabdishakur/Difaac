@@ -12,12 +12,12 @@ import { INDUSTRY_ACCENT } from '@/lib/tone'
  * visible edge.
  */
 const INDUSTRY_EMBLEM_IMAGE: Record<string, string> = {
-  'financial-services': '/industries/financial-services.png',
-  government: '/industries/government.png',
-  telecom: '/industries/telecom.png',
-  'retail-ecommerce': '/industries/retail-ecommerce.png',
-  crypto: '/industries/crypto.png',
-  healthcare: '/industries/healthcare.png',
+  'financial-services': '/industries/financial-services.webp',
+  government: '/industries/government.webp',
+  telecom: '/industries/telecom.webp',
+  'retail-ecommerce': '/industries/retail-ecommerce.webp',
+  crypto: '/industries/crypto.webp',
+  healthcare: '/industries/healthcare.webp',
 }
 
 /** The emblem's image URL for a slug, for callers that need to place it

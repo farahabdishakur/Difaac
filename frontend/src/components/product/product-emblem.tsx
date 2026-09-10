@@ -19,12 +19,12 @@ import type { Tone } from '@/lib/tone'
 
 /** The rendered emblem for each product, by slug. */
 const PRODUCT_EMBLEM_IMAGE: Record<string, string> = {
-  'threat-intelligence': '/emblems/emblem_threat-intelligence.png',
-  'fraud-protection': '/emblems/emblem_fraud-protection.png',
-  'managed-xdr': '/emblems/emblem_managed-xdr.png',
-  'attack-surface-management': '/emblems/emblem_attack-surface-management.png',
-  'digital-risk-protection': '/emblems/emblem_digital-risk-protection.png',
-  'business-email-protection': '/emblems/emblem_business-email-protection.png',
+  'threat-intelligence': '/emblems/emblem_threat-intelligence.webp',
+  'fraud-protection': '/emblems/emblem_fraud-protection.webp',
+  'managed-xdr': '/emblems/emblem_managed-xdr.webp',
+  'attack-surface-management': '/emblems/emblem_attack-surface-management.webp',
+  'digital-risk-protection': '/emblems/emblem_digital-risk-protection.webp',
+  'business-email-protection': '/emblems/emblem_business-email-protection.webp',
 }
 
 const EMBLEM_SIZE = {
