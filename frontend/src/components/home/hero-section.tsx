@@ -26,9 +26,8 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
-              Difaac defends the banks, mobile money and institutions the Somali community relies
-              on — at home and across the diaspora — from the fraud and phishing built to target
-              them, and helps your team stop it first.
+              Fraud and phishing target Somali banks, mobile money and businesses every day, at
+              home and in the diaspora. Difaac helps your team spot it early and shut it down.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
