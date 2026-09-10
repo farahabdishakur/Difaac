@@ -29,10 +29,14 @@ python -c "from app.database import init_db; init_db()"
 # So the database no longer caps this. Before raising the worker count, move
 # the rate limiter to shared storage (Redis, or a table); that is now the only
 # thing keeping it at one.
+# Bind to $PORT when the platform sets one, else 8000. A managed host such as
+# Render or Fly assigns the port through the environment and routes to it;
+# under docker-compose PORT is unset and the Caddy config expects 8000, so the
+# default keeps that stack unchanged.
 exec gunicorn app.main:app \
     -w 1 \
     -k uvicorn.workers.UvicornWorker \
-    -b 0.0.0.0:8000 \
+    -b "0.0.0.0:${PORT:-8000}" \
     --timeout 60 \
     --graceful-timeout 30 \
     --access-logfile - \
