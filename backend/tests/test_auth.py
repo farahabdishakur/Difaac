@@ -17,12 +17,8 @@ import pytest
 os.environ.setdefault("DIFAAC_DEBUG", "true")
 os.environ.setdefault("DIFAAC_SEED_PASSWORD", "seeded-password-for-tests")
 
-from fastapi.testclient import TestClient  # noqa: E402
-
-from app import rate_limit  # noqa: E402
 from app.config import REFRESH_COOKIE_NAME  # noqa: E402
 from app.database import init_db  # noqa: E402
-from app.main import app  # noqa: E402
 
 from tests.helpers import make_account, sign_in  # noqa: E402
 
@@ -346,7 +342,7 @@ class TestProtectedEndpoints:
 
         forged = pyjwt.encode(
             {"sub": "admin@difaac.io", "role": "admin", "typ": "access"},
-            "the-wrong-signing-key",
+            "the-wrong-signing-key-long-enough-to-be-realistic",
             algorithm="HS256",
         )
         response = client.get("/auth/me", headers={"Authorization": f"Bearer {forged}"})

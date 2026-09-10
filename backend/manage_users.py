@@ -30,7 +30,7 @@ from typing import Any
 
 from app import api_keys
 from app.auth_utils import hash_password
-from app.permissions import Role, permissions_for
+from app.permissions import Role
 from app.database import _Conn, close_pool, get_connection
 from app.tenancy import DEFAULT_TENANT_SLUG
 from app.models import MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH

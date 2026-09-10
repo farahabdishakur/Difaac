@@ -41,4 +41,9 @@ sentry-sdk==2.68.1
 # Kept here rather than in a separate dev file because the suite is small and
 # is expected to run anywhere the backend is installed.
 pytest==9.1.1
-httpx==0.28.1
+
+# Starlette's TestClient is built on this. httpx2, not httpx: Starlette warns
+# on every run that the httpx path is deprecated and names httpx2 as the
+# replacement. Following the warning now keeps a deprecation from becoming a
+# broken test suite on some later Starlette release.
+httpx2==2.12.0

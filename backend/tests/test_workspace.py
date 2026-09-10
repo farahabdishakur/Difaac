@@ -16,15 +16,21 @@ import pytest
 os.environ.setdefault("DIFAAC_DEBUG", "true")
 os.environ.setdefault("DIFAAC_SEED_PASSWORD", "seeded-password-for-tests")
 
-from fastapi.testclient import TestClient  # noqa: E402
-
-from app import rate_limit  # noqa: E402
-from app.database import init_db  # noqa: E402
-from app.main import app  # noqa: E402
+from app.database import get_connection, init_db  # noqa: E402
+from app.tenancy import DEFAULT_TENANT_SLUG, tenant_scope  # noqa: E402
 
 from tests.helpers import make_account, sign_in  # noqa: E402
 
 PASSWORD = "correct-horse-battery-staple"
+
+
+def _default_tenant_id() -> int:
+    """The tenant the test accounts belong to."""
+    with get_connection() as conn:
+        return conn.execute(
+            "SELECT id FROM tenants WHERE slug = %s", (DEFAULT_TENANT_SLUG,)
+        ).fetchone()["id"]
+
 
 # Every authenticated workspace endpoint. Adding a route to the workspace
 # router without adding it here means nothing checks that it is actually
@@ -92,7 +98,7 @@ class TestWorkspaceRequiresAuthentication:
 
         forged = pyjwt.encode(
             {"sub": "attacker@difaac.io", "role": "admin", "typ": "access"},
-            "the-wrong-signing-key",
+            "the-wrong-signing-key-long-enough-to-be-realistic",
             algorithm="HS256",
         )
         response = client.get(path, headers={"Authorization": f"Bearer {forged}"})
@@ -130,9 +136,23 @@ class TestResponseShape:
         Asserting the exact key set means adding a column to `incidents` fails
         this test until someone decides, deliberately, to expose it.
         """
+        # The row is created here rather than relied on from the seed. This
+        # test used to skip when the table was empty, which is exactly what
+        # happens with DIFAAC_SEED_DEMO off -- so in CI, where demo data is
+        # deliberately absent, the one assertion that guards against
+        # `SELECT *` never ran at all.
+        with tenant_scope(_default_tenant_id()), get_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO incidents (title, severity, status, reported_by, tenant_id)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                ("Shape check incident", "low", "open", "tests", _default_tenant_id()),
+            )
+            conn.commit()
+
         rows = client.get("/api/incidents", headers=auth_headers).json()
-        if not rows:
-            pytest.skip("no seeded incidents to inspect")
+        assert rows, "the row inserted above should be visible to this tenant"
 
         assert set(rows[0]) == {
             "id",
