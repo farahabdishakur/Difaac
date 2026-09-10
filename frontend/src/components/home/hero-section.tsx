@@ -26,8 +26,9 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
-              We track the groups behind fraud and phishing across Somalia and its diaspora, so
-              your team stops them first.
+              Our cyber defence, fraud protection and brand protection are powered by
+              intelligence-driven technology and analysts who track the adversaries operating
+              across Somalia and its diaspora.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
