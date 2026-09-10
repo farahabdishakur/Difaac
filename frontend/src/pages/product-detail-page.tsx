@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom'
+
+import { useSeo } from '@/lib/seo'
 import { ArrowRight, Check } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { LinkButton } from '@/components/shared/link-button'
@@ -32,6 +34,17 @@ export default function ProductDetailPage() {
   const { product, isLoading, error } = useProduct(slug)
   const { products } = useProducts()
 
+  // Before the early returns: hooks run unconditionally or not at all. The
+  // head is filled in from the slug while the fetch is in flight and
+  // corrected once the product arrives.
+  useSeo({
+    title: product?.name ?? 'Products',
+    description:
+      product?.description ??
+      'Difaac cyber defence products: threat intelligence, digital risk protection, fraud protection, managed XDR, attack surface management and business email protection.',
+    path: slug ? `/products/${slug}` : '/products',
+  })
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
@@ -53,13 +66,13 @@ export default function ProductDetailPage() {
   return (
     <>
 {/* Hero: name small, promise big, over the product's own hue. */}
-      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+4.5rem)] pb-20 lg:-mt-16 lg:pt-[calc(4rem+6rem)] lg:pb-28">
-        <HeroBackdrop tone={tone} bgImage={`/products/hero-${product.slug}.jpg`} spread />
+      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+3rem)] pb-16 sm:pt-[calc(3.5rem+4.5rem)] sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24 min-h-[580px] lg:min-h-[660px] flex flex-col justify-center items-center">
+        <HeroBackdrop tone={tone} slug={product.slug} spread />
 
-        <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center gap-6 px-4 text-center sm:px-6 lg:px-8">
           <ProductEmblem icon={Icon} tone={tone} slug={product.slug} size="hero" />
 
-          <p className={`text-sm font-medium uppercase tracking-[0.18em] ${toneText[tone]}`}>
+          <p className={`text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] ${toneText[tone]}`}>
             {product.name}
           </p>
 
@@ -67,11 +80,11 @@ export default function ProductDetailPage() {
             {product.tagline}
           </h1>
 
-          <p className="max-w-2xl text-pretty text-lg leading-relaxed text-body">
+          <p className="max-w-2xl text-pretty text-base sm:text-lg leading-relaxed text-body">
             {product.description}
           </p>
 
-          <div className="mt-2 flex flex-wrap justify-center gap-3">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <LinkButton href="/talk-to-sales" size="lg">
               Request a demo
               <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />

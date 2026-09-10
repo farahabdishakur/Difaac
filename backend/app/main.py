@@ -1,4 +1,4 @@
-"""Difaac API — FastAPI + SQLite backend.
+"""Difaac API — FastAPI + PostgreSQL backend.
 
 This is the main application factory. It registers all routes,
 middleware, and initializes the database on startup.
@@ -12,6 +12,7 @@ import fastapi.middleware.cors
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
+from app.client_ip import trusted_proxy_count
 from app.config import CORS_ORIGINS, DEBUG, RATE_LIMIT_AUTH_RPM, RATE_LIMIT_RPM, SENTRY_DSN
 from app.database import close_pool, init_db
 from app.rate_limit import rate_limit_middleware
@@ -72,6 +73,21 @@ async def lifespan(_: fastapi.FastAPI):
         RATE_LIMIT_RPM,
         RATE_LIMIT_AUTH_RPM,
     )
+    # Said out loud on every start, because the failure it describes is silent.
+    # With no trusted proxy behind a reverse proxy, every caller shares one
+    # bucket and the limits above apply to the whole internet at once — the
+    # service works, slowly and wrongly, and nothing in the logs says why.
+    if trusted_proxy_count():
+        logger.info(
+            "Trusting X-Forwarded-For from %d configured proxy network(s).",
+            trusted_proxy_count(),
+        )
+    elif not DEBUG:
+        logger.warning(
+            "DIFAAC_TRUSTED_PROXIES is not set. Rate limits and audit records will "
+            "use the peer address. If this service sits behind a reverse proxy, "
+            "every caller is currently counted as one client."
+        )
     yield
     logger.info("Difaac API shutting down.")
     close_pool()

@@ -238,3 +238,83 @@ class TestUniqueness:
             if "tenant_id" not in r["indexdef"] and not r["indexname"].endswith("_pkey")
         ]
         assert not blind, f"these unique indexes ignore the tenant: {blind}"
+
+
+class TestTheRoleItselfIsChecked:
+    """The check that would have caught this before a customer did.
+
+    Every other test in this module proves the policies work. None of them
+    could have caught the actual failure, because the failure was that the
+    policies did not apply to the connection at all: a superuser is exempt
+    from row-level security, and `FORCE` does not reach it.
+
+    The deployment ran as one — the `postgres` image creates `POSTGRES_USER`
+    as a superuser and `DATABASE_URL` pointed at it — so on the live server
+    every policy existed, the catalogue reported the tables as protected, and
+    every query returned every tenant's rows.
+    """
+
+    def test_the_suite_itself_runs_as_an_ordinary_role(self):
+        """Otherwise every other test in this file passes vacuously.
+
+        This is the assertion that gives the rest of the module its meaning.
+        Run the suite as a superuser and the isolation tests do not fail
+        loudly — they measure a connection the policies were never applied to.
+        """
+        from app.database import get_connection
+
+        with get_connection() as conn:
+            row = conn.execute(
+                "SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname = current_user"
+            ).fetchone()
+
+        assert not row["rolsuper"], (
+            "the tests are connecting as a superuser, so row-level security does not "
+            "apply and every isolation assertion in this file is meaningless. Point "
+            "DATABASE_URL at an ordinary role (see scripts/init-app-role.sql)."
+        )
+        assert not row["rolbypassrls"], "the test role holds BYPASSRLS"
+
+    def test_the_guard_accepts_an_ordinary_role(self):
+        from app.database import get_connection
+        from app.tenancy import assert_rls_enforced
+
+        with get_connection() as conn:
+            assert_rls_enforced(conn)  # must not raise
+
+    def test_the_guard_refuses_a_role_that_bypasses_rls(self, monkeypatch):
+        """Outside DEBUG the process must refuse to serve rather than serve
+        every tenant's rows to everyone."""
+        import app.config
+        from app.tenancy import assert_rls_enforced
+
+        class _SuperuserConn:
+            def execute(self, *_args, **_kwargs):
+                class _Cursor:
+                    @staticmethod
+                    def fetchone():
+                        return {"rolsuper": True, "rolbypassrls": False}
+
+                return _Cursor()
+
+        monkeypatch.setattr(app.config, "DEBUG", False)
+        with pytest.raises(RuntimeError, match="row-level security"):
+            assert_rls_enforced(_SuperuserConn())
+
+    def test_bypassrls_alone_is_enough_to_refuse(self, monkeypatch):
+        """A role need not be a superuser to be exempt."""
+        import app.config
+        from app.tenancy import assert_rls_enforced
+
+        class _BypassConn:
+            def execute(self, *_args, **_kwargs):
+                class _Cursor:
+                    @staticmethod
+                    def fetchone():
+                        return {"rolsuper": False, "rolbypassrls": True}
+
+                return _Cursor()
+
+        monkeypatch.setattr(app.config, "DEBUG", False)
+        with pytest.raises(RuntimeError, match="BYPASSRLS"):
+            assert_rls_enforced(_BypassConn())

@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { useSeo } from '@/lib/seo'
 import { CTABanner } from '@/components/shared/cta-banner'
 import {
   ServiceHero,
@@ -21,6 +22,15 @@ import GenericDetailPage from '@/pages/generic-detail-page'
 export default function ServicePage() {
   const { slug } = useParams<{ slug: string }>()
   const content = getServicePage(slug)
+
+  // Before the early return, so the hook runs on every render.
+  useSeo({
+    title: content?.hero.badge ?? 'Services',
+    description:
+      content?.hero.description ??
+      'Difaac security services: penetration testing, incident response, digital forensics and security training.',
+    path: slug ? `/services/${slug}` : '/services',
+  })
 
   if (!content) {
     return <GenericDetailPage type="service" />

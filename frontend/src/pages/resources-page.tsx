@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useSeo } from '@/lib/seo'
 import {
   BookOpen,
   FileText,
@@ -30,6 +31,8 @@ import { PageHero } from '@/components/shared/page-hero'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { Button } from '@/components/ui/button'
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog'
+import { downloadDossier } from '@/lib/dossier'
+import { LinkButton } from '@/components/shared/link-button'
 
 export type ThreatArticle = {
   id: string
@@ -497,6 +500,13 @@ const CATEGORIES = [
 ] as const
 
 export default function ResourcesPage() {
+  useSeo({
+    title: 'Threat research and reports',
+    description:
+      'Difaac threat research: intelligence reports, campaign analysis and incident response playbooks on the adversaries operating across the Horn of Africa.',
+    path: '/resources',
+  })
+
   const { hash } = useLocation()
   const [selectedCategory, setSelectedCategory] = useState<string>('All Intelligence')
   const [searchQuery, setSearchQuery] = useState('')
@@ -543,12 +553,17 @@ export default function ResourcesPage() {
   }
 
   const handleDownloadReport = (article: ThreatArticle) => {
-    setDownloadToast(`Preparing PDF intelligence dossier for "${article.title}"...`)
-    setTimeout(() => {
-      setDownloadToast(null)
-      // Trigger download alert
-      alert(`Dossier Download: "${article.title}" (TLP:CLEAR PDF) has been prepared and downloaded.`)
-    }, 1200)
+    // Assembled and written synchronously. The previous version waited 1.2s
+    // and then raised an alert claiming a file had been downloaded; nothing
+    // was ever written. The toast now reports the filename the reader will
+    // actually find, which is also how they can tell it worked.
+    try {
+      const filename = downloadDossier(article)
+      setDownloadToast(`Saved ${filename}`)
+    } catch {
+      setDownloadToast('The dossier could not be saved. Check your browser download settings.')
+    }
+    window.setTimeout(() => setDownloadToast(null), 4000)
   }
 
   return (
@@ -707,7 +722,7 @@ export default function ResourcesPage() {
                         className="gap-2 border-line text-text hover:border-brand/40 hover:text-brand"
                       >
                         <Download className="size-4" />
-                        Download Dossier (PDF)
+                        Download dossier (.md)
                       </Button>
                     </div>
                   </div>
@@ -893,7 +908,7 @@ export default function ResourcesPage() {
                       className="hidden gap-1.5 bg-brand/15 text-xs font-medium text-brand hover:bg-brand hover:text-brand-ink sm:flex"
                     >
                       <Download className="size-3.5" />
-                      Export Dossier
+                      Export dossier
                     </Button>
                     <DialogPrimitive.Close
                       render={
@@ -1241,17 +1256,18 @@ export default function ResourcesPage() {
                       className="gap-2 border-line text-xs text-text hover:border-brand/40 hover:text-brand"
                     >
                       <Download className="size-3.5" />
-                      Download PDF
+                      Download dossier (.md)
                     </Button>
-                    <Button
-                      onClick={() => {
-                        handleDownloadReport(selectedArticle)
-                        setSelectedArticle(null)
-                      }}
+                    {/* Two buttons that did the same download, one of them
+                        labelled to promise telemetry it did not deliver. The
+                        primary action on a research dossier is the ask, so it
+                        is now the ask -- and it goes somewhere real. */}
+                    <LinkButton
+                      href="/talk-to-sales"
                       className="bg-brand text-xs font-medium text-brand-ink hover:bg-brand-bright"
                     >
-                      Access Full Telemetry
-                    </Button>
+                      Talk to an analyst
+                    </LinkButton>
                   </div>
                 </div>
 

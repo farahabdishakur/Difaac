@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom'
+
+import { useSeo } from '@/lib/seo'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { IndustryHeroEnhanced } from '@/components/home/industry-hero-enhanced'
 import { IndustryChallenges } from '@/components/home/industry-challenges'
@@ -288,13 +290,22 @@ const industryDetails: Record<string, IndustryData> = {
 
 export default function IndustryDetailPage() {
   const { slug } = useParams<{ slug: string }>()
+  const industry = slug ? getIndustryBySlug(slug) : undefined
+  const details = slug ? industryDetails[slug] : undefined
+
+  // Ahead of every early return, for the reason given on the solution page:
+  // hooks run unconditionally or the order changes between renders.
+  useSeo({
+    title: industry ? `Cyber defence for ${industry.name}` : 'Industries',
+    description:
+      industry?.description ??
+      'Threat intelligence and cyber defence tailored to the sectors Difaac protects across the Horn of Africa.',
+    path: slug ? `/industries/${slug}` : '/industries',
+  })
 
   if (!slug) {
     return <NotFoundPage />
   }
-
-  const industry = getIndustryBySlug(slug)
-  const details = industryDetails[slug]
 
   if (!industry || !details) {
     return <NotFoundPage />

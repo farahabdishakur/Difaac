@@ -10,6 +10,7 @@ import { solutionChallenges } from '@/lib/data/engagement'
 import { industries } from '@/lib/data/industries'
 import { useSolutions } from '@/lib/api'
 import type { Solution } from '@/lib/data/solutions'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Solutions index.
@@ -42,6 +43,12 @@ const GROUPS: { key: Solution['group']; eyebrow: string; title: string; descript
 ]
 
 export default function SolutionsPage() {
+  useSeo({
+    title: 'Security solutions by problem, role and sector',
+    description:
+      'Start from the problem rather than the product. Each Difaac solution maps to the products and services that close a specific threat vector, equip a role, or defend a sector.',
+    path: '/solutions',
+  })
   const { solutions } = useSolutions()
 
   return (

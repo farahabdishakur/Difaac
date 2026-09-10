@@ -178,39 +178,39 @@ export function HeroBackdrop({
           <img
             src={image}
             alt=""
-            className="size-full object-cover object-center opacity-35 mix-blend-screen scale-105 transition-transform duration-1000"
+            className="size-full object-cover object-center opacity-60 mix-blend-screen scale-105 transition-transform duration-1000"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-transparent opacity-80" />
-{/* Radial mask to ensure center text and emblem stay high-contrast */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-transparent to-ink/90" />
+          {/* Subtle radial mask so central text and emblem pop with maximum contrast */}
           <div
             className="absolute inset-0"
             style={{
-              background: 'radial-gradient(ellipse at 50% 35%, rgba(1,0,5,0.25) 0%, rgba(1,0,5,0.65) 55%, rgba(1,0,5,0.95) 100%)'
+              background: 'radial-gradient(ellipse at 50% 38%, rgba(1,0,5,0.20) 0%, rgba(1,0,5,0.65) 55%, rgba(1,0,5,0.98) 100%)'
             }}
           />
         </div>
       ) : null}
 
       <div
-        className="absolute inset-0 opacity-[0.45]"
+        className="absolute inset-0 opacity-[0.40]"
         style={{
-          backgroundImage: `radial-gradient(120% 80% at 15% -10%, color-mix(in srgb, ${accent} 22%, transparent) 0%, transparent 60%),
-             radial-gradient(90% 70% at 95% 5%, color-mix(in srgb, ${accent} 14%, transparent) 0%, transparent 65%)`,
+          backgroundImage: `radial-gradient(120% 80% at 15% -10%, color-mix(in srgb, ${accent} 24%, transparent) 0%, transparent 60%),
+             radial-gradient(90% 70% at 95% 5%, color-mix(in srgb, ${accent} 16%, transparent) 0%, transparent 65%)`,
         }}
       />
 
-{/* The product hero opts into a single wide pool of the accent, centred high enough that the colour carries up behind the transparent header and reaches the top of the page rather than starting below it. */}
+      {/* The product hero opts into a single wide pool of the accent, centred high enough that the colour carries up behind the transparent header and reaches the top of the page rather than starting below it. */}
       {spread ? (
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `radial-gradient(78% 62% at 50% 16%, color-mix(in srgb, ${accent} 44%, transparent) 0%, color-mix(in srgb, ${accent} 16%, transparent) 42%, transparent 76%)`,
+            backgroundImage: `radial-gradient(78% 62% at 50% 16%, color-mix(in srgb, ${accent} 38%, transparent) 0%, color-mix(in srgb, ${accent} 14%, transparent) 42%, transparent 76%)`,
           }}
         />
       ) : null}
 
-{/* Settles the wash back to the page ground at the fold. */}
-      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-b from-transparent via-ink/80 to-ink" />
+      {/* Settles the wash back to the page ground at the fold. */}
+      <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-b from-transparent via-ink/80 to-ink" />
     </div>
   )
 }

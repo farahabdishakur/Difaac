@@ -36,7 +36,7 @@ STATIC = [
     ("/solutions", 0.9, "weekly"),
     ("/services", 0.9, "weekly"),
     ("/industries", 0.8, "monthly"),
-    ("/pricing", 0.8, "monthly"),
+    ("/subscriptions", 0.8, "monthly"),
     ("/resources", 0.8, "weekly"),
     ("/company", 0.7, "monthly"),
     ("/company/team", 0.6, "monthly"),

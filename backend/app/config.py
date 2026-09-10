@@ -65,6 +65,29 @@ CORS_ORIGINS: list[str] = [
     if origin.strip()
 ]
 
+# Reverse proxies whose X-Forwarded-For header may be believed
+#
+# Behind Caddy every connection reaches the backend from Caddy, so without this
+# the rate limiter sees one client for the entire internet: the 10-per-minute
+# auth budget becomes 10 for everybody combined, and ordinary page traffic
+# exhausts the general budget for every visitor at once. The site rate-limits
+# itself, and a login flood still cannot be attributed to whoever is sending
+# it.
+#
+# The value is a comma-separated list of addresses or CIDR blocks. Empty by
+# default — meaning the header is ignored and the peer address is used — which
+# is right for a directly exposed service and is the safe way to be wrong: an
+# unset value merges callers together, while a too-wide value would let a
+# caller name its own address and escape the limit entirely.
+#
+# Under docker compose the backend is only reachable on the internal network
+# (it is `expose`d, never published), so the compose file trusts that network.
+TRUSTED_PROXIES: list[str] = [
+    entry.strip()
+    for entry in os.getenv("DIFAAC_TRUSTED_PROXIES", "").split(",")
+    if entry.strip()
+]
+
 # Rate Limiting (requests per minute per client IP)
 
 RATE_LIMIT_RPM: int = int(os.getenv("DIFAAC_RATE_LIMIT_RPM", "120"))
@@ -145,6 +168,29 @@ LOCKOUT_MINUTES: int = int(os.getenv("DIFAAC_LOCKOUT_MINUTES", "15"))
 COOKIE_SECURE: bool = not DEBUG
 COOKIE_SAMESITE: str = os.getenv("DIFAAC_COOKIE_SAMESITE", "lax")
 REFRESH_COOKIE_NAME: str = "difaac_refresh"
+
+# Outbound email (SMTP)
+#
+# The password reset link is the one message this service sends. Without these
+# it cannot be sent at all, and the endpoint says so rather than claiming a
+# delivery it did not make — see app/routes/auth.py.
+#
+# Any provider that speaks SMTP works: a relay on the VPS, Gmail, SES,
+# Postmark, Resend. Port 465 means implicit TLS and the STARTTLS flag is
+# ignored; 587 means STARTTLS, which is the usual choice.
+SMTP_HOST: str = os.getenv("DIFAAC_SMTP_HOST", "").strip()
+SMTP_PORT: int = int(os.getenv("DIFAAC_SMTP_PORT", "587"))
+SMTP_USERNAME: str = os.getenv("DIFAAC_SMTP_USERNAME", "").strip()
+SMTP_PASSWORD: str = os.getenv("DIFAAC_SMTP_PASSWORD", "")
+SMTP_STARTTLS: bool = os.getenv("DIFAAC_SMTP_STARTTLS", "true").lower() in ("1", "true", "yes")
+
+# The envelope sender. Must be an address the relay is willing to send as, or
+# the message is refused or silently filed as spam.
+SMTP_FROM: str = os.getenv("DIFAAC_SMTP_FROM", "").strip()
+
+# Kept short. A slow relay must not hold a request open; a reset that fails
+# fast and says so is better than one that hangs.
+SMTP_TIMEOUT_SECONDS: int = int(os.getenv("DIFAAC_SMTP_TIMEOUT_SECONDS", "10"))
 
 # Error tracking
 # Unset by default, which leaves Sentry fully inert — sentry_sdk.init() is

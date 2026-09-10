@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Printer } from 'lucide-react'
 import { privacyPolicy, termsOfUse } from '@/lib/data/legal'
 import type { LegalBlock, LegalDocument } from '@/lib/data/legal'
+import { useSeo } from '@/lib/seo'
 
 interface LegalPageProps {
   type: 'privacy' | 'terms'
@@ -82,6 +83,15 @@ function Block({ block }: { block: LegalBlock }) {
 
 export default function LegalPage({ type }: LegalPageProps) {
   const doc: LegalDocument = type === 'privacy' ? privacyPolicy : termsOfUse
+
+  useSeo({
+    title: type === 'privacy' ? 'Privacy policy' : 'Terms of use',
+    description:
+      type === 'privacy'
+        ? 'What data Difaac collects, why it is held, how long it is kept, and what a customer can ask us to do with it.'
+        : 'The terms under which Difaac provides its platform and services, including the rules of engagement for offensive work.',
+    path: type === 'privacy' ? '/privacy' : '/terms',
+  })
   const [activeSection, setActiveSection] = useState('')
 
   useEffect(() => {

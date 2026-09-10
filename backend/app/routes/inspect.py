@@ -25,6 +25,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 
+from app.client_ip import client_ip
 from app.database import get_connection
 from app.inspection import FLAG_AT, Verdict, inspect
 from app.permissions import Permission
@@ -155,7 +156,7 @@ async def inspection_middleware(request: Request, call_next):
             user_agent=request.headers.get("user-agent", ""),
         )
         if verdict.score >= FLAG_AT:
-            client = request.client.host if request.client else "unknown"
+            client = client_ip(request)
             with get_connection() as conn:
                 record_detection(conn, verdict, path=path, source=client)
             logger.warning(

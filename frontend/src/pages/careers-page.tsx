@@ -4,6 +4,7 @@ import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
 import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
 import { careerValues } from '@/lib/data/company'
+import { useSeo } from '@/lib/seo'
 
 /**
  * The areas Difaac will open first. Not postings — the page is honest that no
@@ -36,6 +37,12 @@ const futureAreas = [
  * company cannot honestly promise.
  */
 export default function CareersPage() {
+  useSeo({
+    title: 'Careers',
+    description:
+      'Difaac hires into detection engineering, threat analysis and offensive security. No roles are posted yet — reach out and you are known to us before one is listed.',
+    path: '/company/careers',
+  })
   return (
     <>
       <CompanyHero

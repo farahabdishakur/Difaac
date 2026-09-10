@@ -4,6 +4,7 @@ import { ProductShowcase } from '@/components/home/product-showcase'
 import { PlatformCommitments } from '@/components/home/platform-commitments'
 import { ResourcesPreview } from '@/components/home/resources-preview'
 import { CTABanner } from '@/components/shared/cta-banner'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Section order follows the shape group-ib.com uses on its own homepage:
@@ -19,6 +20,12 @@ import { CTABanner } from '@/components/shared/cta-banner'
  * are actually true.
  */
 export default function HomePage() {
+  useSeo({
+    title: 'Intelligent cyber defence for the Horn of Africa',
+    description:
+      'Difaac tracks the groups behind ransomware, fraud and brand abuse across Somalia and the Horn of Africa, and gives your team the intelligence to stop them.',
+    path: '/',
+  })
   return (
     <>
       <HeroSection />

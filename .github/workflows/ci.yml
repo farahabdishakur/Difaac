@@ -13,6 +13,47 @@ jobs:
     defaults:
       run:
         working-directory: backend
+
+    # The suite needs a real PostgreSQL. Tenant isolation is enforced by
+    # row-level security, which is a database feature — there is no way to
+    # prove it holds without a database that implements it, and no value in a
+    # test run that skips the checks that matter most.
+    #
+    # Without this service the job failed at import: conftest.py connects
+    # before pytest collects anything, so nothing ran at all.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: difaac
+          POSTGRES_PASSWORD: difaac
+          POSTGRES_DB: difaac
+        ports:
+          - 5432:5432
+        # Steps start as soon as the container does, which is well before
+        # Postgres accepts connections. Without the health check the first
+        # test loses a race it did not know it was in.
+        options: >-
+          --health-cmd "pg_isready -U difaac"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # difaac_app, not the superuser the service container creates. A
+      # superuser is exempt from row-level security, so running the suite as
+      # one makes every tenant-isolation test pass vacuously -- it would assert
+      # that isolation holds while measuring a connection the policies do not
+      # apply to. Created in the step below.
+      DATABASE_URL: postgresql://difaac_app:difaac@localhost:5432/difaac
+      # config.py refuses to start without a signing key unless DEBUG is on.
+      # A fixed value is correct here and nowhere else: it signs nothing that
+      # outlives the job, and it is visible in a public repository.
+      DIFAAC_SECRET_KEY: ci-only-key-not-used-outside-this-job-000000
+      DIFAAC_DEBUG: 'false'
+      # Demonstration rows would sit in the same tables the assertions count.
+      DIFAAC_SEED_DEMO: 'false'
+
     steps:
       - uses: actions/checkout@v4
 
@@ -24,6 +65,22 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      # The same ordinary role the deployment uses, so the suite measures what
+      # production actually runs as. CREATEDB is the one difference: conftest
+      # builds and drops a throwaway database for each run, which production
+      # never does.
+      - name: Create the application role
+        env:
+          PGPASSWORD: difaac
+        run: |
+          psql -h localhost -U difaac -d difaac -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE difaac_app LOGIN PASSWORD 'difaac'
+              NOSUPERUSER NOBYPASSRLS CREATEDB NOCREATEROLE;
+          ALTER DATABASE difaac OWNER TO difaac_app;
+          ALTER SCHEMA public OWNER TO difaac_app;
+          GRANT ALL ON SCHEMA public TO difaac_app;
+          SQL
 
       - name: Run tests
         run: python -m pytest tests/ -v

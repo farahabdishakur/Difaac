@@ -10,6 +10,8 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.permissions import Role
+
 # Password bounds. The upper bound matters as well as the lower: bcrypt only
 # considers the first 72 bytes, and hashing an unbounded string is a cheap way
 # for a caller to burn server CPU.
@@ -114,17 +116,40 @@ class UserLoginRequest(BaseModel):
 
 
 class UserRegisterRequest(BaseModel):
-    """Payload sent by client to register a new account.
+    """Payload for creating an account.
 
-    Deliberately has no ``role`` field: the role is assigned by the server in
-    the register route. Accepting it from the client would let anyone register
-    themselves as an administrator.
+    This is an administrative action, not a public signup: the endpoint that
+    accepts it requires ``users:manage`` and creates the account inside the
+    caller's own tenant. The tenant is therefore deliberately absent from this
+    model — a tenant a client can name is not isolation, it is a request to be
+    put somewhere else.
+
+    ``role`` is accepted but constrained to the roles the product defines, and
+    defaults to the least privileged one. An account that should do more is
+    raised deliberately rather than by whatever the default happened to be.
     """
     email: str
     password: str = Field(min_length=MIN_PASSWORD_LENGTH, max_length=MAX_PASSWORD_LENGTH)
     full_name: str | None = Field(default=None, max_length=200)
+    role: str = Field(default=Role.VIEWER.value, max_length=40)
 
     _normalise_email = field_validator("email")(_normalise_email_value)
+
+    @field_validator("role")
+    @classmethod
+    def known_role(cls, value: str) -> str:
+        """Reject anything that is not a role the product ships.
+
+        Without this an unrecognised string would be stored happily and then
+        resolve to an empty permission set at read time — an account that
+        exists, signs in, and can do nothing, for a reason nobody can see.
+        """
+        try:
+            return Role(value.strip().lower()).value
+        except ValueError:
+            raise ValueError(
+                f"role must be one of {sorted(r.value for r in Role)}"
+            ) from None
 
     @field_validator("email")
     @classmethod

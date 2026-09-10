@@ -20,8 +20,25 @@ services:
       - POSTGRES_USER=difaac
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set it in a root .env file before the first start}
       - POSTGRES_DB=difaac
+      # Read by the init script above to set the application role's password.
+      # Separate from POSTGRES_PASSWORD on purpose: the superuser credential
+      # and the credential the application holds should not be the same
+      # secret, because the application's is the one exposed to the app.
+      - DIFAAC_APP_DB_PASSWORD=${DIFAAC_APP_DB_PASSWORD:?DIFAAC_APP_DB_PASSWORD is required — set it in a root .env file before the first start}
     volumes:
       - difaac_pgdata:/var/lib/postgresql/data
+      # Runs once, on the first start of an empty volume, as the bootstrap
+      # superuser. It creates the ordinary role the application connects as.
+      #
+      # POSTGRES_USER above is a SUPERUSER — that is what the image makes it —
+      # and a superuser is exempt from row-level security no matter what the
+      # policies say. The backend used to connect as it, which left every
+      # tenant isolation policy inert on a running server. It now connects as
+      # difaac_app, created here with NOSUPERUSER NOBYPASSRLS.
+      #
+      # On an existing deployment this file does NOT run, because the volume
+      # is not empty. See DEPLOY.md for the one command to run by hand.
+      - ./scripts/init-app-role.sql:/docker-entrypoint-initdb.d/10-init-app-role.sql:ro
     # The backend waits on this: it will not start until the database is
     # actually accepting connections, not merely running.
     healthcheck:
@@ -42,7 +59,17 @@ services:
       - ./backend/.env
     environment:
       - DIFAAC_DEBUG=false
-      - DATABASE_URL=postgresql://difaac:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set it in a root .env file before the first start}@db:5432/difaac
+      # difaac_app, never the superuser: row-level security does not apply to
+      # a superuser, so connecting as one silently switches tenant isolation
+      # off while leaving every policy in place.
+      - DATABASE_URL=postgresql://difaac_app:${DIFAAC_APP_DB_PASSWORD:?DIFAAC_APP_DB_PASSWORD is required — set it in a root .env file before the first start}@db:5432/difaac
+      # Caddy is the only thing that can reach this container — the port is
+      # `expose`d on the internal network, never published to the host — so the
+      # forwarded address it sets is the real client and can be believed.
+      # Without this every visitor is counted as one client and the auth rate
+      # limit of ten per minute applies to the entire internet combined.
+      # 172.16/12 is the range Docker allocates its bridge networks from.
+      - DIFAAC_TRUSTED_PROXIES=172.16.0.0/12
     depends_on:
       db:
         condition: service_healthy

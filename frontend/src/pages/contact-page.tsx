@@ -11,6 +11,7 @@ import { productAccent } from '@/lib/tone'
 import { submitDemoRequest } from '@/lib/demo-requests'
 import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
 import { contactChannels, office } from '@/lib/data/company'
+import { useSeo } from '@/lib/seo'
 
 
 const SERVICE_GROUPS = [
@@ -632,5 +633,11 @@ function GeneralContactPage() {
 }
 
 export default function ContactPage({ isSales = false }: { isSales?: boolean }) {
+  useSeo({
+    title: 'Contact Difaac',
+    description:
+      'Questions about the platform, partnership interest, or an active incident. Difaac is small enough that a message reaches a person rather than a queue.',
+    path: '/company/contact',
+  })
   return isSales ? <SalesPage /> : <GeneralContactPage />
 }

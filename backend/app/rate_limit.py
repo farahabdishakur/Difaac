@@ -4,10 +4,11 @@ Two limits are applied: a general per-IP budget across the API, and a much
 tighter budget on authentication endpoints, where an unbounded request rate is
 an offline-speed password guessing oracle.
 
-State lives in process memory, which is the right trade-off for a single-process
-deployment and the SQLite database this service already uses. Behind multiple
-workers each process keeps its own counters, so the effective limit multiplies by
-the worker count — move to a shared store (Redis) before scaling out.
+State lives in process memory, which is the right trade-off for the single
+worker this service deploys as. Behind multiple workers each process keeps its
+own counters, so the effective limit multiplies by the worker count — move to a
+shared store (Redis) before scaling out. `start.sh` explains why the worker
+count is pinned at one for exactly this reason.
 """
 
 from __future__ import annotations
@@ -19,6 +20,7 @@ from collections import defaultdict, deque
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
+from app.client_ip import client_ip
 from app.config import RATE_LIMIT_AUTH_RPM, RATE_LIMIT_INGEST_RPM, RATE_LIMIT_RPM
 
 logger = logging.getLogger(__name__)
@@ -59,13 +61,12 @@ _MAX_TRACKED_CLIENTS = 10_000
 def _client_key(request: Request) -> str:
     """Identify the caller.
 
-    `request.client.host` is the peer address. Behind a reverse proxy every peer
-    is the proxy, so a forwarded header would be needed to tell callers apart —
-    but only when the proxy is trusted, since clients can set that header
-    themselves. Until a trusted proxy is configured, the peer address is the
-    only value that cannot be spoofed.
+    Behind a reverse proxy every peer is the proxy, so telling callers apart
+    means reading the forwarded chain — and only from a proxy on the trusted
+    list, because a client can write that header itself. `client_ip` holds
+    that logic and the reasoning behind it; see `app/client_ip.py`.
     """
-    return request.client.host if request.client else "unknown"
+    return client_ip(request)
 
 
 def _prune(timestamps: deque[float], now: float) -> None:

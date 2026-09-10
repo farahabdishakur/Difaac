@@ -1,4 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
+
+import { useSeo } from '@/lib/seo'
 import { Check, ArrowRight } from 'lucide-react'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { SolutionHeroEnhanced } from '@/components/home/solution-hero-enhanced'
@@ -248,13 +250,23 @@ const solutionDetails: Record<string, { benefits: string[]; useCases: string[] }
 
 export default function SolutionDetailPage() {
   const { slug } = useParams<{ slug: string }>()
+  const solution = slug ? getSolutionBySlug(slug) : undefined
+  const details = slug ? solutionDetails[slug] : undefined
+
+  // Ahead of every early return: a hook cannot be skipped on one render and
+  // called on the next. The lookups moved up with it, which is why they now
+  // guard on `slug` themselves.
+  useSeo({
+    title: solution?.name ?? 'Solutions',
+    description:
+      solution?.description ??
+      'Difaac security solutions, mapped to the products and services that deliver them.',
+    path: slug ? `/solutions/${slug}` : '/solutions',
+  })
 
   if (!slug) {
     return <NotFoundPage />
   }
-
-  const solution = getSolutionBySlug(slug)
-  const details = solutionDetails[slug]
 
   if (!solution || !details) {
     return <NotFoundPage />

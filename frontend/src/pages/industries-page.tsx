@@ -6,8 +6,15 @@ import { getIcon } from '@/components/icons/icon-map'
 import { IndustryEmblem } from '@/components/industry/industry-emblem'
 import { useIndustries } from '@/lib/api'
 import NotFoundPage from '@/pages/not-found-page'
+import { useSeo } from '@/lib/seo'
 
 export default function IndustriesPage() {
+  useSeo({
+    title: 'Cyber defence by industry',
+    description:
+      'Threat intelligence and defence tailored to the sectors Difaac protects — banking and mobile money, healthcare, telecommunications, government and NGOs.',
+    path: '/industries',
+  })
   const { industries, isLoading, error } = useIndustries()
 
   if (isLoading) {

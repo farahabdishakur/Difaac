@@ -8,6 +8,7 @@ import { productSubscriptions } from '@/lib/data/subscriptions'
 import { products } from '@/lib/data/products'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { LinkButton } from '@/components/shared/link-button'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Subscription plans and feature matrix.
@@ -48,6 +49,12 @@ const COLUMN = 'mx-auto w-full max-w-[1080px] px-4 sm:px-6'
 const MATRIX_GRID = 'grid-cols-[1.4fr_repeat(3,minmax(0,1fr))]'
 
 export default function SubscriptionsPage() {
+  useSeo({
+    title: 'Plans and pricing',
+    description:
+      'What each Difaac tier covers, what it costs, and where the boundaries are — so a buyer can map their current coverage against it before talking to anyone.',
+    path: '/subscriptions',
+  })
   const { slug } = useParams<{ slug?: string }>()
   const navigate = useNavigate()
 

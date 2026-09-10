@@ -20,6 +20,7 @@ import psycopg
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 
+from app.client_ip import UNKNOWN, client_ip
 from app.database import get_connection
 from app.models import DemoRequestCreate, DemoRequestResponse, MessageResponse
 from app.permissions import Permission
@@ -42,7 +43,9 @@ MAX_LIMIT = 500
 
 
 def _client_ip(request: Request) -> str | None:
-    return request.client.host if request.client else None
+    """The address a demo request came from, read through a trusted proxy."""
+    resolved = client_ip(request)
+    return None if resolved == UNKNOWN else resolved
 
 
 @public_router.post(

@@ -16,7 +16,8 @@ async def health() -> dict[str, str]:
 
     This endpoint is unauthenticated so that orchestrators and load balancers
     can call it, which is also why the failure detail is logged rather than
-    returned: a raw SQLite error discloses filesystem paths to anyone probing.
+    returned: a raw database error names the host, the database and the role to
+    anyone probing.
     """
     try:
         with get_connection() as conn:

@@ -16,7 +16,7 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
-from app.tenancy import apply_to_connection, tenant_scope
+from app.tenancy import assert_rls_enforced, apply_to_connection, tenant_scope
 
 from app.config import DATABASE_URL, SEED_DEMO_DATA
 from app.migrations import run_migrations
@@ -148,6 +148,11 @@ def init_db() -> None:
         conn.commit()
         run_migrations(conn)
         default_tenant = run_tenancy_migration(conn)
+        # Checked immediately after the policies are installed, because
+        # installing them is exactly the moment the system starts believing it
+        # is isolated. A role that bypasses RLS makes all of the above
+        # decoration.
+        assert_rls_enforced(conn)
 
     # A second connection, taken inside the tenant scope so its checkout
     # announces the tenant. Everything below writes into tables that now

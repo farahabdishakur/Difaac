@@ -86,9 +86,91 @@ The other two go in `backend/.env`:
   from the template in place means a page served from a developer's machine can
   call the live API with a live session.
 
+- **`DIFAAC_TRUSTED_PROXIES`** — already set for you in `docker-compose.yml`
+  (`172.16.0.0/12`, the range Docker gives its internal networks). You only
+  need to think about this if you run the backend somewhere other than that
+  compose file.
+
+  It is what lets the API see past Caddy. Every connection reaches the backend
+  *from* Caddy, so without it the rate limiter counts the whole internet as one
+  client: the ten-per-minute limit on sign-in applies to everybody combined,
+  and a handful of simultaneous visitors exhausts the general budget for
+  everyone. Sessions and detections are recorded against Caddy's address too,
+  so the audit trail cannot say where anything came from.
+
+  Set it to the address the proxy connects from, never to `0.0.0.0/0` — that
+  would let any caller write its own address into a header and escape the rate
+  limit entirely. If the value is wrong the backend says so in its startup
+  log; check `docker compose logs backend | grep -i proxies` after the first
+  start.
+
+- **`DIFAAC_SMTP_HOST`** and **`DIFAAC_SMTP_FROM`** (plus port, username and
+  password) — needed for password reset. Without them a user who forgets their
+  password cannot recover it: the endpoint answers 503 rather than saying a
+  link is on its way that nothing will send. Any SMTP relay works — one on this
+  VPS, Gmail, SES, Postmark, Resend. Port 587 with `DIFAAC_SMTP_STARTTLS=true`
+  is the usual setup; 465 is implicit TLS.
+
+  Until this is set, an administrator resets a password with
+  `manage_users.py set-password`.
+
 Leave `DIFAAC_DEBUG=false`. Leave `DIFAAC_SEED_DEMO` unset — it defaults to
 false in production, so the sample threat data is **not** loaded on a live
 server. Your platform starts empty except for the admin account.
+
+## 2b. The database role (read this even if you already deployed)
+
+The application must **not** connect to PostgreSQL as a superuser.
+
+PostgreSQL exempts superusers from row-level security, and row-level security
+is the whole of Difaac's tenant isolation. `FORCE ROW LEVEL SECURITY` does not
+help — it makes policies apply to a table's *owner*, and says nothing about a
+superuser. So a deployment that connects as one has every policy installed,
+`pg_tables` reporting `rowsecurity = true`, and every query returning every
+tenant's rows. The database reports itself as protected and is not.
+
+The `postgres` image creates `POSTGRES_USER` as a superuser, and earlier
+versions of this stack pointed `DATABASE_URL` at exactly that user.
+
+**New deployments** need nothing: `scripts/init-app-role.sql` runs on the first
+start and creates `difaac_app` with `NOSUPERUSER NOBYPASSRLS`, and the compose
+file already connects as it. Set `DIFAAC_APP_DB_PASSWORD` in the root `.env`
+alongside `POSTGRES_PASSWORD` — two different secrets, because the one the
+application holds is the one that is exposed to the application.
+
+**An existing deployment** does not run that script, because it only runs on an
+empty data volume. Create the role by hand, once:
+
+```bash
+docker compose exec db psql -U difaac -d difaac -v ON_ERROR_STOP=1 -c "
+  CREATE ROLE difaac_app LOGIN PASSWORD 'PUT-A-STRONG-PASSWORD-HERE'
+      NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+  ALTER SCHEMA public OWNER TO difaac_app;
+  GRANT ALL ON SCHEMA public TO difaac_app;
+"
+docker compose exec db psql -U difaac -d postgres -c "ALTER DATABASE difaac OWNER TO difaac_app;"
+```
+
+Existing tables are still owned by the old superuser, so hand them over too:
+
+```bash
+docker compose exec db psql -U difaac -d difaac -tAc   "SELECT 'ALTER TABLE '||tablename||' OWNER TO difaac_app;' FROM pg_tables WHERE schemaname='public'"   | docker compose exec -T db psql -U difaac -d difaac
+docker compose exec db psql -U difaac -d difaac -tAc   "SELECT 'ALTER SEQUENCE '||sequencename||' OWNER TO difaac_app;' FROM pg_sequences WHERE schemaname='public'"   | docker compose exec -T db psql -U difaac -d difaac
+```
+
+Then put the same password in `DIFAAC_APP_DB_PASSWORD` in the root `.env` and
+`docker compose up -d`.
+
+You do not have to remember to check afterwards. The backend verifies its own
+role on every start and **refuses to run** if row-level security does not apply
+to it, rather than serving one customer's data to another:
+
+```bash
+docker compose logs backend | grep -i "row-level security"
+```
+
+Nothing there means the check passed. Keep the superuser for backups, restores,
+and anything that has to cross tenants deliberately.
 
 ## 3. Check the domain
 
@@ -114,9 +196,7 @@ Sign in at your domain, then change that password immediately from Settings.
 
 ## 5. Create the real accounts
 
-The admin account is created for you. Add the rest from the server — account
-creation is deliberately not an API endpoint, so nobody can register
-themselves an elevated role:
+The admin account is created for you. Add the rest from the server:
 
 ```bash
 docker compose exec backend python manage_users.py create \
@@ -126,6 +206,22 @@ docker compose exec backend python manage_users.py create \
 Roles: `admin`, `security_manager`, `analyst`, `intel_analyst`,
 `incident_responder`, `viewer`. Run `manage_users.py list` to see accounts,
 `set-role` to change one, `unlock` to clear a lockout.
+
+There is also `POST /auth/register`, which does the same thing over the API.
+It requires the `users:manage` permission — held only by `admin` — and creates
+the account inside the *calling* administrator's tenant, with `viewer` as the
+role unless another is named. There is no self-service signup on this
+platform: a caller without a session, or with one that lacks `users:manage`,
+is refused.
+
+Note for anyone upgrading an existing deployment: that endpoint was previously
+reachable without any credential and granted `analyst` on the default tenant.
+If your server ran a version before this change and was exposed to the
+internet, list the accounts and confirm you recognise every one of them:
+
+```bash
+docker compose exec backend python manage_users.py list
+```
 
 ## Updating
 

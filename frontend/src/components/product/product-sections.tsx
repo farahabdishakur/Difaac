@@ -82,30 +82,32 @@ export function ProductHero({
   const tone = productAccent[slug] ?? 'brand'
 
   return (
-    <section className="-mt-14 pt-[calc(3.5rem+2.5rem)] lg:-mt-16 lg:pt-[calc(4rem+3.5rem)] relative overflow-hidden pb-12 lg:pb-16">
-{/* `spread` widens the accent until it carries the whole hero, so the emblem below sits in a lit space rather than on a dark band. */}
+    <section className="relative -mt-14 overflow-hidden pt-[calc(3.5rem+3rem)] pb-16 sm:pt-[calc(3.5rem+4.5rem)] sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24 min-h-[580px] lg:min-h-[660px] flex flex-col justify-center items-center">
+      {/* `spread` widens the accent until it carries the whole hero, so the emblem below sits in a lit space rather than on a dark band. */}
       <HeroBackdrop tone={tone} spread slug={slug} />
 
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <div className="mb-8 flex justify-center">
-            <ProductEmblem icon={Icon} tone={tone} slug={slug} />
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-6 flex items-center justify-center">
+            <ProductEmblem icon={Icon} tone={tone} slug={slug} size="hero" />
           </div>
 
-{/* The product-name label — plain text in the page's accent, no pill or icon, the way Group-IB labels the product above the headline. */}
-          <p className={`text-sm font-medium ${toneText[tone]}`}>{hero.badge}</p>
+          {/* The product-name label — plain text in the page's accent, uppercase tracking, Group-IB style */}
+          <p className={`text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] ${toneText[tone]}`}>
+            {hero.badge}
+          </p>
 
-{/* The accent is a colour on the operative phrase, not a second weight. */}
-          <h1 className="mt-8 text-balance font-display t-h1 font-bold text-text">
-            <span className="text-text">{hero.headlineLead}</span>
+          {/* The accent is a colour on the operative phrase, not a second weight. */}
+          <h1 className="mt-6 max-w-4xl text-balance font-display t-h1 font-bold text-text">
+            <span className="text-text">{hero.headlineLead}</span>{' '}
             <span className={toneText[tone]}>{hero.headlineAccent}</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-body">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-base sm:text-lg leading-relaxed text-body">
             {hero.description}
           </p>
 
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4">
             <LinkButton href="/talk-to-sales" size="lg">
               Request a demo
               <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
@@ -115,11 +117,11 @@ export function ProductHero({
             </LinkButton>
           </div>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-6 border-t border-line-soft pt-8 sm:gap-10">
+          <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-center gap-8 border-t border-line-soft/80 pt-8 sm:gap-14">
             {hero.stats.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className={`font-display text-2xl font-normal ${toneText[tone]}`}>{stat.value}</div>
-                <div className="text-xs uppercase tracking-wider text-muted-2">{stat.label}</div>
+                <div className={`font-display text-2xl sm:text-3xl font-normal ${toneText[tone]}`}>{stat.value}</div>
+                <div className="mt-1 text-xs uppercase tracking-wider text-muted-2">{stat.label}</div>
               </div>
             ))}
           </div>

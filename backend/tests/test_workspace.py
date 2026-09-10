@@ -22,6 +22,8 @@ from app import rate_limit  # noqa: E402
 from app.database import init_db  # noqa: E402
 from app.main import app  # noqa: E402
 
+from tests.helpers import make_account, sign_in  # noqa: E402
+
 PASSWORD = "correct-horse-battery-staple"
 
 # Every authenticated workspace endpoint. Adding a route to the workspace
@@ -51,15 +53,31 @@ def _database():
 
 @pytest.fixture
 def auth_headers(client):
+    """An ordinary analyst -- the least privileged account that can work a queue.
+
+    Provisioned directly rather than through `/auth/register`, which is now an
+    administrative endpoint. Using the API here would have meant an admin
+    fixture creating an analyst fixture, and a failure in account creation
+    would then look like a failure in workspace authorisation.
+    """
     email = "workspace-user@difaac.io"
-    client.post(
-        "/auth/register",
-        json={"email": email, "password": PASSWORD, "full_name": "Workspace User"},
-    )
-    token = client.post(
-        "/auth/login", json={"email": email, "password": PASSWORD}
-    ).json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+    make_account(email, PASSWORD, role="analyst", full_name="Workspace User")
+    return sign_in(client, email, PASSWORD)
+
+
+@pytest.fixture
+def viewer_headers(client):
+    """The least privileged role the product has."""
+    email = "workspace-viewer@difaac.io"
+    make_account(email, PASSWORD, role="viewer", full_name="Workspace Viewer")
+    return sign_in(client, email, PASSWORD)
+
+
+@pytest.fixture
+def admin_headers(client):
+    email = "workspace-admin@difaac.io"
+    make_account(email, PASSWORD, role="admin", full_name="Workspace Admin")
+    return sign_in(client, email, PASSWORD)
 
 
 class TestWorkspaceRequiresAuthentication:
@@ -124,3 +142,36 @@ class TestResponseShape:
             "reported_by",
             "created_at",
         }
+
+
+class TestRecordAccessTrailIsNarrower:
+    """`/api/app-events` is not ordinary console data.
+
+    For a healthcare customer it is the record-access trail: which patient
+    record was opened, by whom, and when. Every other route in this module is
+    gated on `consoles:read`, which sits in the base permission set and is
+    therefore held by every role including `viewer`. That is the right gate
+    for detections and phishing domains and the wrong one here, so this
+    endpoint asks for `audit:read` instead.
+    """
+
+    PATH = "/api/app-events"
+
+    def test_anonymous_access_is_refused(self, client):
+        assert client.get(self.PATH).status_code == 401
+
+    def test_a_viewer_is_refused(self, client, viewer_headers):
+        assert client.get(self.PATH, headers=viewer_headers).status_code == 403
+
+    def test_an_analyst_is_refused(self, client, auth_headers):
+        """An analyst works alerts and incidents, not the patient record log."""
+        assert client.get(self.PATH, headers=auth_headers).status_code == 403
+
+    def test_an_administrator_is_allowed(self, client, admin_headers):
+        response = client.get(self.PATH, headers=admin_headers)
+        assert response.status_code == 200
+        assert isinstance(response.json(), list)
+
+    def test_the_rest_of_the_console_stays_open_to_a_viewer(self, client, viewer_headers):
+        """Narrowing this one route must not have narrowed the others."""
+        assert client.get("/api/ti/iocs", headers=viewer_headers).status_code == 200

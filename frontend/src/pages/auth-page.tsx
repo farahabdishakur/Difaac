@@ -9,6 +9,7 @@ import { ProductEmblem } from '@/components/product/product-emblem'
 import { productAccent } from '@/lib/tone'
 import { products } from '@/lib/data/products'
 import { signIn } from '@/lib/auth'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Sign in.
@@ -123,6 +124,16 @@ function ProductShowcasePanel() {
 }
 
 export default function AuthPage() {
+  useSeo({
+    title: 'Sign in',
+    description: 'Sign in to the Difaac console.',
+    path: '/sign-in',
+    // robots.txt disallows crawling this, which is not the same as
+    // keeping it out of the index: a disallowed URL linked from
+    // elsewhere can still be listed, described only by that link's
+    // anchor text. This is the tag that actually excludes it.
+    noindex: true,
+  })
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)

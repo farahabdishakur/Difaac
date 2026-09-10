@@ -13,13 +13,21 @@ in. A query that forgets to filter returns nothing instead of returning
 somebody else's rows: the failure mode is an empty dashboard, which someone
 reports, rather than a silent leak, which nobody notices.
 
-Two details matter and are easy to get wrong.
+Three details matter and are easy to get wrong. Each has the same failure
+shape: the policies stay in place, the catalogue keeps reporting the tables as
+protected, and none of it applies.
 
-*Force.* A table's owner bypasses its own row-level security. The application
-connects as `difaac`, which owns every table, so `ENABLE ROW LEVEL SECURITY`
-alone would leave the policies switched on and doing nothing — the worst
-outcome available, because the database would report itself as protected.
-`FORCE ROW LEVEL SECURITY` is what makes them apply to the owner too.
+*The role.* A superuser — and any role with BYPASSRLS — is exempt from
+row-level security, and no amount of FORCE changes that. The application must
+connect as an ordinary role. This is not theoretical: the deployment ran as
+one, because the `postgres` image creates `POSTGRES_USER` as a superuser. See
+`assert_rls_enforced` at the end of this module, which now refuses to start in
+that state.
+
+*Force.* A table's owner is also exempt from its own policies, and the
+application owns every table it creates. `ENABLE ROW LEVEL SECURITY` alone
+would therefore leave the policies switched on and doing nothing. `FORCE ROW
+LEVEL SECURITY` is what makes them apply to the owner too.
 
 *Fail closed.* The policy compares `tenant_id` against a session setting read
 with the missing-ok form, which yields NULL when nothing set it. `tenant_id =
@@ -30,6 +38,7 @@ only remove it.
 
 from __future__ import annotations
 
+import logging
 from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any, Generator
@@ -128,8 +137,10 @@ def rls_statements() -> list[str]:
     for table in TENANT_TABLES:
         statements += [
             f"ALTER TABLE {table} ENABLE ROW LEVEL SECURITY",
-            # Without FORCE the owner — which is what the application connects
-            # as — is exempt, and every policy below is decoration.
+            # Without FORCE the owner — which is what the application
+            # connects as — is exempt, and every policy below is decoration.
+            # This handles the owner; `assert_rls_enforced` handles the
+            # superuser case, which FORCE cannot reach.
             f"ALTER TABLE {table} FORCE ROW LEVEL SECURITY",
             f"DROP POLICY IF EXISTS tenant_isolation ON {table}",
             # USING filters what a query may read, update or delete; WITH CHECK
@@ -143,3 +154,58 @@ def rls_statements() -> list[str]:
             """,
         ]
     return statements
+
+
+def assert_rls_enforced(conn: Any) -> None:
+    """Refuse to run as a role that row-level security does not apply to.
+
+    This is the third way to switch tenant isolation off silently, and the one
+    that was actually live. The docstring above covers the first two — policies
+    enabled but not forced, and a query that forgets its WHERE. Neither
+    mattered next to this: **a superuser bypasses row-level security entirely,
+    and FORCE does not change that.** So does any role holding BYPASSRLS.
+
+    The official `postgres` image creates `POSTGRES_USER` as a superuser. The
+    deployment set `POSTGRES_USER=difaac` and pointed the application's
+    `DATABASE_URL` at it, so every policy this module installs was inert on the
+    live server: each policy existed, `pg_tables` reported `rowsecurity = true`
+    and `forcerowsecurity = true`, and every query still returned every
+    tenant's rows. The database reported itself as protected and was not.
+
+    Nothing in the application can detect that by reading its own rows — one
+    tenant simply sees more than it should, which looks like data rather than
+    like a fault. So it is checked once, at startup, against the catalogue, and
+    the process refuses to serve rather than serve everyone's data to everyone.
+
+    In DEBUG this logs instead of raising: a developer running against a
+    throwaway database as a superuser should be told, not blocked.
+    """
+    row = conn.execute(
+        """
+        SELECT rolsuper, rolbypassrls
+          FROM pg_roles
+         WHERE rolname = current_user
+        """
+    ).fetchone()
+
+    if row is None:  # pragma: no cover - current_user is always in pg_roles
+        return
+    if not (row["rolsuper"] or row["rolbypassrls"]):
+        return
+
+    reason = "a superuser" if row["rolsuper"] else "a role with BYPASSRLS"
+    message = (
+        f"The database role this application connects as is {reason}, so PostgreSQL "
+        "row-level security does not apply to it and tenant isolation is not in "
+        "effect — every query returns every tenant's rows. Connect as a role created "
+        "with NOSUPERUSER NOBYPASSRLS that owns the tables (see DEPLOY.md), and point "
+        "DATABASE_URL at that role."
+    )
+
+    from app.config import DEBUG
+
+    if DEBUG:
+        logging.getLogger(__name__).error("%s (allowed because DIFAAC_DEBUG is on)", message)
+        return
+
+    raise RuntimeError(message)

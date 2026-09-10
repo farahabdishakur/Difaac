@@ -4,8 +4,15 @@ import { CTABanner } from '@/components/shared/cta-banner'
 import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
 import { OrgChart } from '@/components/company/org-chart'
 import { leadershipTiers, teamNote } from '@/lib/data/company'
+import { useSeo } from '@/lib/seo'
 
 export default function TeamPage() {
+  useSeo({
+    title: 'Our team',
+    description:
+      'The practice leads and engineers building sovereign cyber defence at Difaac.',
+    path: '/company/team',
+  })
   return (
     <>
       <CompanyHero

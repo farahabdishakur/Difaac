@@ -12,6 +12,7 @@ import {
   commitments,
   office,
 } from '@/lib/data/company'
+import { useSeo } from '@/lib/seo'
 
 const destinations = [
   {
@@ -35,6 +36,12 @@ const destinations = [
 ]
 
 export default function CompanyPage() {
+  useSeo({
+    title: 'About Difaac',
+    description:
+      'Difaac is a cyber defence company built in Borama, Somaliland, defending organisations across the Horn of Africa with its own intelligence on the adversaries operating there.',
+    path: '/company',
+  })
   return (
     <>
       <CompanyHero

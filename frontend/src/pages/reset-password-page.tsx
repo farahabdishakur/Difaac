@@ -5,8 +5,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Lock, ArrowRight, ShieldCheck } from 'lucide-react'
 import { resetPassword } from '@/lib/auth'
+import { useSeo } from '@/lib/seo'
 
 export default function ResetPasswordPage() {
+  useSeo({
+    title: 'Set a new password',
+    description: 'Choose a new password for your Difaac account.',
+    path: '/reset-password',
+    // robots.txt disallows crawling this, which is not the same as
+    // keeping it out of the index: a disallowed URL linked from
+    // elsewhere can still be listed, described only by that link's
+    // anchor text. This is the tag that actually excludes it.
+    noindex: true,
+  })
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') ?? ''
   const navigate = useNavigate()

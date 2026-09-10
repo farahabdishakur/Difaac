@@ -16,6 +16,7 @@ import { LogoMark } from '@/components/layout/logo-mark'
 import { useAuthUser } from '@/hooks/use-auth'
 import { PERMISSION, type PermissionName } from '@/hooks/use-permission'
 import { signOut } from '@/lib/auth'
+import { useSeo } from '@/lib/seo'
 
 // The six products first, in the order they appear on the marketing site, so
 // a customer who bought "Attack Surface Management" finds a console with that
@@ -54,6 +55,19 @@ const navItems: NavItem[] = [
 export function WorkspaceShell() {
   const user = useAuthUser()
   const navigate = useNavigate()
+
+  // Declared once for the whole console rather than on each page inside it.
+  // Every route under /workspace requires a session, so a crawler reaching one
+  // sees an empty shell — and the URLs themselves say where a customer's data
+  // lives, which is not something to publish. robots.txt disallows the path;
+  // this is what keeps it out of the index even when it is linked from
+  // somewhere we do not control.
+  useSeo({
+    title: 'Console',
+    description: 'The Difaac console.',
+    path: '/workspace',
+    noindex: true,
+  })
 
   // A viewer and an administrator sign in at the same place and land on the
   // same platform; what differs is what it contains. Filtering here is a

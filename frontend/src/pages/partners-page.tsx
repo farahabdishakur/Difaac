@@ -2,6 +2,7 @@ import { getIcon } from '@/components/icons/icon-map'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { CompanyHero, SectionHead, Band } from '@/components/company/section-head'
 import { partnerTracks } from '@/lib/data/company'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Partners.
@@ -12,6 +13,12 @@ import { partnerTracks } from '@/lib/data/company'
  * that does not exist yet.
  */
 export default function PartnersPage() {
+  useSeo({
+    title: 'Partner with Difaac',
+    description:
+      'Difaac is built to sit inside the security you already sell or run. Reseller, integration and advisory arrangements, scoped and priced in writing before either side commits.',
+    path: '/company/partners',
+  })
   return (
     <>
       <CompanyHero

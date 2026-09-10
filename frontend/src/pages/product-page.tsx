@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom'
+
+import { useSeo } from '@/lib/seo'
 import {
   ProductHero,
   ProductNotice,
@@ -51,6 +53,15 @@ const workspaceScreenshot: Record<string, { image: string; path: string }> = {
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
   const content = getProductPage(slug)
+
+  // Called before the early return, because a hook has to run in the same
+  // order on every render. When there is no content the values are harmless
+  // placeholders and the component hands off to the fallback below anyway.
+  useSeo({
+    title: content ? `${content.hero.badge}` : 'Products',
+    description: content?.hero.description ?? '',
+    path: slug ? `/products/${slug}` : '/products',
+  })
 
   if (!content || !slug) {
     return <ProductDetailPage />

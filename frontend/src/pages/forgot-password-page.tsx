@@ -5,8 +5,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail, ArrowRight, ArrowLeft, MailCheck } from 'lucide-react'
 import { requestPasswordReset } from '@/lib/auth'
+import { useSeo } from '@/lib/seo'
 
 export default function ForgotPasswordPage() {
+  useSeo({
+    title: 'Reset your password',
+    description: 'Request a password reset link for your Difaac account.',
+    path: '/forgot-password',
+    // robots.txt disallows crawling this, which is not the same as
+    // keeping it out of the index: a disallowed URL linked from
+    // elsewhere can still be listed, described only by that link's
+    // anchor text. This is the tag that actually excludes it.
+    noindex: true,
+  })
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)

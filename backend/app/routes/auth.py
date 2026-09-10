@@ -25,7 +25,8 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app import auth_service
+from app import auth_service, mailer
+from app.client_ip import UNKNOWN, client_ip
 from app.permissions import Permission, has_permission, permissions_for
 from app.auth_utils import (
     create_access_token,
@@ -36,9 +37,11 @@ from app.auth_utils import (
 )
 from app.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
+    DEBUG,
     COOKIE_SAMESITE,
     COOKIE_SECURE,
     FRONTEND_URL,
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES,
     REFRESH_COOKIE_NAME,
     REFRESH_TOKEN_EXPIRE_DAYS,
 )
@@ -61,9 +64,15 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 security = HTTPBearer(auto_error=True)
 
-# Role granted to every self-registered account. Anything more privileged is
-# granted out of band, never through the public signup endpoint.
-DEFAULT_USER_ROLE = "analyst"
+# Account creation is an administrative action on this platform, not a public
+# signup. There is no self-service path and no default role granted to a
+# stranger: `POST /auth/register` requires `users:manage`, and the role comes
+# from the request body constrained to the roles the product defines
+# (defaulting to `viewer`, the least privileged).
+#
+# It was previously reachable unauthenticated and granted `analyst` on the
+# default tenant, which meant anyone who could reach the API could read a
+# customer's entire console.
 
 # One message for every credential failure. Saying "no such user" would turn
 # this endpoint into a directory of who holds an account.
@@ -86,7 +95,14 @@ def _row_to_profile(row: Any) -> dict:
 
 
 def _client_ip(request: Request) -> str | None:
-    return request.client.host if request.client else None
+    """The address recorded against a session and an audit event.
+
+    Reads through a trusted proxy for the same reason the rate limiter does:
+    an audit trail in which every sign-in came from the load balancer answers
+    none of the questions it exists to answer.
+    """
+    resolved = client_ip(request)
+    return None if resolved == UNKNOWN else resolved
 
 
 def _user_agent(request: Request) -> str | None:
@@ -207,13 +223,32 @@ def require_permission(permission: Permission):
 @router.post(
     "/register", response_model=UserProfileResponse, status_code=status.HTTP_201_CREATED
 )
-async def register(payload: UserRegisterRequest, request: Request):
-    """Register a new account.
+async def register(
+    payload: UserRegisterRequest,
+    request: Request,
+    current_user: dict = Depends(require_permission(Permission.USERS_MANAGE)),
+):
+    """Create an account inside the calling administrator's tenant.
 
-    The role is assigned here and is never read from the request body.
+    Three things are fixed by the server and cannot be influenced by the
+    request:
+
+    * *Who may call this.* `users:manage`, which only an administrator holds.
+      This endpoint used to be unauthenticated, and because the insert left
+      `tenant_id` to its column default it placed every self-registered
+      account in the default tenant with the `analyst` role — read access to
+      that tenant's whole console for anyone who could reach the API.
+
+    * *Which tenant the account lands in.* The caller's own, read from their
+      session. An administrator cannot create a user inside somebody else's
+      organisation, and a payload cannot ask to be put there.
+
+    * *That the role is a real one.* Validated on the model against `Role`, so
+      a typo is a 422 rather than an account that exists and can do nothing.
     """
     email = payload.email
     hashed = hash_password(payload.password)
+    tenant_id = current_user["tenant_id"]
 
     with get_connection() as conn:
         exists = conn.execute("SELECT 1 FROM users WHERE email = %s", (email,)).fetchone()
@@ -234,11 +269,12 @@ async def register(payload: UserRegisterRequest, request: Request):
         try:
             cursor = conn.execute(
                 """
-                INSERT INTO users (email, hashed_password, full_name, role, password_changed_at)
-                VALUES (%s, %s, %s, %s, now())
+                INSERT INTO users
+                    (email, hashed_password, full_name, role, tenant_id, password_changed_at)
+                VALUES (%s, %s, %s, %s, %s, now())
                 RETURNING id
                 """,
-                (email, hashed, payload.full_name, DEFAULT_USER_ROLE),
+                (email, hashed, payload.full_name, payload.role, tenant_id),
             )
             # Postgres has no lastrowid; RETURNING is how the new id comes back.
             new_user_id = cursor.fetchone()["id"]
@@ -264,7 +300,15 @@ async def register(payload: UserRegisterRequest, request: Request):
                 detail="Registration could not be completed",
             )
 
-    logger.info("Registered new user: %s (role: %s)", email, DEFAULT_USER_ROLE)
+    # Who created which account, and with what, is the record an auditor asks
+    # for. Logged at info because account creation is rare and always notable.
+    logger.info(
+        "Account %s created with role %s in tenant %s by %s",
+        email,
+        payload.role,
+        tenant_id,
+        current_user["email"],
+    )
     return _row_to_profile(row)
 
 
@@ -552,22 +596,70 @@ async def change_password(
 _RESET_LINK_SENT = "If that email is registered, a reset link has been sent."
 
 
+def _reset_email_body(reset_link: str) -> str:
+    """The message itself.
+
+    Says how long the link lasts, and says what to do if the request was not
+    theirs — a reset mail arriving unprompted is the first sign a stranger is
+    trying an address, and the recipient is the only person who can tell.
+    """
+    lines = [
+        "Someone asked to reset the password on your Difaac account.",
+        "",
+        "Open this link to choose a new one:",
+        reset_link,
+        "",
+        (
+            f"The link stops working after {PASSWORD_RESET_TOKEN_EXPIRE_MINUTES} "
+            "minutes, and can only be used once."
+        ),
+        "",
+        (
+            "If you did not ask for this, you can ignore this message — your "
+            "password has not changed. If you receive several of these, tell your "
+            "administrator: it means someone else is trying your address."
+        ),
+        "",
+    ]
+    return "\n".join(lines)
+
+
 @router.post("/forgot-password", response_model=MessageResponse)
 async def forgot_password(payload: ForgotPasswordRequest, request: Request):
     """Request a password reset link.
 
     Always returns the same message whether or not the account exists — same
-    reasoning as login's shared failure message: this is a publicly
-    reachable endpoint, and it must not answer "who has an account".
+    reasoning as login's shared failure message: this is a publicly reachable
+    endpoint, and it must not answer "who has an account".
 
-    No email service is wired up yet, so the link is logged rather than
-    sent — the same dev-safe placeholder the seeder uses for the initial
-    account password. Sending it for real is a matter of replacing the
-    `logger.warning` call below with a call to whatever provider is
-    configured; nothing else here changes.
+    The link is emailed. It used to be written to the application log with a
+    note that no mail service was configured, which meant the endpoint told
+    every caller "a reset link has been sent" while sending nothing — the flow
+    was dead in production and said otherwise.
+
+    Two behaviours follow from that, and both keep the no-enumeration
+    property because they are identical for every caller:
+
+    * With SMTP unconfigured outside DEBUG, the endpoint answers 503. It
+      cannot send, so it does not claim to have sent.
+    * In DEBUG the link is logged instead, which is what local development
+      needs and is impossible to reach with `DIFAAC_DEBUG=false`.
     """
     ip = _client_ip(request)
     agent = _user_agent(request)
+
+    # Checked before the account lookup, so the answer is the same whether or
+    # not the address is registered. Refusing after the lookup would take a
+    # different amount of work for a known address than an unknown one.
+    if not mailer.is_configured() and not DEBUG:
+        logger.error(
+            "Password reset requested but SMTP is not configured. Set DIFAAC_SMTP_HOST "
+            "and DIFAAC_SMTP_FROM; until then no account can be recovered by email."
+        )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Password reset is temporarily unavailable. Please contact your administrator.",
+        )
 
     with get_connection() as conn:
         row = conn.execute(
@@ -591,11 +683,31 @@ async def forgot_password(payload: ForgotPasswordRequest, request: Request):
         reset_email = row["email"]
 
     reset_link = f"{FRONTEND_URL}/reset-password?token={token}"
-    logger.warning(
-        "Password reset requested for %s. No email service is configured, so here is the "
-        "link (valid for a limited time, dev-only visibility): %s",
-        reset_email, reset_link,
-    )
+
+    if mailer.is_configured():
+        # Sent after the transaction has committed. A relay that hangs must
+        # not hold a database connection open, and a token that was mailed but
+        # not stored would be worse than one stored and not mailed.
+        #
+        # The result is deliberately not reflected in the response: doing so
+        # would make a delivery failure for a real address look different from
+        # the silence an unknown address gets, which is the enumeration this
+        # endpoint is built to prevent. A failure is an operator's problem and
+        # goes to the log.
+        await mailer.send_async(
+            reset_email,
+            "Reset your Difaac password",
+            _reset_email_body(reset_link),
+        )
+    else:
+        # DEBUG only — the guard above refuses this path in production.
+        logger.warning(
+            "SMTP is not configured; this is a DEBUG run, so here is the reset link "
+            "for %s: %s",
+            reset_email,
+            reset_link,
+        )
+
     return {"detail": _RESET_LINK_SENT}
 
 

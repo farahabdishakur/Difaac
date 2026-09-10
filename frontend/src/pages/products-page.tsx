@@ -4,6 +4,7 @@ import { ProductCard } from '@/components/cards/product-card'
 import { CTABanner } from '@/components/shared/cta-banner'
 import { SectionHeading } from '@/components/shared/section-heading'
 import { useProducts } from '@/lib/api'
+import { useSeo } from '@/lib/seo'
 
 // Four things a buyer can check, rather than four certifications. Difaac
 // holds none of SOC 2, ISO 27001 or a GDPR attestation, and with eight people
@@ -22,6 +23,12 @@ const trustBadges = [
 ]
 
 export default function ProductsPage() {
+  useSeo({
+    title: 'Cyber defence products',
+    description:
+      'Six products on one intelligence layer: threat intelligence, digital risk protection, fraud protection, managed XDR, attack surface management and business email protection.',
+    path: '/products',
+  })
   const { products, isLoading, error } = useProducts()
 
   return (

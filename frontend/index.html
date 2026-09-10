@@ -11,12 +11,16 @@
   <link rel="icon" href="/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="/favicon.png" />
   <link rel="canonical" href="https://difaac.com/" />
-
   <!-- What a link to this site looks like when someone pastes it into
        WhatsApp, LinkedIn or Slack. Without these it renders as a bare grey
        box, which for a security company reads as a site nobody finished.
        The image is absolute because a crawler does not resolve relative
-       paths, and 1200x630 is the size every platform crops from. -->
+       paths, and 1200x630 is the size every platform crops from.
+
+       These are the defaults. Each route rewrites them for itself on
+       navigation — see src/lib/seo.ts — because a single-page application
+       serves this same file for every URL, and a head that describes the
+       homepage on a product page tells a crawler the two are duplicates. -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Difaac" />
   <meta property="og:url" content="https://difaac.com/" />
@@ -39,6 +43,37 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap"
     rel="stylesheet" />
+
+  <!-- Structured data. This is what a search engine reads to know that Difaac
+       is an organisation rather than a string of words, and it is what puts a
+       name, a logo and a location beside the result. Kept minimal and true:
+       only claims that hold — no ratings, no awards, no employee count that
+       would go stale. -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Difaac",
+      "url": "https://difaac.com/",
+      "logo": "https://difaac.com/logo.png",
+      "description": "Difaac is a cyber defence platform for organisations across Somalia and the Horn of Africa: threat intelligence, digital risk protection, fraud protection, managed detection and response, attack surface management and business email protection.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Borama",
+        "addressRegion": "Awdal",
+        "addressCountry": "SO"
+      },
+      "areaServed": ["SO", "ET", "DJ", "KE"],
+      "knowsAbout": [
+        "Threat intelligence",
+        "Digital risk protection",
+        "Managed detection and response",
+        "Attack surface management",
+        "Incident response",
+        "Fraud protection"
+      ]
+    }
+  </script>
 </head>
 
 <body class="antialiased">

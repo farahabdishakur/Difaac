@@ -20,16 +20,27 @@ import logging
 from typing import Any
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 
+from app.client_ip import client_ip
 from app.database import get_connection
 from app.permissions import Permission
 from app.routes.auth import require_permission
 
 logger = logging.getLogger(__name__)
 
-# Every route in this module inherits the authentication dependency, so a new
-# endpoint cannot be added here and accidentally left public.
+# Every route in this module inherits `consoles:read`, so a new endpoint cannot
+# be added here and accidentally left public. That is the floor, not the whole
+# answer: routes that serve a named kind of data also ask for the permission
+# that names it -- `intel:read` on the threat-intelligence routes,
+# `alerts:read` on alerts, `incidents:read` on incidents, `reports:read` on the
+# executive overview, and `audit:read` on the record-access trail.
+#
+# Every role holds all of those today, so nothing a current user reaches
+# changes. What changes is that the permission model stops being decorative:
+# a role created without `incidents:read` is now actually refused the
+# incidents, rather than let in by the blanket check and contradicting the
+# table in permissions.py.
 router = APIRouter(
     prefix="/api",
     tags=["SOC Workspace"],
@@ -44,7 +55,10 @@ def _rows(conn: Any, sql: str, params: tuple) -> list[dict]:
     return [dict(row) for row in conn.execute(sql, params).fetchall()]
 
 
-@router.get("/ti/iocs")
+@router.get(
+    "/ti/iocs",
+    dependencies=[Depends(require_permission(Permission.INTEL_READ))],
+)
 def get_iocs(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
     """Latest indicators of compromise."""
     with get_connection() as conn:
@@ -60,7 +74,10 @@ def get_iocs(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
         )
 
 
-@router.get("/ti/actors")
+@router.get(
+    "/ti/actors",
+    dependencies=[Depends(require_permission(Permission.INTEL_READ))],
+)
 def get_actors(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
     """Tracked threat actor groups."""
     with get_connection() as conn:
@@ -90,7 +107,10 @@ _SEVERITY_WEIGHT = {"critical": 10, "high": 6, "medium": 3, "low": 1}
 _MAX_SEVERITY_WEIGHT = max(_SEVERITY_WEIGHT.values())
 
 
-@router.get("/ti/alerts")
+@router.get(
+    "/ti/alerts",
+    dependencies=[Depends(require_permission(Permission.ALERTS_READ))],
+)
 def get_ti_alerts(
     limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     tailored_only: bool = Query(False),
@@ -115,7 +135,10 @@ def get_ti_alerts(
         return _rows(conn, sql, params)
 
 
-@router.get("/ti/summary")
+@router.get(
+    "/ti/summary",
+    dependencies=[Depends(require_permission(Permission.INTEL_READ))],
+)
 def get_ti_summary():
     """Counts and a derived exposure score for the intelligence dashboard.
 
@@ -504,7 +527,10 @@ def get_fraud_cases(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
         )
 
 
-@router.get("/incidents")
+@router.get(
+    "/incidents",
+    dependencies=[Depends(require_permission(Permission.INCIDENTS_READ))],
+)
 def get_incidents(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
     """Open and recently closed security incidents."""
     with get_connection() as conn:
@@ -525,7 +551,10 @@ def get_incidents(limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)):
 # to visit in turn, but one answer to "how bad is it right now, and what needs
 # a decision today".
 
-@router.get("/overview/executive")
+@router.get(
+    "/overview/executive",
+    dependencies=[Depends(require_permission(Permission.REPORTS_READ))],
+)
 def get_executive_overview():
     """A single cross-product picture of where the organisation stands.
 
@@ -609,7 +638,10 @@ def get_executive_overview():
     }
 
 
-@router.get("/overview/trend")
+@router.get(
+    "/overview/trend",
+    dependencies=[Depends(require_permission(Permission.REPORTS_READ))],
+)
 def get_activity_trend(days: int = Query(14, ge=7, le=90)):
     """Security events per day, across intelligence, detection, and incidents.
 
@@ -657,11 +689,20 @@ def get_activity_trend(days: int = Query(14, ge=7, le=90)):
     return {"days": days, "series": series, "total": sum(p["count"] for p in series)}
 
 
-@router.get("/app-events")
+@router.get(
+    "/app-events",
+    # This one endpoint asks for more than the console-wide `consoles:read`
+    # every route in this module inherits. `consoles:read` is in the base set,
+    # which means every role holds it — including `viewer`. That is the right
+    # gate for detections and phishing domains, and the wrong one here.
+    dependencies=[Depends(require_permission(Permission.AUDIT_READ))],
+)
 def list_app_events(
+    request: Request,
     limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     action: str | None = Query(None, max_length=120),
     outcome: str | None = Query(None, max_length=40),
+    current_user: dict = Depends(require_permission(Permission.AUDIT_READ)),
 ):
     """What the customer's own systems have reported.
 
@@ -669,6 +710,15 @@ def list_app_events(
     done, `subject_ref` says to which record, and `actor` says by whom. It is
     the answer to "who opened this patient's file", which is a question a
     regulator asks and an ordinary SOC console cannot answer.
+
+    It is also the most sensitive stream Difaac holds for that customer, and
+    it is the one place where the answer to "who may see this" is narrower
+    than the rest of the console: `audit:read`, held by administrators and
+    security managers, not by every signed-in analyst and viewer.
+
+    Reading it is itself recorded. An audit trail nobody audits the reading of
+    is half a control — for a healthcare customer the question "who looked at
+    the record-access log" has the same weight as the log itself.
     """
     clauses: list[str] = []
     params: list[object] = []
@@ -682,7 +732,7 @@ def list_app_events(
     params.append(limit)
 
     with get_connection() as conn:
-        return conn.execute(
+        rows = conn.execute(
             f"""
             SELECT id, source, action, outcome, severity, actor, subject_ref,
                    ip_address, detail, occurred_at, received_at
@@ -693,3 +743,14 @@ def list_app_events(
             """,
             tuple(params),
         ).fetchall()
+
+    logger.info(
+        "Record-access trail read by %s (tenant %s): %d events, action=%r outcome=%r, from %s",
+        current_user["email"],
+        current_user["tenant_id"],
+        len(rows),
+        action,
+        outcome,
+        client_ip(request),
+    )
+    return rows

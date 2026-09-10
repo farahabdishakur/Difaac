@@ -24,6 +24,8 @@ from app.config import REFRESH_COOKIE_NAME  # noqa: E402
 from app.database import init_db  # noqa: E402
 from app.main import app  # noqa: E402
 
+from tests.helpers import make_account, sign_in  # noqa: E402
+
 VALID_PASSWORD = "correct-horse-battery-staple"
 
 
@@ -33,52 +35,195 @@ def _database():
 
 
 def _register(client, email: str, password: str = VALID_PASSWORD, **extra):
-    body = {"email": email, "password": password, "full_name": "Test User"}
-    body.update(extra)
-    return client.post("/auth/register", json=body)
+    """Provision an account the way an operator does, not through the API.
+
+    This used to post to `/auth/register`, which worked because that endpoint
+    was reachable by anyone. That was the vulnerability, not a convenience: an
+    unauthenticated caller received an `analyst` account on the default tenant,
+    and with it read access to that tenant's entire console. The endpoint now
+    requires `users:manage`, and the tests that exercise it as an endpoint are
+    in `TestAccountCreation` below.
+
+    Kept under its original name and shape so the call sites that only need an
+    account to exist read exactly as they did.
+    """
+    make_account(email, password, role=extra.get("role_override", "analyst"))
 
 
 def _login(client, email: str, password: str = VALID_PASSWORD):
     return client.post("/auth/login", json={"email": email, "password": password})
 
 
+def _admin_headers(client, email: str = "provisioner@difaac.io"):
+    """A signed-in administrator, for the endpoints that require one."""
+    make_account(email, VALID_PASSWORD, role="admin")
+    return sign_in(client, email, VALID_PASSWORD)
+
+
 # Registration
 
-class TestRegistration:
-    def test_role_cannot_be_chosen_by_the_client(self, client):
-        """A caller must not be able to grant itself a privileged role."""
-        response = _register(client, "escalate@difaac.io", role="admin")
+class TestAccountCreation:
+    """`POST /auth/register` is an administrative endpoint, not a signup form.
+
+    It was reachable unauthenticated, and because the insert left `tenant_id`
+    to its column default -- which falls back to the `difaac` tenant -- anyone
+    who could reach the API could mint themselves an `analyst` account with
+    read access to that tenant's whole console: its threat intelligence, its
+    incidents, and for a healthcare customer its record-access trail. These
+    tests exist so that cannot come back quietly.
+    """
+
+    def test_anonymous_callers_are_refused(self, client):
+        """401, not 403: no credential was presented at all.
+
+        The distinction is worth keeping. 401 says "authenticate"; 403 says
+        "you did authenticate, and it is still no" -- which is what an
+        analyst gets from the test below. Collapsing the two would make a
+        missing token and an insufficient one look the same in the logs.
+        """
+        response = client.post(
+            "/auth/register",
+            json={"email": "stranger@difaac.io", "password": VALID_PASSWORD},
+        )
+        assert response.status_code == 401
+        # And no account was created as a side effect of being refused.
+        assert _login(client, "stranger@difaac.io").status_code != 200
+
+    def test_an_ordinary_analyst_cannot_create_accounts(self, client):
+        """Holding a session is not the same as holding `users:manage`."""
+        make_account("plain-analyst@difaac.io", VALID_PASSWORD, role="analyst")
+        headers = sign_in(client, "plain-analyst@difaac.io", VALID_PASSWORD)
+
+        response = client.post(
+            "/auth/register",
+            json={"email": "made-by-analyst@difaac.io", "password": VALID_PASSWORD},
+            headers=headers,
+        )
+        assert response.status_code == 403
+
+    def test_an_administrator_creates_an_account(self, client):
+        headers = _admin_headers(client)
+        response = client.post(
+            "/auth/register",
+            json={
+                "email": "new-colleague@difaac.io",
+                "password": VALID_PASSWORD,
+                "full_name": "New Colleague",
+                "role": "analyst",
+            },
+            headers=headers,
+        )
         assert response.status_code == 201
         assert response.json()["role"] == "analyst"
+        assert _login(client, "new-colleague@difaac.io").status_code == 200
 
-    def test_role_is_not_elevated_via_the_jwt_either(self, client):
-        _register(client, "escalate2@difaac.io", role="admin")
-        token = _login(client, "escalate2@difaac.io").json()["access_token"]
+    def test_the_role_defaults_to_the_least_privileged_one(self, client):
+        """An omitted role must not mean an investigative one."""
+        headers = _admin_headers(client, "provisioner-default@difaac.io")
+        response = client.post(
+            "/auth/register",
+            json={"email": "unspecified-role@difaac.io", "password": VALID_PASSWORD},
+            headers=headers,
+        )
+        assert response.status_code == 201
+        assert response.json()["role"] == "viewer"
 
-        import jwt as pyjwt
+    def test_an_unknown_role_is_rejected(self, client):
+        """A role resolving to no permissions is a lockout, not an account."""
+        headers = _admin_headers(client, "provisioner-badrole@difaac.io")
+        response = client.post(
+            "/auth/register",
+            json={
+                "email": "typo-role@difaac.io",
+                "password": VALID_PASSWORD,
+                "role": "adminn",
+            },
+            headers=headers,
+        )
+        assert response.status_code == 422
 
-        claims = pyjwt.decode(token, options={"verify_signature": False})
-        assert claims["role"] == "analyst"
+    def test_the_account_lands_in_the_creator_tenant(self, client):
+        """Never in the default one, and never in a tenant the payload names."""
+        from app.database import get_connection
+        from app.tenancy import tenant_scope
 
-    def test_short_password_is_rejected(self, client):
-        assert _register(client, "short@difaac.io", password="abc123").status_code == 422
+        with get_connection() as conn:
+            conn.execute(
+                "INSERT INTO tenants (slug, name) VALUES (%s, %s)"
+                " ON CONFLICT (slug) DO NOTHING",
+                ("clinic", "Clinic"),
+            )
+            conn.commit()
+            clinic_id = conn.execute(
+                "SELECT id FROM tenants WHERE slug = %s", ("clinic",)
+            ).fetchone()["id"]
 
-    def test_malformed_email_is_rejected(self, client):
-        assert _register(client, "not-an-email").status_code == 422
+        make_account(
+            "clinic-admin@difaac.io", VALID_PASSWORD, role="admin", tenant_slug="clinic"
+        )
+        headers = sign_in(client, "clinic-admin@difaac.io", VALID_PASSWORD)
 
-    def test_email_is_normalised(self, client):
-        response = _register(client, "  MiXeD@Difaac.IO  ")
+        created = client.post(
+            "/auth/register",
+            json={"email": "clinic-nurse@difaac.io", "password": VALID_PASSWORD},
+            headers=headers,
+        )
+        assert created.status_code == 201
+
+        with tenant_scope(clinic_id), get_connection() as conn:
+            row = conn.execute(
+                "SELECT tenant_id FROM users WHERE email = %s",
+                ("clinic-nurse@difaac.io",),
+            ).fetchone()
+        assert row["tenant_id"] == clinic_id
+
+    def test_a_weak_password_is_refused(self, client):
+        headers = _admin_headers(client, "provisioner-weak@difaac.io")
+        response = client.post(
+            "/auth/register",
+            json={"email": "short@difaac.io", "password": "abc123"},
+            headers=headers,
+        )
+        assert response.status_code == 422
+
+    def test_a_malformed_address_is_refused(self, client):
+        headers = _admin_headers(client, "provisioner-email@difaac.io")
+        response = client.post(
+            "/auth/register",
+            json={"email": "not-an-email", "password": VALID_PASSWORD},
+            headers=headers,
+        )
+        assert response.status_code == 422
+
+    def test_the_address_is_normalised(self, client):
+        headers = _admin_headers(client, "provisioner-norm@difaac.io")
+        response = client.post(
+            "/auth/register",
+            json={"email": "  MiXeD@Difaac.IO  ", "password": VALID_PASSWORD},
+            headers=headers,
+        )
         assert response.status_code == 201
         assert response.json()["email"] == "mixed@difaac.io"
 
-    def test_duplicate_registration_is_rejected(self, client):
-        _register(client, "dupe@difaac.io")
-        assert _register(client, "dupe@difaac.io").status_code == 400
+    def test_a_duplicate_address_is_refused(self, client):
+        headers = _admin_headers(client, "provisioner-dupe@difaac.io")
+        make_account("dupe@difaac.io", VALID_PASSWORD)
+        response = client.post(
+            "/auth/register",
+            json={"email": "dupe@difaac.io", "password": VALID_PASSWORD},
+            headers=headers,
+        )
+        assert response.status_code == 400
 
-    def test_password_hash_is_never_returned(self, client):
-        response = _register(client, "nohash@difaac.io")
-        assert "hashed_password" not in response.json()
-        assert "password" not in response.json()
+    def test_the_password_hash_never_leaves_the_server(self, client):
+        headers = _admin_headers(client, "provisioner-hash@difaac.io")
+        response = client.post(
+            "/auth/register",
+            json={"email": "nohash@difaac.io", "password": VALID_PASSWORD},
+            headers=headers,
+        )
+        body = response.json()
+        assert "hashed_password" not in body and "password" not in body
 
 
 # Login

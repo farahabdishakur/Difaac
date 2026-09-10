@@ -8,6 +8,7 @@ import { serviceGroupAccent, toneText } from '@/lib/tone'
 import { engagementSteps, engagementModels, servicesFaqs } from '@/lib/data/engagement'
 import type { Service } from '@/lib/data/services'
 import { useServices } from '@/lib/api'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Services index.
@@ -50,6 +51,12 @@ const GROUPS: { key: Service['group']; title: string; description: string }[] = 
 ]
 
 export default function ServicesPage() {
+  useSeo({
+    title: 'Security services and incident response',
+    description:
+      'Penetration testing, incident response, digital forensics and security training, delivered by the operators who run them and scoped in writing before any work begins.',
+    path: '/services',
+  })
   const { services } = useServices()
 
   return (
