@@ -11,7 +11,10 @@ export function HeroSection() {
     <section className="relative -mt-14 overflow-hidden bg-ink pt-[calc(3.5rem+3.5rem)] pb-14 lg:-mt-16 lg:pt-[calc(4rem+4rem)] lg:pb-16">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
-          <div className="max-w-2xl">
+          {/* Centred on a phone, where the column is the whole width and left
+              alignment reads as lopsided; left-aligned from lg up, beside the
+              artwork. */}
+          <div className="max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
             {/* A quiet line that says plainly what Difaac is before the headline says what it does — one small accent, nothing more. */}
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand">
               Intelligent cyber defence
@@ -25,13 +28,18 @@ export function HeroSection() {
               Fight Somalian <span className="text-brand">Cybercrime.</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-pretty leading-relaxed text-body text-base sm:text-lg">
+            <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-pretty leading-relaxed text-body text-base sm:text-lg">
               Our cyber defence, fraud protection and brand protection are powered by
               intelligence-driven technology and analysts who track the adversaries operating
               across Somalia and its diaspora.
             </p>
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            {/* Side by side from the smallest screen up — the two calls sit on
+                one row on a phone rather than stacking — and centred under the
+                text on mobile, left-aligned from lg. `flex-wrap` is the safety
+                valve if a translation ever makes the labels too wide to share
+                a narrow row. */}
+            <div className="mt-10 flex flex-row flex-wrap justify-center lg:justify-start gap-3 sm:gap-4">
               <LinkButton href="/products" size="lg">
                 Explore Products
                 <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
