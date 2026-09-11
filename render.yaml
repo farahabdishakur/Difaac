@@ -51,9 +51,17 @@ services:
       - key: DIFAAC_SECRET_KEY
         generateValue: true
 
-      # A live server starts empty apart from the admin account; no demo data.
+      # This is the public showcase instance, so it ships populated: demo
+      # threat data across every console, plus the demo logins below. On a real
+      # customer instance both of these are "false" — a live console must never
+      # show fabricated alerts, and the demo logins are public passwords.
       - key: DIFAAC_SEED_DEMO
-        value: "false"
+        value: "true"
+
+      # Public, known-password demo logins (admin/analyst/viewer + a hospital
+      # admin). Showcase only — never "true" where real data lives.
+      - key: DIFAAC_SEED_DEMO_ACCOUNTS
+        value: "true"
 
       # The site and the API are two different onrender.com domains, so the
       # session cookie travels cross-site and must say so.
