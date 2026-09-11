@@ -187,3 +187,35 @@ FRAUD_CASES: list[tuple[str, int, str, str, str, str, int]] = [
     ("sess_e4f5g6", 47, "cleared", "Session anomaly", "web", "Somalia", 28),
     ("sess_h7i8j9", 39, "cleared", "Device spoofing", "mobile", "Kenya", 35),
 ]
+
+
+# Threat-intelligence indicators of compromise. (value, type, severity, source)
+TI_IOCS: list[tuple[str, str, str, str]] = [
+    ("5f2b7e9c1a4d8f60b3c2e1a09d7f6543aabbccddeeff00112233445566778899", "SHA-256", "critical", "Managed XDR detonation"),
+    ("update-service-sync[.]net", "Domain", "high", "Dark web forum monitoring"),
+    ("45.147.230.14", "IP address", "high", "Honeypot telemetry"),
+    ("secure-ebanking-verify[.]com", "Domain", "critical", "Brand protection crawl"),
+    ("a1b2c3d4e5f60718293a4b5c6d7e8f90", "MD5", "medium", "Partner intel feed"),
+    ("197.156.68.203", "IP address", "medium", "Fraud correlation"),
+    ("wallet-topup-confirm[.]app", "Domain", "high", "Phishing kit analysis"),
+    ("hxxps://cdn-airtime-bonus[.]xyz/win.js", "URL", "medium", "Email protection sandbox"),
+]
+
+# Tracked threat actors. (name, aliases, origin, description)
+TI_ACTORS: list[tuple[str, str | None, str | None, str]] = [
+    ("LockBit affiliate cluster", "Bitwise, LB-Aff-7", "Unknown / RaaS", "Ransomware-as-a-service affiliates seen advertising access to financial and telecom targets across the Horn of Africa."),
+    ("Silent Mobile", "SIM-Swap Crew", "Regional", "Fraud ring specialising in SIM-swap and mobile-money account takeover against East African wallet platforms."),
+    ("Anzu Stealer operators", "Anzu, DustCollector", "Unknown", "Info-stealer operators whose logs surface corporate credentials for regional banks on marketplace listings."),
+    ("Bahri Phish", None, "Unknown", "Phishing crew cloning local bank and remittance brands to harvest credentials and one-time codes."),
+    ("APT-Reef", "ReefViper", "State-aligned", "Espionage-oriented actor observed targeting government and NGO infrastructure in the region."),
+]
+
+# Security incidents. (title, severity, status, reported_by)
+INCIDENTS: list[tuple[str, str, str, str]] = [
+    ("Attempted ransomware deployment blocked on finance endpoint", "critical", "resolved", "Managed XDR"),
+    ("Credential-stuffing wave against the customer portal", "high", "open", "Fraud Protection"),
+    ("Phishing domain impersonating the mobile-money brand taken down", "medium", "resolved", "Digital Risk Protection"),
+    ("Exposed admin panel found on a forgotten subdomain", "high", "open", "Attack Surface Management"),
+    ("Business email compromise attempt on the finance team", "high", "open", "Email Protection"),
+    ("Suspicious data export flagged for review", "medium", "review", "Managed XDR"),
+]

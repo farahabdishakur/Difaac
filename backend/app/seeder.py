@@ -23,7 +23,10 @@ from app.seed_data.workspace import (
     BEP_MESSAGES,
     DRP_ITEMS,
     FRAUD_CASES,
+    INCIDENTS,
+    TI_ACTORS,
     TI_ALERTS,
+    TI_IOCS,
     XDR_DETECTIONS,
 )
 from app.auth_utils import hash_password
@@ -58,12 +61,15 @@ def seed_workspace_demo(conn: Any) -> None:
     rows, so this never duplicates data and never overwrites anything real
     that has been collected since.
     """
+    _seed_ti_iocs(conn)
+    _seed_ti_actors(conn)
     _seed_ti_alerts(conn)
     _seed_fraud_cases(conn)
     _seed_asm_assets(conn)
     _seed_bep_messages(conn)
     _seed_xdr_detections(conn)
     _seed_drp_items(conn)
+    _seed_incidents(conn)
 
 
 def _is_empty(conn: Any, table: str) -> bool:
@@ -77,6 +83,48 @@ def _hours_ago(hours: int) -> datetime:
     `timestamptz`, and psycopg adapts a datetime to them directly.
     """
     return datetime.now(timezone.utc) - timedelta(hours=hours)
+
+
+def _seed_ti_iocs(conn: Any) -> None:
+    if not _is_empty(conn, "ti_iocs"):
+        return
+    conn.executemany(
+        "INSERT INTO ti_iocs (value, type, severity, source, created_at)"
+        " VALUES (%s, %s, %s, %s, %s)",
+        [
+            (value, ioc_type, severity, source, _hours_ago(idx * 5 + 1))
+            for idx, (value, ioc_type, severity, source) in enumerate(TI_IOCS)
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d indicators of compromise.", len(TI_IOCS))
+
+
+def _seed_ti_actors(conn: Any) -> None:
+    if not _is_empty(conn, "ti_actors"):
+        return
+    conn.executemany(
+        "INSERT INTO ti_actors (name, aliases, origin, description)"
+        " VALUES (%s, %s, %s, %s)",
+        TI_ACTORS,
+    )
+    conn.commit()
+    logger.info("  Seeded %d threat actors.", len(TI_ACTORS))
+
+
+def _seed_incidents(conn: Any) -> None:
+    if not _is_empty(conn, "incidents"):
+        return
+    conn.executemany(
+        "INSERT INTO incidents (title, severity, status, reported_by, created_at)"
+        " VALUES (%s, %s, %s, %s, %s)",
+        [
+            (title, severity, status, reported_by, _hours_ago(idx * 8 + 2))
+            for idx, (title, severity, status, reported_by) in enumerate(INCIDENTS)
+        ],
+    )
+    conn.commit()
+    logger.info("  Seeded %d incidents.", len(INCIDENTS))
 
 
 def _seed_ti_alerts(conn: Any) -> None:
