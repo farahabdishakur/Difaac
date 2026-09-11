@@ -11,6 +11,7 @@ import {
   Activity,
   Globe,
   Mail,
+  FileClock,
 } from 'lucide-react'
 import { LogoMark } from '@/components/layout/logo-mark'
 import { useAuthUser } from '@/hooks/use-auth'
@@ -40,6 +41,7 @@ const navItems: NavItem[] = [
   { to: '/workspace/digital-risk', label: 'Digital Risk', icon: Fingerprint, end: false, requires: PERMISSION.consolesRead },
   { to: '/workspace/email-protection', label: 'Email Protection', icon: Mail, end: false, requires: PERMISSION.consolesRead },
   { to: '/workspace/incidents', label: 'Incidents', icon: Siren, end: false, requires: PERMISSION.incidentsRead },
+  { to: '/workspace/record-access', label: 'Record Access', icon: FileClock, end: false, requires: PERMISSION.auditRead },
   { to: '/workspace/demo-requests', label: 'Sales Enquiries', icon: Inbox, end: false, requires: PERMISSION.leadsRead },
   { to: '/workspace/settings', label: 'Settings', icon: Settings, end: false },
 ]

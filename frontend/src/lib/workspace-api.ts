@@ -308,3 +308,35 @@ export function useActivityTrend(days = 14) {
   )
   return { trend: data, error, isLoading }
 }
+
+// Record-access trail — the events an integrated application reports.
+//
+// For a healthcare customer this is the answer to "who opened this patient's
+// record, and when". `subject_ref` is an identifier, never a name (the
+// integration contract forbids sending names). The endpoint is gated on
+// `audit:read`, narrower than the rest of the console, so a viewer or an
+// ordinary analyst gets a 403 here even though they can see detections.
+export type AppEvent = {
+  id: number
+  source: string
+  action: string
+  outcome: string
+  severity: string
+  actor: string | null
+  subject_ref: string | null
+  ip_address: string | null
+  detail: string | null
+  occurred_at: string
+  received_at: string
+}
+
+export function useAppEvents(outcome?: string, limit = 200) {
+  const params = new URLSearchParams({ limit: String(limit) })
+  if (outcome) params.set('outcome', outcome)
+  const { data, error, isLoading } = useSWR<AppEvent[]>(
+    `/api/app-events?${params.toString()}`,
+    authFetcher,
+    swrOptions,
+  )
+  return { events: data ?? [], error, isLoading }
+}

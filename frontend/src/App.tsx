@@ -28,6 +28,9 @@ const EmailProtectionPage = lazy(
   () => import("@/pages/workspace/email-protection-page"),
 );
 const IncidentsPage = lazy(() => import("@/pages/workspace/incidents-page"));
+const RecordAccessPage = lazy(
+  () => import("@/pages/workspace/record-access-page"),
+);
 const SettingsPage = lazy(() => import("@/pages/workspace/settings-page"));
 const DemoRequestsPage = lazy(
   () => import("@/pages/workspace/demo-requests-page"),
@@ -109,6 +112,7 @@ export default function App() {
                 element={<EmailProtectionPage />}
               />
               <Route path="incidents" element={<IncidentsPage />} />
+              <Route path="record-access" element={<RecordAccessPage />} />
               <Route path="demo-requests" element={<DemoRequestsPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
