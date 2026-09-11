@@ -205,6 +205,22 @@ SENTRY_DSN: str = os.getenv("DIFAAC_SENTRY_DSN", "").strip()
 # a production deployment that forgets to set this shows a customer an empty
 # console, while the reverse would show them fabricated alerts about threat
 # actors that were never seen anywhere near their estate.
+# Demo LOGIN accounts for a showcase instance.
+#
+# OFF by default, and deliberately separate from DIFAAC_SEED_DEMO: demo data is
+# merely embarrassing on a real server, but demo *accounts* are public,
+# known-password logins — including an admin — so turning them on where real
+# data lives is a breach waiting to happen. This exists for the throwaway
+# onrender.com showcase, where the free tier gives no shell to run
+# manage_users.py, so there is otherwise no way to create a working login.
+#
+# When on, the accounts are upserted on every start (idempotent), so a redeploy
+# keeps them in sync. Turn it off and change the passwords before an instance
+# holds anything real.
+SEED_DEMO_ACCOUNTS: bool = os.getenv(
+    "DIFAAC_SEED_DEMO_ACCOUNTS", "false"
+).lower() in ("1", "true", "yes")
+
 SEED_DEMO_DATA: bool = os.getenv(
     "DIFAAC_SEED_DEMO", "true" if DEBUG else "false"
 ).lower() in ("1", "true", "yes")

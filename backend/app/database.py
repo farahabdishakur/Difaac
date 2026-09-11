@@ -18,7 +18,7 @@ from psycopg_pool import ConnectionPool
 
 from app.tenancy import assert_rls_enforced, apply_to_connection, tenant_scope
 
-from app.config import DATABASE_URL, SEED_DEMO_DATA
+from app.config import DATABASE_URL, SEED_DEMO_ACCOUNTS, SEED_DEMO_DATA
 from app.migrations import run_migrations
 from app.tenancy_migration import run_tenancy_migration
 from app.schemas import SCHEMA_SQL
@@ -187,6 +187,22 @@ def init_db() -> None:
             _seed_users(conn)
             conn.commit()
             logger.info("Default user seeded successfully.")
+
+        # Showcase logins for a demo instance. Gated on its own flag, separate
+        # from the demo *data* above, because these are public known-password
+        # accounts and must never appear where real data lives. The healthcare
+        # events are seeded on a second connection scoped to the hospital
+        # tenant, since app_events enforces a row-level policy and the insert
+        # has to run as that tenant.
+        if SEED_DEMO_ACCOUNTS:
+            from app.seeder import seed_demo_accounts, seed_demo_app_events
+
+            hospital_id = seed_demo_accounts(conn)
+            conn.commit()
+            if hospital_id is not None:
+                with tenant_scope(hospital_id), get_connection() as hconn:
+                    seed_demo_app_events(hconn)
+                    hconn.commit()
 
         prune_spent_tokens(conn)
 

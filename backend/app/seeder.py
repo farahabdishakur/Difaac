@@ -371,3 +371,99 @@ def _seed_users(conn: Any) -> None:
             password,
         )
 
+
+# Demo showcase accounts and healthcare events
+#
+# Everything below is gated by the caller on DIFAAC_SEED_DEMO_ACCOUNTS and is
+# for the public onrender.com showcase only. The passwords are intentionally
+# known — this is a demo — and must never guard real data. See config.py.
+
+# email, password, role, full name, tenant slug (None = the default Difaac tenant)
+_DEMO_ACCOUNTS: list[tuple[str, str, str, str, str | None]] = [
+    ("admin@difaac.io", "S6ySvgIp8k30AZmmpPzpC_bN", "admin", "Difaac Admin", None),
+    ("analyst@difaac.io", "U21fc58U6u7BK7xN", "analyst", "Difaac Analyst", None),
+    ("viewer@difaac.io", "ViewerTest12345", "viewer", "Difaac Viewer", None),
+    ("ciso@banadir.so", "HospitalCiso2026", "admin", "Hospital CISO", "hospital"),
+]
+
+_DEMO_HOSPITAL_SLUG = "hospital"
+_DEMO_HOSPITAL_NAME = "Banadir Hospital"
+
+# A few record-access events so the Record Access console shows something on the
+# live demo. subject_ref is an identifier, never a name — the same rule the real
+# integration contract enforces.
+_DEMO_APP_EVENTS: list[dict] = [
+    {"source": "banadir-ehr", "action": "record.view", "outcome": "success", "severity": "info", "actor": "dr.axmed", "subject_ref": "PATIENT-40318", "ip_address": "10.2.0.9"},
+    {"source": "banadir-ehr", "action": "record.export", "outcome": "denied", "severity": "high", "actor": "nurse.fadumo", "subject_ref": "PATIENT-99012", "ip_address": "10.2.0.14"},
+    {"source": "banadir-ehr", "action": "login.failed", "outcome": "failure", "severity": "medium", "actor": "unknown", "subject_ref": None, "ip_address": "197.0.0.5"},
+    {"source": "banadir-ehr", "action": "record.view", "outcome": "success", "severity": "info", "actor": "nurse.amina", "subject_ref": "PATIENT-40318", "ip_address": "10.2.0.21"},
+    {"source": "banadir-ehr", "action": "record.update", "outcome": "success", "severity": "info", "actor": "dr.cabdi", "subject_ref": "PATIENT-51120", "ip_address": "10.2.0.9"},
+]
+
+
+def seed_demo_accounts(conn: Any) -> int | None:
+    """Upsert the demo logins and the hospital tenant. Returns the hospital id.
+
+    Idempotent: each account is inserted or brought back to its demo password
+    and role, so a redeploy keeps them working and the pre-seeded analyst
+    account is reconciled to a known password. `users` carries no row-level
+    policy, so this runs correctly whatever tenant the connection announced.
+    """
+    conn.execute(
+        "INSERT INTO tenants (slug, name) VALUES (%s, %s) ON CONFLICT (slug) DO NOTHING",
+        (_DEMO_HOSPITAL_SLUG, _DEMO_HOSPITAL_NAME),
+    )
+
+    slugs = {r["slug"]: r["id"] for r in conn.execute("SELECT id, slug FROM tenants").fetchall()}
+    default_id = slugs.get("difaac")
+    hospital_id = slugs.get(_DEMO_HOSPITAL_SLUG)
+
+    for email, password, role, full_name, tenant_slug in _DEMO_ACCOUNTS:
+        tenant_id = slugs.get(tenant_slug) if tenant_slug else default_id
+        conn.execute(
+            """
+            INSERT INTO users
+                (email, hashed_password, full_name, role, tenant_id, password_changed_at)
+            VALUES (%s, %s, %s, %s, %s, now())
+            ON CONFLICT (email) DO UPDATE
+                SET hashed_password = EXCLUDED.hashed_password,
+                    full_name = EXCLUDED.full_name,
+                    role = EXCLUDED.role,
+                    tenant_id = EXCLUDED.tenant_id,
+                    is_active = TRUE,
+                    failed_login_attempts = 0,
+                    locked_until = NULL
+            """,
+            (email, hash_password(password), full_name, role, tenant_id),
+        )
+
+    logger.warning(
+        "Demo accounts seeded (DIFAAC_SEED_DEMO_ACCOUNTS is on): %s. "
+        "These are public, known-password logins — never enable this where real data lives.",
+        ", ".join(a[0] for a in _DEMO_ACCOUNTS),
+    )
+    return hospital_id
+
+
+def seed_demo_app_events(conn: Any) -> None:
+    """Seed a few record-access events for the hospital tenant.
+
+    Must be called with a connection already scoped to the hospital tenant, so
+    the row-level policy on app_events accepts the inserts. Only seeds when the
+    tenant has no events yet, so it never piles up on every redeploy.
+    """
+    existing = conn.execute("SELECT COUNT(*) AS n FROM app_events").fetchone()["n"]
+    if existing:
+        return
+    for ev in _DEMO_APP_EVENTS:
+        conn.execute(
+            """
+            INSERT INTO app_events
+                (source, action, outcome, severity, actor, subject_ref, ip_address, occurred_at)
+            VALUES (%(source)s, %(action)s, %(outcome)s, %(severity)s,
+                    %(actor)s, %(subject_ref)s, %(ip_address)s, now())
+            """,
+            ev,
+        )
+    logger.info("Seeded %d demo record-access events for the hospital tenant.", len(_DEMO_APP_EVENTS))
+
