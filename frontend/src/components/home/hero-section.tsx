@@ -32,7 +32,7 @@ export function HeroSection() {
 
             <p className="mt-5 max-w-lg mx-auto lg:mx-0 text-pretty leading-relaxed text-body text-base">
               Difaac protects Somali banks, businesses and hospitals from fraud, phishing and data
-              breaches — watched by a team that stops threats before they do harm.
+              breaches watched by a team that stops threats before they do harm.
             </p>
 
             {/* Side by side from the smallest screen up — the two calls sit on
