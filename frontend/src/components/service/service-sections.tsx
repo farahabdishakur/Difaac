@@ -63,7 +63,7 @@ export function ServiceHero({
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-body">{hero.description}</p>
 
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-row flex-wrap justify-center gap-3">
             <LinkButton href="/talk-to-sales" size="lg">
               Let&apos;s Talk
               <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />

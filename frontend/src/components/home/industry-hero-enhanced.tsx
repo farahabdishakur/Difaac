@@ -76,7 +76,7 @@ export function IndustryHeroEnhanced({
             {description}
           </p>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8 flex flex-row flex-wrap items-center justify-center gap-3">
             <LinkButton href="/talk-to-sales" size="lg" className="gap-2 px-7">
               Get Protected
               <ArrowRight className="size-4" />

@@ -29,7 +29,7 @@ export function SolutionHeroEnhanced({ name, tagline, description, group }: Solu
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-body">{description}</p>
 
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-row flex-wrap justify-center gap-3">
             <LinkButton href="/talk-to-sales" size="lg" className="gap-2">
               Let&apos;s Talk
               <ArrowRight className="size-4" aria-hidden="true" />
