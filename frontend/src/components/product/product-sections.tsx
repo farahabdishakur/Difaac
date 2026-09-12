@@ -116,8 +116,11 @@ export function ProductHero({
           {/* The product-name label in the page's accent — lowercased on every
               product now, not shouted in uppercase. Only the case changes; the
               layout of the non-fraud heroes is otherwise untouched. */}
+          {/* Drop a trailing "Platform" from the label — the name alone reads
+              cleaner. Stripped only in this label; the SEO title keeps the full
+              wording. Badges without the word are unchanged. */}
           <p className="text-xs sm:text-sm font-semibold lowercase tracking-[0.2em] text-white">
-            {hero.badge}
+            {hero.badge.replace(/\s*platform$/i, '')}
           </p>
 
           {/* The accent is a colour on the operative phrase, not a second weight. */}
