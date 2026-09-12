@@ -28,6 +28,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 
 from app import api_keys
+from app.correlation import correlate
 from app.database import get_connection
 from app.models import AppEventBatch
 from app.tenancy import set_current_tenant
@@ -115,6 +116,17 @@ def ingest_events(batch: AppEventBatch, key: dict = Depends(require_api_key)):
             )
             accepted += 1
         conn.commit()
+
+        # Correlate what just arrived into alerts, in the same tenant-scoped
+        # connection. Defensive: a bug in a rule must never fail an ingest that
+        # already stored the events — it is a missed alert, not lost data.
+        try:
+            raised = correlate(conn, batch.events)
+            if raised:
+                conn.commit()
+        except Exception:
+            conn.rollback()
+            logger.exception("Correlation failed for key '%s'; events were still stored", key["name"])
 
     if skewed:
         # Worth saying out loud: a clock adrift by more than a day makes an
