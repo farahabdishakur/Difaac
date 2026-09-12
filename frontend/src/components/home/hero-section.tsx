@@ -24,16 +24,15 @@ export function HeroSection() {
                 "Cybercrime." on the second, at every width — mobile, tablet and
                 desktop. The break is hard on purpose so the headline reads the
                 same shape on every screen. */}
-            <h1 className="t-display mt-4 font-display font-bold text-text">
+            <h1 className="t-h1 mt-4 font-display font-bold text-text">
               Fight Somalian
               <br />
               <span className="text-brand">Cybercrime.</span>
             </h1>
 
-            <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-pretty leading-relaxed text-body text-base sm:text-lg">
-              Our cyber defence, fraud protection and brand protection are powered by
-              intelligence-driven technology and analysts who track the adversaries operating
-              across Somalia and its diaspora.
+            <p className="mt-5 max-w-lg mx-auto lg:mx-0 text-pretty leading-relaxed text-body text-base">
+              Difaac protects Somali banks, businesses and hospitals from fraud, phishing and data
+              breaches — watched by a team that stops threats before they do harm.
             </p>
 
             {/* Side by side from the smallest screen up — the two calls sit on
