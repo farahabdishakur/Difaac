@@ -113,15 +113,10 @@ export function ProductHero({
             />
           </div>
 
-          {/* The product-name label in the page's accent. Lowercased on the
-              cinematic (fraud) hero as asked — the word "platform" stays, it is
-              just not shouted — while every other product keeps the original
-              uppercase treatment. */}
-          <p
-            className={`text-xs sm:text-sm font-semibold tracking-[0.2em] ${toneText[tone]} ${
-              cinematic ? 'lowercase' : 'uppercase'
-            }`}
-          >
+          {/* The product-name label in the page's accent — lowercased on every
+              product now, not shouted in uppercase. Only the case changes; the
+              layout of the non-fraud heroes is otherwise untouched. */}
+          <p className={`text-xs sm:text-sm font-semibold lowercase tracking-[0.2em] ${toneText[tone]}`}>
             {hero.badge}
           </p>
 
