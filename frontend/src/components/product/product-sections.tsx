@@ -116,7 +116,7 @@ export function ProductHero({
           {/* The product-name label in the page's accent — lowercased on every
               product now, not shouted in uppercase. Only the case changes; the
               layout of the non-fraud heroes is otherwise untouched. */}
-          <p className={`text-xs sm:text-sm font-semibold lowercase tracking-[0.2em] ${toneText[tone]}`}>
+          <p className="text-xs sm:text-sm font-semibold lowercase tracking-[0.2em] text-white">
             {hero.badge}
           </p>
 
