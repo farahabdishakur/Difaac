@@ -21,7 +21,7 @@ import type { LucideIcon } from 'lucide-react'
 import { ArrowRight, Check, X, ChevronDown } from 'lucide-react'
 import { LinkButton } from '@/components/shared/link-button'
 import { getIcon } from '@/components/icons/icon-map'
-import { ProductEmblem, HeroBackdrop } from '@/components/product/product-emblem'
+import { ProductEmblem, HeroBackdrop, PRODUCT_BACKGROUND_VIDEO } from '@/components/product/product-emblem'
 import { BrowserFrame } from '@/components/shared/browser-frame'
 import { productAccent, toneText, toneBadge } from '@/lib/tone'
 import type { Tone } from '@/lib/tone'
@@ -81,18 +81,36 @@ export function ProductHero({
   // way group-ib.com tints every product page differently.
   const tone = productAccent[slug] ?? 'brand'
 
+  // Only a hero with a background animation gets the left-aligned, Group-IB
+  // treatment. Every other product keeps the original centred layout — the
+  // change was never meant to touch them.
+  const cinematic = Boolean(slug && PRODUCT_BACKGROUND_VIDEO[slug])
+
   return (
-    <section className="relative -mt-14 overflow-hidden pt-[calc(3.5rem+3rem)] pb-16 sm:pt-[calc(3.5rem+4.5rem)] sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24 min-h-[580px] lg:min-h-[660px] flex flex-col justify-center items-center">
-      {/* `spread` widens the accent until it carries the whole hero, so the emblem below sits in a lit space rather than on a dark band. */}
+    <section
+      className={`relative -mt-14 overflow-hidden pt-[calc(3.5rem+3rem)] pb-16 sm:pt-[calc(3.5rem+4.5rem)] sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24 flex flex-col justify-center items-center ${
+        cinematic ? 'min-h-[440px] lg:min-h-[520px]' : 'min-h-[580px] lg:min-h-[660px]'
+      }`}
+    >
+      {/* `spread` widens the accent until it carries the whole hero. It is
+          skipped for a video hero inside HeroBackdrop, so the animation shows
+          in its own colours. */}
       <HeroBackdrop tone={tone} spread slug={slug} />
 
-      {/* Left-aligned, Group-IB style: the icon, label, headline, text and
-          buttons all sit in a column on the left, over the dark hero
-          animation, with the visual showing through on the right. */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex max-w-2xl flex-col items-start text-left">
-          <div className="mb-6 flex items-center justify-start">
-            <ProductEmblem icon={Icon} tone={tone} slug={slug} size="hero" />
+      <div
+        className={`relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 ${
+          cinematic ? 'max-w-7xl' : 'max-w-5xl'
+        }`}
+      >
+        <div className={`flex flex-col ${cinematic ? 'max-w-2xl items-start text-left' : 'items-center text-center'}`}>
+          <div className={`mb-6 flex items-center ${cinematic ? 'justify-start' : 'justify-center'}`}>
+            <ProductEmblem
+              icon={Icon}
+              tone={tone}
+              slug={slug}
+              size={cinematic ? 'card' : 'hero'}
+              glow={!cinematic}
+            />
           </div>
 
           {/* The product-name label — plain text in the page's accent, uppercase tracking, Group-IB style */}
@@ -101,16 +119,28 @@ export function ProductHero({
           </p>
 
           {/* The accent is a colour on the operative phrase, not a second weight. */}
-          <h1 className="mt-6 text-balance font-display t-h1 font-bold text-text">
+          <h1
+            className={`mt-6 font-display font-bold text-text ${
+              cinematic ? 'text-3xl sm:text-4xl lg:text-5xl' : 't-h1 max-w-4xl text-balance'
+            }`}
+          >
             <span className="text-text">{hero.headlineLead}</span>{' '}
             <span className={toneText[tone]}>{hero.headlineAccent}</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-pretty text-base sm:text-lg leading-relaxed text-body">
+          <p
+            className={`mt-6 max-w-2xl text-pretty text-base sm:text-lg leading-relaxed text-body ${
+              cinematic ? '' : 'mx-auto'
+            }`}
+          >
             {hero.description}
           </p>
 
-          <div className="mt-8 sm:mt-10 flex flex-row flex-wrap items-center justify-start gap-3 sm:gap-4">
+          <div
+            className={`mt-8 sm:mt-10 flex flex-row flex-wrap items-center gap-3 sm:gap-4 ${
+              cinematic ? 'justify-start' : 'justify-center'
+            }`}
+          >
             <LinkButton href="/talk-to-sales" size="lg">
               Request a demo
               <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
@@ -120,9 +150,13 @@ export function ProductHero({
             </LinkButton>
           </div>
 
-          <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-start gap-8 border-t border-line-soft/80 pt-8 sm:gap-14">
+          <div
+            className={`mt-10 sm:mt-12 flex flex-wrap items-center gap-8 border-t border-line-soft/80 pt-8 sm:gap-14 ${
+              cinematic ? 'justify-start' : 'justify-center'
+            }`}
+          >
             {hero.stats.map((stat) => (
-              <div key={stat.label} className="text-left">
+              <div key={stat.label} className={cinematic ? 'text-left' : 'text-center'}>
                 <div className={`font-display text-2xl sm:text-3xl font-normal ${toneText[tone]}`}>{stat.value}</div>
                 <div className="mt-1 text-xs uppercase tracking-wider text-muted-2">{stat.label}</div>
               </div>

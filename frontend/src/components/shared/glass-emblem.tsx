@@ -17,6 +17,7 @@ export function GlassEmblem({
   sizeClass,
   className,
   eager,
+  glow = true,
 }: {
   src: string
   tone?: Tone
@@ -24,16 +25,21 @@ export function GlassEmblem({
   className?: string
   /** Set for an emblem above the fold, where the render is the first thing seen. */
   eager?: boolean
+  /** The blurred pool of accent behind the render. Off where the emblem sits on
+      its own artwork (a video hero) and a second glow would only muddy it. */
+  glow?: boolean
 }) {
   return (
     <span
       className={`relative inline-flex shrink-0 items-center justify-center ${sizeClass} ${className ?? ''}`}
     >
-      <span
-        className="pointer-events-none absolute inset-0 scale-125 rounded-full opacity-45 blur-2xl"
-        style={{ background: toneVar[tone] }}
-        aria-hidden="true"
-      />
+      {glow ? (
+        <span
+          className="pointer-events-none absolute inset-0 scale-125 rounded-full opacity-45 blur-2xl"
+          style={{ background: toneVar[tone] }}
+          aria-hidden="true"
+        />
+      ) : null}
       <img
         src={src}
         alt=""

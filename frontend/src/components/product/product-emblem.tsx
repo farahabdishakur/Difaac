@@ -54,12 +54,15 @@ export function ProductEmblem({
   slug,
   size = 'hero',
   className,
+  glow = true,
 }: {
   icon: LucideIcon
   tone?: Tone
   slug?: string
   size?: keyof typeof EMBLEM_SIZE
   className?: string
+  /** The accent pool behind a rendered emblem. Off on a video hero. */
+  glow?: boolean
 }) {
   const accent = toneVar[tone]
   // Scoped per tone so two emblems on one page cannot collide on gradient ids.
@@ -75,6 +78,7 @@ export function ProductEmblem({
         sizeClass={sizeClass}
         className={className}
         eager={size === 'hero'}
+        glow={glow}
       />
     )
   }
