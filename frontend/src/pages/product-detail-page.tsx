@@ -63,37 +63,91 @@ export default function ProductDetailPage() {
   const faqs = getProductFaqs(product.slug)
   const related = (products ?? []).filter((p) => p.slug !== product.slug).slice(0, 3)
 
+  const isFraud = product.slug === 'fraud-protection'
+
   return (
     <>
-{/* Hero: name small, promise big, over the product's own hue. */}
-      <section className="hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+3rem)] pb-16 sm:pt-[calc(3.5rem+4.5rem)] sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24 min-h-[580px] lg:min-h-[660px] flex flex-col justify-center items-center">
+      {/* Hero: name small, promise big, over the product's own hue. For Fraud Protection: Group-IB split hero layout showcasing the animated 3D video. */}
+      <section className={`hero-ground relative -mt-14 overflow-hidden pt-[calc(3.5rem+3rem)] pb-16 sm:pt-[calc(3.5rem+4.5rem)] sm:pb-20 lg:-mt-16 lg:pt-[calc(4rem+5rem)] lg:pb-24 min-h-[580px] lg:min-h-[700px] flex flex-col justify-center ${isFraud ? 'items-start' : 'items-center'}`}>
         <HeroBackdrop tone={tone} slug={product.slug} spread />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center gap-6 px-4 text-center sm:px-6 lg:px-8">
-          <ProductEmblem icon={Icon} tone={tone} slug={product.slug} size="hero" />
+        {isFraud ? (
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
+              <div className="flex flex-col items-center text-center lg:items-start lg:text-left gap-6 lg:col-span-7">
+                <div className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-brand backdrop-blur-md">
+                  <Icon className="size-3.5" aria-hidden="true" />
+                  <span>{product.name} Platform</span>
+                </div>
 
-          <p className={`text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] ${toneText[tone]}`}>
-            {product.name}
-          </p>
+                <h1 className="t-display text-balance font-display font-bold text-text text-3xl sm:text-4xl lg:text-5xl lg:leading-[1.12]">
+                  The Power of AI. <br className="hidden sm:inline" />
+                  The Wisdom of Experts. <br />
+                  <span className="text-brand-bright">Fraud Protection Redefined</span>
+                </h1>
 
-          <h1 className="t-display text-balance font-display font-bold text-text">
-            {product.tagline}
-          </h1>
+                <p className="max-w-xl text-pretty text-base sm:text-lg leading-relaxed text-body">
+                  Real-time fraud prevention and client-side identity protection that stops account takeover, automated bot networks, and payment fraud as it happens across digital enterprise applications.
+                </p>
 
-          <p className="max-w-2xl text-pretty text-base sm:text-lg leading-relaxed text-body">
-            {product.description}
-          </p>
+                <div className="mt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                  <LinkButton href="/talk-to-sales" size="lg">
+                    Request a demo
+                    <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
+                  </LinkButton>
+                  <LinkButton href={`/subscriptions/${product.slug}`} variant="secondary" size="lg">
+                    See pricing
+                  </LinkButton>
+                </div>
+              </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-            <LinkButton href="/talk-to-sales" size="lg">
-              Request a demo
-              <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
-            </LinkButton>
-            <LinkButton href={`/subscriptions/${product.slug}`} variant="secondary" size="lg">
-              See pricing
-            </LinkButton>
+              {/* Right column: gives breathing room for the animated 3D video stack on large screens, with glass telemetry pills */}
+              <div className="relative hidden lg:col-span-5 lg:flex flex-col items-end justify-center gap-3.5 pointer-events-none select-none pt-12">
+                <div className="inline-flex items-center gap-2.5 rounded-xl border border-line bg-ink-2/75 px-3.5 py-2 text-xs shadow-xl backdrop-blur-md">
+                  <span className="size-2 rounded-full bg-brand animate-pulse" />
+                  <span className="font-mono text-muted-2">01</span>
+                  <span className="font-medium text-text">Anonymous User Behavior Analysis</span>
+                </div>
+                <div className="inline-flex items-center gap-2.5 rounded-xl border border-line bg-ink-2/75 px-3.5 py-2 text-xs shadow-xl backdrop-blur-md mr-4">
+                  <span className="size-2 rounded-full bg-brand-bright animate-pulse" />
+                  <span className="font-mono text-muted-2">02</span>
+                  <span className="font-medium text-text">Biometric &amp; AI Fraud Scoring</span>
+                </div>
+                <div className="inline-flex items-center gap-2.5 rounded-xl border border-line bg-ink-2/75 px-3.5 py-2 text-xs shadow-xl backdrop-blur-md">
+                  <span className="size-2 rounded-full bg-accent-cyan animate-pulse" />
+                  <span className="font-mono text-muted-2">03</span>
+                  <span className="font-medium text-text">Device Fingerprint Telemetry</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center gap-6 px-4 text-center sm:px-6 lg:px-8">
+            <ProductEmblem icon={Icon} tone={tone} slug={product.slug} size="hero" />
+
+            <p className={`text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] ${toneText[tone]}`}>
+              {product.name}
+            </p>
+
+            <h1 className="t-display text-balance font-display font-bold text-text">
+              {product.tagline}
+            </h1>
+
+            <p className="max-w-2xl text-pretty text-base sm:text-lg leading-relaxed text-body">
+              {product.description}
+            </p>
+
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+              <LinkButton href="/talk-to-sales" size="lg">
+                Request a demo
+                <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
+              </LinkButton>
+              <LinkButton href={`/subscriptions/${product.slug}`} variant="secondary" size="lg">
+                See pricing
+              </LinkButton>
+            </div>
+          </div>
+        )}
       </section>
 
 {/* Metrics strip: a few things true from day one. */}

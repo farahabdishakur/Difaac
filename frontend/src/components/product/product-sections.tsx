@@ -86,9 +86,12 @@ export function ProductHero({
       {/* `spread` widens the accent until it carries the whole hero, so the emblem below sits in a lit space rather than on a dark band. */}
       <HeroBackdrop tone={tone} spread slug={slug} />
 
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center text-center">
-          <div className="mb-6 flex items-center justify-center">
+      {/* Left-aligned, Group-IB style: the icon, label, headline, text and
+          buttons all sit in a column on the left, over the dark hero
+          animation, with the visual showing through on the right. */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex max-w-2xl flex-col items-start text-left">
+          <div className="mb-6 flex items-center justify-start">
             <ProductEmblem icon={Icon} tone={tone} slug={slug} size="hero" />
           </div>
 
@@ -98,16 +101,16 @@ export function ProductHero({
           </p>
 
           {/* The accent is a colour on the operative phrase, not a second weight. */}
-          <h1 className="mt-6 max-w-4xl text-balance font-display t-h1 font-bold text-text">
+          <h1 className="mt-6 text-balance font-display t-h1 font-bold text-text">
             <span className="text-text">{hero.headlineLead}</span>{' '}
             <span className={toneText[tone]}>{hero.headlineAccent}</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-base sm:text-lg leading-relaxed text-body">
+          <p className="mt-6 max-w-xl text-pretty text-base sm:text-lg leading-relaxed text-body">
             {hero.description}
           </p>
 
-          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-8 sm:mt-10 flex flex-row flex-wrap items-center justify-start gap-3 sm:gap-4">
             <LinkButton href="/talk-to-sales" size="lg">
               Request a demo
               <ArrowRight className="size-4" data-icon="inline-end" aria-hidden="true" />
@@ -117,9 +120,9 @@ export function ProductHero({
             </LinkButton>
           </div>
 
-          <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-center gap-8 border-t border-line-soft/80 pt-8 sm:gap-14">
+          <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-start gap-8 border-t border-line-soft/80 pt-8 sm:gap-14">
             {hero.stats.map((stat) => (
-              <div key={stat.label} className="text-center">
+              <div key={stat.label} className="text-left">
                 <div className={`font-display text-2xl sm:text-3xl font-normal ${toneText[tone]}`}>{stat.value}</div>
                 <div className="mt-1 text-xs uppercase tracking-wider text-muted-2">{stat.label}</div>
               </div>

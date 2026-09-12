@@ -150,10 +150,15 @@ export const PRODUCT_BACKGROUND_IMAGE: Record<string, string> = {
   'business-email-protection': '/products/hero-business-email-protection.jpg',
 }
 
+/** Optional looping video backdrops for products that feature animated hero graphics. */
+export const PRODUCT_BACKGROUND_VIDEO: Record<string, string> = {
+  'fraud-protection': '/products/hero-fraud-protection.mp4',
+}
+
 /**
  * Full-bleed hero backdrop.
  *
- * Combines high-resolution, thematic cyber defense imagery with tailored
+ * Combines high-resolution, thematic cyber defense imagery or animated video with tailored
  * transparent gradients and radial vignetting over the page ground.
  * Blends smoothly to ink at the fold and below the header with zero seams.
  */
@@ -162,18 +167,44 @@ export function HeroBackdrop({
   spread,
   slug,
   bgImage,
+  bgVideo,
 }: {
   tone?: Tone;
   spread?: boolean;
   slug?: string;
   bgImage?: string;
+  bgVideo?: string;
 }) {
   const accent = toneVar[tone]
+  const video = bgVideo ?? (slug ? PRODUCT_BACKGROUND_VIDEO[slug] : undefined)
   const image = bgImage ?? (slug ? PRODUCT_BACKGROUND_IMAGE[slug] : undefined)
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      {image ? (
+      {video ? (
+        <div className="absolute inset-0 overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={image}
+            className="size-full object-cover object-[72%_center] lg:object-right scale-100"
+          >
+            <source src={video} type="video/mp4" />
+          </video>
+          {/* No covering film — the dark animation shows as it is, Group-IB
+              style. Legibility is handled per layout: on a phone the text
+              stacks over the whole frame, so a gentle vertical scrim keeps it
+              readable; from lg the text sits in a left column and the fade runs
+              left-to-right, leaving the animation on the right untouched. A
+              thin blend to ink at the bottom keeps the seam to the next
+              section clean. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/55 to-ink/80 lg:hidden" />
+          <div className="absolute inset-0 hidden lg:block bg-gradient-to-r from-ink/85 via-ink/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-ink" />
+        </div>
+      ) : image ? (
         <div className="absolute inset-0 overflow-hidden">
           <img
             src={image}
@@ -191,16 +222,22 @@ export function HeroBackdrop({
         </div>
       ) : null}
 
-      <div
-        className="absolute inset-0 opacity-[0.40]"
-        style={{
-          backgroundImage: `radial-gradient(120% 80% at 15% -10%, color-mix(in srgb, ${accent} 24%, transparent) 0%, transparent 60%),
-             radial-gradient(90% 70% at 95% 5%, color-mix(in srgb, ${accent} 16%, transparent) 0%, transparent 65%)`,
-        }}
-      />
+      {/* The accent washes tint the page ground behind an image hero. A video
+          hero carries its own dark artwork, so they are skipped there — the
+          animation shows in its own colours, Group-IB style, not under a
+          coloured film. */}
+      {!video ? (
+        <div
+          className="absolute inset-0 opacity-[0.40]"
+          style={{
+            backgroundImage: `radial-gradient(120% 80% at 15% -10%, color-mix(in srgb, ${accent} 24%, transparent) 0%, transparent 60%),
+               radial-gradient(90% 70% at 95% 5%, color-mix(in srgb, ${accent} 16%, transparent) 0%, transparent 65%)`,
+          }}
+        />
+      ) : null}
 
       {/* The product hero opts into a single wide pool of the accent, centred high enough that the colour carries up behind the transparent header and reaches the top of the page rather than starting below it. */}
-      {spread ? (
+      {spread && !video ? (
         <div
           className="absolute inset-0"
           style={{
