@@ -113,8 +113,15 @@ export function ProductHero({
             />
           </div>
 
-          {/* The product-name label — plain text in the page's accent, uppercase tracking, Group-IB style */}
-          <p className={`text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] ${toneText[tone]}`}>
+          {/* The product-name label in the page's accent. Lowercased on the
+              cinematic (fraud) hero as asked — the word "platform" stays, it is
+              just not shouted — while every other product keeps the original
+              uppercase treatment. */}
+          <p
+            className={`text-xs sm:text-sm font-semibold tracking-[0.2em] ${toneText[tone]} ${
+              cinematic ? 'lowercase' : 'uppercase'
+            }`}
+          >
             {hero.badge}
           </p>
 
