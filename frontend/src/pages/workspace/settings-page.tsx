@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Lock, ArrowRight, Monitor, LogOut } from 'lucide-react'
+import { Lock, ArrowRight, Monitor, LogOut, KeyRound, Copy, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Panel } from '@/components/workspace/panel'
+import { SeverityBadge } from '@/components/workspace/severity-badge'
 import { changePassword, signOut } from '@/lib/auth'
 import { useSessions, revokeSession } from '@/lib/account-api'
+import { useApiKeys, createApiKey, revokeApiKey } from '@/lib/keys-api'
+import { useHasPermission, PERMISSION } from '@/hooks/use-permission'
 
 function ChangePasswordForm() {
   const [current, setCurrent] = useState('')
@@ -183,7 +186,139 @@ function SessionsList() {
   )
 }
 
+function ApiKeysSection() {
+  const { keys, error, isLoading, refresh } = useApiKeys()
+  const [name, setName] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [freshKey, setFreshKey] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault()
+    setFormError(null)
+    setCreating(true)
+    try {
+      const created = await createApiKey(name.trim())
+      setFreshKey(created.key)
+      setName('')
+      await refresh()
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Could not create the key.')
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  async function handleRevoke(prefix: string) {
+    await revokeApiKey(prefix)
+    await refresh()
+  }
+
+  return (
+    <Panel
+      title="Integration API keys"
+      description="Issue a key for an application that reports events to Difaac — a hospital's record system, say. The key is shown once; store it safely and revoke it if it leaks."
+      loading={isLoading}
+      error={error}
+      empty={keys.length === 0 && !freshKey}
+      emptyLabel="No keys yet. Generate one below to connect an application."
+      action={
+        <form onSubmit={handleCreate} className="flex items-center gap-2">
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Banadir EHR"
+            required
+            maxLength={120}
+            className="h-9 w-44"
+          />
+          <Button type="submit" size="sm" disabled={creating || !name.trim()} className="gap-1.5">
+            <KeyRound className="size-4" aria-hidden="true" />
+            {creating ? 'Generating…' : 'Generate'}
+          </Button>
+        </form>
+      }
+    >
+      {formError ? <p className="mb-4 text-sm text-error">{formError}</p> : null}
+
+      {freshKey ? (
+        <div className="mb-5 rounded-[6px] border border-brand/40 bg-brand/10 p-4">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-brand">
+            Copy this key now — it will not be shown again
+          </p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 overflow-x-auto rounded-[4px] bg-ink px-3 py-2 text-xs text-text">
+              {freshKey}
+            </code>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="gap-1.5"
+              onClick={() => {
+                navigator.clipboard.writeText(freshKey)
+                setCopied(true)
+                setTimeout(() => setCopied(false), 2000)
+              }}
+            >
+              {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+              {copied ? 'Copied' : 'Copy'}
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {keys.length > 0 ? (
+        <div className="-mx-6 overflow-x-auto lg:-mx-7">
+          <table className="w-full min-w-[560px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-line-soft text-left text-xs uppercase tracking-wide text-muted-2">
+                <th className="px-6 py-3 font-medium lg:px-7">Name</th>
+                <th className="px-6 py-3 font-medium lg:px-7">Prefix</th>
+                <th className="px-6 py-3 font-medium lg:px-7">Last used</th>
+                <th className="px-6 py-3 font-medium lg:px-7">Status</th>
+                <th className="px-6 py-3 font-medium lg:px-7"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {keys.map((k) => (
+                <tr key={k.prefix} className="border-b border-line-soft/60 last:border-0">
+                  <td className="px-6 py-3 font-medium text-text lg:px-7">{k.name}</td>
+                  <td className="px-6 py-3 lg:px-7">
+                    <code className="rounded-[3px] bg-ink-3 px-1.5 py-0.5 text-xs text-body">
+                      {k.prefix}
+                    </code>
+                  </td>
+                  <td className="px-6 py-3 text-muted-2 lg:px-7">
+                    {k.last_used_at ? new Date(k.last_used_at).toLocaleString() : 'Never'}
+                  </td>
+                  <td className="px-6 py-3 lg:px-7">
+                    <SeverityBadge value={k.revoked_at ? 'revoked' : 'active'} />
+                  </td>
+                  <td className="px-6 py-3 text-right lg:px-7">
+                    {!k.revoked_at ? (
+                      <button
+                        type="button"
+                        onClick={() => handleRevoke(k.prefix)}
+                        className="text-xs font-medium text-muted-2 hover:text-error"
+                      >
+                        Revoke
+                      </button>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+    </Panel>
+  )
+}
+
 export default function SettingsPage() {
+  const canManageIntegrations = useHasPermission(PERMISSION.integrationsManage)
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -195,6 +330,8 @@ export default function SettingsPage() {
         <h2 className="mb-5 font-display text-lg font-medium text-text">Change Password</h2>
         <ChangePasswordForm />
       </section>
+
+      {canManageIntegrations ? <ApiKeysSection /> : null}
 
       <SessionsList />
     </div>

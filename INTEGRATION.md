@@ -12,12 +12,15 @@ An application cannot sign in. It has nobody to type a password, nowhere safe
 to keep one, and no way to answer a lockout, so it authenticates with a key
 issued once:
 
-```bash
-python manage_users.py keys --issue "hospital-ehr" --tenant borama-hospital
-```
+An administrator issues one from the console: **Settings → Integration API
+keys → Generate**. The full key is shown once — copy it then; only its prefix
+is ever shown again. Revoke it there if it leaks.
 
-The key is printed once and is not recoverable. If it is lost, revoke it and
-issue another — the same thing you would do if it had leaked.
+(On a server with shell access it can also be issued with
+`python manage_users.py keys --issue "hospital-ehr" --tenant borama-hospital`.)
+
+Either way the key is not recoverable after creation. If it is lost, revoke it
+and issue another — the same thing you would do if it had leaked.
 
 ```bash
 python manage_users.py keys                       # list, with last-used times

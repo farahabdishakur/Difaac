@@ -24,6 +24,7 @@ from app.routes import (
     health,
     industries,
     ingest,
+    keys,
     products,
     resources,
     services,
@@ -214,3 +215,4 @@ app.include_router(demo_requests.private_router)
 # Integrations. Authenticated by API key rather than by a session, because an
 # application has nobody to sign it in.
 app.include_router(ingest.router)
+app.include_router(keys.router)
