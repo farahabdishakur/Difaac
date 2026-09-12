@@ -348,9 +348,12 @@ html {
   }
 
   .glass-header {
-    background: rgba(1, 0, 5, 0.88);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    /* Fully opaque, the same ink as the page ground, so once the header gains
+       a background on scroll nothing shows through it — the section content
+       used to bleed through the old 0.88 alpha. Seamless against the page
+       because it is the same colour; the blur is gone since there is nothing
+       translucent left for it to act on. */
+    background: var(--color-ink);
     border-bottom: 1px solid rgba(24, 34, 55, 0.6);
   }
 }
