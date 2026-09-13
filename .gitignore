@@ -40,3 +40,6 @@ Thumbs.db
 
 # Local server logs
 *.log
+
+# Scratch scripts
+_inspect_schema.py
